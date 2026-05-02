@@ -104,216 +104,175 @@ app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(uploadsDir));
 app.use('/audio', express.static(audioDir));
 
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS guests (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    first_name TEXT,
-    token TEXT UNIQUE NOT NULL,
-    created_at TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS lovestory (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type TEXT NOT NULL DEFAULT 'chat',
-    sender TEXT,
-    message TEXT,
-    time TEXT,
-    date_label TEXT,
-    order_no INTEGER DEFAULT 0
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS lovestory_settings (
-    key TEXT PRIMARY KEY,
-    value TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS page_views (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    guest_token TEXT,
-    page TEXT DEFAULT 'invitation',
-    ip TEXT,
-    user_agent TEXT,
-    viewed_at TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS settings (
-    key TEXT PRIMARY KEY,
-    value TEXT
-  )`, () => {
-    // Initial default settings
-    const defaults = [
-        ['wa_template', 'Halo @nama,\n\nTanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara kami melalui link undangan digital berikut:\n\n@link\n\nMerupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir. Terima kasih.']
-    ];
-    defaults.forEach(d => {
-        db.run('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', d);
-    });
-  });
-
-  db.run(`CREATE TABLE IF NOT EXISTS rsvps (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    guest_id INTEGER,
-    status TEXT,
-    guest_count INTEGER,
-    created_at TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS wishes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    guest_id INTEGER,
-    message TEXT,
-    created_at TEXT,
-    reply TEXT,
-    replied_at TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS admin_users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    password TEXT,
-    full_name TEXT,
-    email TEXT,
-    phone TEXT,
-    avatar TEXT
-  )`, () => {
-    db.get("SELECT COUNT(*) as count FROM admin_users", (err, row) => {
-      if (row && row.count === 0) {
-        db.run("INSERT INTO admin_users (username, password, email, full_name) VALUES (?, ?, ?, ?)", ['admin', 'admin123', 'admin@example.com', 'Administrator']);
-      }
-    });
-  });
-
-  db.run(`CREATE TABLE IF NOT EXISTS events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    heading TEXT,
-    time TEXT,
-    date TEXT,
-    date_iso TEXT,
-    location_name TEXT,
-    address TEXT,
-    map_src TEXT,
-    map_link TEXT,
-    icon_src TEXT,
-    order_no INTEGER DEFAULT 0
-  )`, () => {
-    db.get("SELECT COUNT(*) as count FROM events", (err, row) => {
-      if (row && row.count === 0) {
-        db.run("INSERT INTO events (name, heading, time, date, date_iso, location_name, address, map_src, map_link, icon_src, order_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", ['Pemberkatan Nikah', 'Pemberkatan Nikah', '14.00 WIB - Selesai', 'Jumat, 26 Juni 2026', '2026-06-26', 'GBKP Rg. Km. 7 Pd. Bulan Medan', 'Jl. Jamin Ginting Km.7 No.47, Kwala Bekala, Kec. Medan Johor, Kota Medan, Sumatera Utara 20142', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.2133203531085!2d98.6436662758999!3d3.5381836506385845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312ff607d72661%3A0x633513a968652d8c!2sGBKP%20Km%207!5e0!3m2!1sid!2sid!4v1711100000000!5m2!1sid!2sid', 'https://maps.app.goo.gl/9ZzRz9ZzRz9ZzRz9A', 'img/icon/Gereja.png', 1]);
-        db.run("INSERT INTO events (name, heading, time, date, date_iso, location_name, address, map_src, map_link, icon_src, order_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", ['Adat & Resepsi', 'Adat & Resepsi', '07.00 WIB - Selesai', 'Sabtu, 27 Juni 2026', '2026-06-27', 'Jambur Namaken', 'JL Letjen Jamin Ginting No, Gg. Jati No.30, Beringin, Kec. Medan Selayang, Kota Medan, Sumatera Utara 20146', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.164312674393!2d98.6366662759!3d3.55818365064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f849e7b3997%3A0xc30a1b63e9c7a7e!2sJambur%20Namaken!5e0!3m2!1sid!2sid!4v1711100000000!5m2!1sid!2sid', 'https://maps.app.goo.gl/8ZzRz8ZzRz8ZzRz8B', 'img/icon/Traditional Batak house icon.png', 2]);
-      }
-    });
-  });
-
-  db.run(`CREATE TABLE IF NOT EXISTS couple (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    role TEXT,
-    name TEXT,
-    description TEXT,
-    parents TEXT,
-    instagram TEXT,
-    image_src TEXT,
-    order_no INTEGER DEFAULT 0
-  )`, () => {
-    db.get("SELECT COUNT(*) as count FROM couple", (err, row) => {
-      if (row && row.count === 0) {
-        db.run("INSERT INTO couple (role, name, parents, instagram, image_src, order_no) VALUES (?, ?, ?, ?, ?, ?)", ['The Groom', 'Riandino Oginta Tarigan, A.Md.', 'Putra dari\nBapak Drs. Tampe Malem Tarigan & Ibu Toberina Surbakti', '@ryan_tarigan', 'img/rian.jpeg', 1]);
-        db.run("INSERT INTO couple (role, name, parents, instagram, image_src, order_no) VALUES (?, ?, ?, ?, ?, ?)", ['The Bride', 'Aurora Picessa Brahmana, A.Md.', 'Putri dari\nBapak Ir. Marthin Luther Brahmana & Ibu Ir. Roslila Br Perangin-angin', '@aurorapcsa', 'img/aurora.jpeg', 2]);
-      }
-    });
-  });
-
-  db.run(`CREATE TABLE IF NOT EXISTS gallery_images (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    src TEXT,
-    alt TEXT,
-    order_no INTEGER DEFAULT 0
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS gifts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    bank_name TEXT,
-    account_number TEXT,
-    account_name TEXT,
-    logo_src TEXT,
-    order_no INTEGER DEFAULT 0
-  )`);
-});
-
-(async () => {
+async function initDb() {
   try {
+    await db.query(`CREATE TABLE IF NOT EXISTS guests (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      name TEXT NOT NULL,
+      first_name TEXT,
+      token VARCHAR(100) UNIQUE NOT NULL,
+      created_at TEXT
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS lovestory (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      type VARCHAR(50) NOT NULL DEFAULT 'chat',
+      sender TEXT,
+      message TEXT,
+      time TEXT,
+      date_label TEXT,
+      order_no INT DEFAULT 0
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS lovestory_settings (
+      ` + "`key`" + ` VARCHAR(100) PRIMARY KEY,
+      value TEXT
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS page_views (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      guest_token VARCHAR(100),
+      page VARCHAR(50) DEFAULT 'invitation',
+      ip VARCHAR(50),
+      user_agent TEXT,
+      viewed_at TEXT
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS settings (
+      ` + "`key`" + ` VARCHAR(100) PRIMARY KEY,
+      value TEXT
+    )`);
+
+    // Initial default settings
+    await db.query("INSERT IGNORE INTO settings (`key`, value) VALUES (?, ?)", ['wa_template', 'Halo @nama,\n\nTanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara kami melalui link undangan digital berikut:\n\n@link\n\nMerupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir. Terima kasih.']);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS rsvps (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      guest_id INT,
+      status VARCHAR(50),
+      guest_count INT,
+      created_at TEXT
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS wishes (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      guest_id INT,
+      message TEXT,
+      created_at TEXT,
+      reply TEXT,
+      replied_at TEXT
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS admin_users (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      username VARCHAR(100),
+      password VARCHAR(255),
+      full_name TEXT,
+      email VARCHAR(255),
+      phone VARCHAR(20),
+      avatar TEXT
+    )`);
+
+    const [adminRows] = await db.query("SELECT COUNT(*) as count FROM admin_users");
+    if (adminRows[0].count === 0) {
+      await db.query("INSERT INTO admin_users (username, password, email, full_name) VALUES (?, ?, ?, ?)", ['admin', 'admin123', 'admin@example.com', 'Administrator']);
+    }
+
+    await db.query(`CREATE TABLE IF NOT EXISTS events (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      name TEXT,
+      heading TEXT,
+      time TEXT,
+      date TEXT,
+      date_iso TEXT,
+      location_name TEXT,
+      address TEXT,
+      map_src TEXT,
+      map_link TEXT,
+      icon_src TEXT,
+      order_no INT DEFAULT 0
+    )`);
+
+    const [eventRows] = await db.query("SELECT COUNT(*) as count FROM events");
+    if (eventRows[0].count === 0) {
+      await db.query("INSERT INTO events (name, heading, time, date, date_iso, location_name, address, map_src, map_link, icon_src, order_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", ['Pemberkatan Nikah', 'Pemberkatan Nikah', '14.00 WIB - Selesai', 'Jumat, 26 Juni 2026', '2026-06-26', 'GBKP Rg. Km. 7 Pd. Bulan Medan', 'Jl. Jamin Ginting Km.7 No.47, Kwala Bekala, Kec. Medan Johor, Kota Medan, Sumatera Utara 20142', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.2133203531085!2d98.6436662758999!3d3.5381836506385845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312ff607d72661%3A0x633513a968652d8c!2sGBKP%20Km%207!5e0!3m2!1sid!2sid!4v1711100000000!5m2!1sid!2sid', 'https://maps.app.goo.gl/9ZzRz9ZzRz9ZzRz9A', 'img/icon/Gereja.png', 1]);
+      await db.query("INSERT INTO events (name, heading, time, date, date_iso, location_name, address, map_src, map_link, icon_src, order_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", ['Adat & Resepsi', 'Adat & Resepsi', '07.00 WIB - Selesai', 'Sabtu, 27 Juni 2026', '2026-06-27', 'Jambur Namaken', 'JL Letjen Jamin Ginting No, Gg. Jati No.30, Beringin, Kec. Medan Selayang, Kota Medan, Sumatera Utara 20146', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.164312674393!2d98.6366662759!3d3.55818365064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f849e7b3997%3A0xc30a1b63e9c7a7e!2sJambur%20Namaken!5e0!3m2!1sid!2sid!4v1711100000000!5m2!1sid!2sid', 'https://maps.app.goo.gl/8ZzRz8ZzRz8ZzRz8B', 'img/icon/Traditional Batak house icon.png', 2]);
+    }
+
+    await db.query(`CREATE TABLE IF NOT EXISTS couple (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      role TEXT,
+      name TEXT,
+      description TEXT,
+      parents TEXT,
+      instagram TEXT,
+      image_src TEXT,
+      order_no INT DEFAULT 0
+    )`);
+
+    const [coupleRows] = await db.query("SELECT COUNT(*) as count FROM couple");
+    if (coupleRows[0].count === 0) {
+      await db.query("INSERT INTO couple (role, name, parents, instagram, image_src, order_no) VALUES (?, ?, ?, ?, ?, ?)", ['The Groom', 'Riandino Oginta Tarigan, A.Md.', 'Putra dari\nBapak Drs. Tampe Malem Tarigan & Ibu Toberina Surbakti', '@ryan_tarigan', 'img/rian.jpeg', 1]);
+      await db.query("INSERT INTO couple (role, name, parents, instagram, image_src, order_no) VALUES (?, ?, ?, ?, ?, ?)", ['The Bride', 'Aurora Picessa Brahmana, A.Md.', 'Putri dari\nBapak Ir. Marthin Luther Brahmana & Ibu Ir. Roslila Br Perangin-angin', '@aurorapcsa', 'img/aurora.jpeg', 2]);
+    }
+
+    await db.query(`CREATE TABLE IF NOT EXISTS gallery_images (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      src TEXT,
+      alt TEXT,
+      order_no INT DEFAULT 0
+    )`);
+
+    await db.query(`CREATE TABLE IF NOT EXISTS gifts (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      bank_name TEXT,
+      account_number TEXT,
+      account_name TEXT,
+      logo_src TEXT,
+      order_no INT DEFAULT 0
+    )`);
+
+    // Run migrations
     await ensureColumn('guests', 'first_name', 'TEXT');
-    await ensureColumn('rsvps', 'guest_id', 'INTEGER');
-    await ensureColumn('wishes', 'guest_id', 'INTEGER');
+    await ensureColumn('rsvps', 'guest_id', 'INT');
+    await ensureColumn('wishes', 'guest_id', 'INT');
     await ensureColumn('wishes', 'reply', 'TEXT');
     await ensureColumn('wishes', 'replied_at', 'TEXT');
     await ensureColumn('admin_users', 'full_name', 'TEXT');
-    await ensureColumn('admin_users', 'email', 'TEXT');
-    await ensureColumn('admin_users', 'phone', 'TEXT');
+    await ensureColumn('admin_users', 'email', 'VARCHAR(255)');
+    await ensureColumn('admin_users', 'phone', 'VARCHAR(20)');
     await ensureColumn('admin_users', 'avatar', 'TEXT');
-  } catch (error) {
-    console.error('Failed to ensure columns:', error);
+
+    console.log('Database initialized successfully.');
+  } catch (err) {
+    console.error('Failed to initialize database:', err);
   }
-})();
+}
 
-function requireAdmin(req, res, next) {
-  if (req.session && req.session.adminUser) {
-    return next();
+initDb();
+
+async function queryAll(sql, params = []) {
+  const [rows] = await db.query(sql, params);
+  return rows;
+}
+
+async function queryGet(sql, params = []) {
+  const [rows] = await db.query(sql, params);
+  return rows[0] || null;
+}
+
+async function runSql(sql, params = []) {
+  const [result] = await db.query(sql, params);
+  return { lastID: result.insertId, changes: result.affectedRows };
+}
+
+async function ensureColumn(table, column, definition) {
+  const [rows] = await db.query(`SHOW COLUMNS FROM ${table} LIKE ?`, [column]);
+  if (rows.length === 0) {
+    await db.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    return true;
   }
-  res.status(401).json({ error: 'Unauthorized' });
-}
-
-function queryAll(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) return reject(err);
-      resolve(rows);
-    });
-  });
-}
-
-function queryGet(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => {
-      if (err) return reject(err);
-      resolve(row);
-    });
-  });
-}
-
-function runSql(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, (err) => {
-      if (err) return reject(err);
-      resolve(true);
-    });
-  });
-}
-
-function ensureColumn(table, column, definition) {
-  return new Promise((resolve, reject) => {
-    db.all(`PRAGMA table_info(${table})`, [], (err, rows) => {
-      if (err) return reject(err);
-      const exists = rows.some(row => row.name === column);
-      if (!exists) {
-        db.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`, (alterErr) => {
-          if (alterErr) return reject(alterErr);
-          resolve(true);
-        });
-      } else {
-        resolve(false);
-      }
-    });
-  });
-}
-
-function runSql(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) return reject(err);
-      resolve(this);
-    });
-  });
+  return false;
 }
 
 app.post('/api/admin/login', async (req, res) => {
@@ -728,7 +687,7 @@ app.post('/api/admin/guests/import', requireAdmin, excelUpload.single('file'), a
     
     let addCount = 0;
     
-    await runSql('BEGIN TRANSACTION');
+    await runSql('START TRANSACTION');
     
     for (let i = 0; i < data.length; i++) {
         const row = data[i];
@@ -929,24 +888,22 @@ app.get('/api/admin/lovestory', requireAdmin, async (req, res) => {
 app.put('/api/admin/lovestory', requireAdmin, async (req, res) => {
   const { title, messages } = req.body;
   try {
-    await runSql('BEGIN TRANSACTION');
+    await runSql('START TRANSACTION');
     
     if (title !== undefined) {
-      await runSql('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', ['chat_title', title]);
+      await runSql('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', ['chat_title', title]);
     }
 
     if (req.body.lovestory_bg !== undefined) {
-      await runSql('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', ['lovestory_bg', req.body.lovestory_bg]);
+      await runSql('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', ['lovestory_bg', req.body.lovestory_bg]);
     }
     
     if (Array.isArray(messages)) {
       await runSql('DELETE FROM lovestory');
-      const stmt = db.prepare('INSERT INTO lovestory (type, sender, message, time, date_label, order_no) VALUES (?, ?, ?, ?, ?, ?)');
       for (let i = 0; i < messages.length; i++) {
         const m = messages[i];
-        stmt.run(m.type || 'chat', m.sender || '', m.message || '', m.time || '', m.date_label || '', i);
+        await runSql('INSERT INTO lovestory (type, sender, message, time, date_label, order_no) VALUES (?, ?, ?, ?, ?, ?)', [m.type || 'chat', m.sender || '', m.message || '', m.time || '', m.date_label || '', i]);
       }
-      stmt.finalize();
     }
     
     await runSql('COMMIT');
@@ -961,9 +918,9 @@ app.put('/api/admin/lovestory', requireAdmin, async (req, res) => {
 app.post('/api/admin/lovestory/settings', requireAdmin, async (req, res) => {
   const entries = Object.entries(req.body);
   try {
-    const stmt = db.prepare('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value');
-    entries.forEach(([key, value]) => stmt.run(key, value));
-    stmt.finalize();
+    for (const [key, value] of entries) {
+      await runSql('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', [key, value]);
+    }
     res.json({ success: true });
   } catch (error) {
     console.error(error);
@@ -976,7 +933,7 @@ app.post('/api/admin/lovestory/avatar/:role', requireAdmin, upload.single('image
   const { role } = req.params; // 'male' or 'female'
   const src = `/uploads/${req.file.filename}`;
   try {
-    await runSql('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', [`${role}_avatar`, src]);
+    await runSql('INSERT INTO lovestory_settings (key, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', [`${role}_avatar`, src]);
     res.json({ success: true, src });
   } catch (error) {
     console.error(error);
@@ -1009,7 +966,7 @@ app.post('/api/admin/music/upload', requireAdmin, audioUpload.single('audio'), a
     }
 
     // 3. Save new path to DB
-    await runSql('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', ['bg_music', src]);
+    await runSql('INSERT INTO settings (key, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', ['bg_music', src]);
     res.json({ success: true, src });
   } catch (error) {
     console.error(error);
@@ -1040,7 +997,7 @@ app.post('/api/admin/settings/upload', requireAdmin, upload.single('image'), asy
   const { setting_key } = req.body;
   try {
     if (setting_key) {
-      await runSql('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', [setting_key, src]);
+      await runSql('INSERT INTO settings (key, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', [setting_key, src]);
     }
     res.json({ success: true, src });
   } catch (error) {
@@ -1052,9 +1009,9 @@ app.post('/api/admin/settings/upload', requireAdmin, upload.single('image'), asy
 app.put('/api/admin/settings', requireAdmin, async (req, res) => {
   const entries = Object.entries(req.body);
   try {
-    const setStmt = db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value');
-    entries.forEach(([key, value]) => setStmt.run(key, value));
-    setStmt.finalize();
+    for (const [key, value] of entries) {
+      await runSql('INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', [key, value]);
+    }
     res.json({ success: true });
   } catch (error) {
     console.error(error);
@@ -1090,11 +1047,9 @@ app.post('/api/admin/gifts/reorder', requireAdmin, async (req, res) => {
   const { ids } = req.body;
   if (!Array.isArray(ids)) return res.status(400).json({ error: 'Invalid data format' });
   try {
-    const stmt = db.prepare('UPDATE gifts SET order_no = ? WHERE id = ?');
-    ids.forEach((id, index) => {
-      stmt.run(index, id);
-    });
-    stmt.finalize();
+    for (let index = 0; index < ids.length; index++) {
+      await runSql('UPDATE gifts SET order_no = ? WHERE id = ?', [index, ids[index]]);
+    }
     res.json({ success: true });
   } catch (error) {
     console.error(error);
