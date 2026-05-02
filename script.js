@@ -139,8 +139,9 @@ async function loadPublicData() {
         const slideshowContainer = document.getElementById('coverSlideshow');
         if (coverEl && slideshowContainer) {
             const openingMode = settings.opening_bg_mode || 'color';
-            if (openingMode === 'image' && settings.opening_bg_img) {
-                const openingImages = settings.opening_bg_img.split(',').filter(u => u.trim() !== '').map(src => ({ src }));
+            const openingBgImg = settings.opening_bg_img || '';
+            if (openingMode === 'image' && openingBgImg) {
+                const openingImages = openingBgImg.split(',').filter(u => u.trim() !== '').map(src => ({ src }));
                 if (openingImages.length > 0) {
                     renderCoverSlideshow(openingImages);
                     coverEl.style.background = 'transparent';
@@ -156,8 +157,9 @@ async function loadPublicData() {
         const greetingEl = document.getElementById('greetingSection');
         if (greetingEl) {
             const greetingMode = settings.greeting_bg_mode || 'color';
-            if (greetingMode === 'image' && settings.greeting_bg_img) {
-                const greetingImgs = settings.greeting_bg_img.split(',').filter(u => u.trim() !== '');
+            const greetingBgImg = settings.greeting_bg_img || '';
+            if (greetingMode === 'image' && greetingBgImg) {
+                const greetingImgs = greetingBgImg.split(',').filter(u => u.trim() !== '');
                 if (greetingImgs.length > 0) {
                     // Use first image (or cycle if multiple)
                     greetingEl.style.background = `url('${greetingImgs[0]}') center/cover no-repeat fixed`;

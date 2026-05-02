@@ -24,6 +24,7 @@ const translations = {
     "login_id": "Email",
     "login_id_ph": "Masukkan email",
     "login_key": "Password",
+    "login_key_ph": "••••••••",
     "login_btn": "Login",
     "login_hint": "Kredensial bawaan:",
     "login_forgot": "Lupa password?",
@@ -767,9 +768,9 @@ function renderSettings() {
   // Show/Hide delete buttons based on image existence
   const deleteBtnMap = {
       'wishes_bg_img': 'btnDeleteWishesBg',
-      'opening_bg': 'btnDeleteOpeningBg',
-      'greeting_bg': 'btnDeleteGreetingBg',
-      'couple_bg': 'btnDeleteCoupleBg',
+      'opening_bg_img': 'btnDeleteOpeningBg',
+      'greeting_bg_img': 'btnDeleteGreetingBg',
+      'couple_bg_img': 'btnDeleteCoupleBg',
       'event_bg': 'btnDeleteEventBg',
       'lovestory_bg': 'btnDeleteLovestoryBg',
       'lovestory_card_bg': 'btnDeleteLovestoryCardBg',
@@ -1777,66 +1778,76 @@ async function logout() {
 }
 
 async function saveSettings(quiet = false) {
-  const giftBgColor = document.getElementById('settingGiftBgColor')?.value;
-  const wishesBgColor = document.getElementById('settingWishesBgColor')?.value;
-  const rsvpBgColor = document.getElementById('settingRsvpBgColor')?.value;
-  const openingBgColor = document.getElementById('settingOpeningBgColor')?.value;
-  const greetingBgColor = document.getElementById('settingGreetingBgColor')?.value;
-  const coupleBgColor = document.getElementById('settingCoupleBgColor')?.value;
-  const eventBgColor = document.getElementById('settingEventBgColor')?.value;
-  const lovestoryBgColor = document.getElementById('settingLovestoryBgColor')?.value;
-  const lovestoryCardBgColor = document.getElementById('settingLovestoryCardBgColor')?.value;
+  // Helper to safely get value or default
+  const val = (id, def = '') => document.getElementById(id)?.value || def;
+  const checked = (id) => document.getElementById(id)?.checked ? 'true' : 'false';
 
   const payload = {
-    cover_title: document.getElementById('settingCoverTitle').value,
-    cover_subtitle: document.getElementById('settingCoverSubtitle').value,
-    hero_name: document.getElementById('settingHeroName').value,
-    guest_prefix: document.getElementById('settingGuestPrefix').value,
-    guest_label: document.getElementById('settingGuestLabel').value,
-    hero_button: document.getElementById('settingHeroButton').value,
-    notification_retention: document.getElementById('settingNotificationRetention').value,
-    wishes_limit: document.getElementById('settingWishesLimit')?.value || '0',
-    notifications_enabled: document.getElementById('settingEnableNotifications').checked ? 'true' : 'false',
-    music_autoplay: document.getElementById('settingAutoPlay').checked ? 'true' : 'false',
-    music_start_time: document.getElementById('settingMusicStart')?.value || '0',
-    bg_music: document.getElementById('settingBgMusic')?.value || '',
-    greeting_heading: document.getElementById('settingGreetingHeading')?.value || '',
-    greeting_quote: document.getElementById('settingGreetingQuote')?.value || '',
-    greeting_logo: document.getElementById('settingGreetingLogo')?.value || '',
-    greeting_invitation: document.getElementById('settingGreetingInvitation')?.value || '',
-    couple_section_title: document.getElementById('settingCoupleSectionTitle')?.value || '',
-    event_header_quote: document.getElementById('settingEventHeaderQuote')?.value || '',
-    event_header_title: document.getElementById('settingEventHeaderTitle')?.value || '',
-    rsvp_caption: document.getElementById('settingRsvpCaption')?.value || '',
-    event_bg: document.getElementById('settingEventBg')?.value || '',
-    lovestory_bg: document.getElementById('settingLovestoryBg')?.value || '',
-    lovestory_card_bg: document.getElementById('settingLovestoryCardBg')?.value || '',
-    gift_bg_img: document.getElementById('settingGiftBgImg')?.value || '',
-    gift_bg_color: giftBgColor,
-    wishes_bg_img: document.getElementById('settingWishesBgImg')?.value || '',
-    wishes_bg_color: wishesBgColor,
-    wishes_bg_mode: document.getElementById('settingWishesBgMode')?.value || 'color',
-    rsvp_bg_img: document.getElementById('settingRsvpBgImg')?.value || '',
-    rsvp_bg_color: rsvpBgColor,
-    opening_bg_color: openingBgColor,
-    couple_bg_color: document.getElementById('settingCoupleBgColor')?.value || '#000000',
-    couple_bg_img: document.getElementById('settingCoupleBgImg')?.value || '',
-    gallery_bg_img: document.getElementById('settingGalleryBgImg')?.value || '',
-    gallery_bg_color: document.getElementById('settingGalleryBgColor')?.value || '#000000',
-    couple_bg_mode: document.getElementById('settingCoupleBgMode')?.value || 'color',
-    event_bg_color: eventBgColor,
-    lovestory_bg_color: lovestoryBgColor,
-    lovestory_card_bg_color: lovestoryCardBgColor,
-    wa_template: document.getElementById('waTemplateInput')?.value || '',
-    opening_bg_img: document.getElementById('settingOpeningBgImg')?.value || '',
-    opening_bg_mode: document.getElementById('settingOpeningBgMode')?.value || 'color',
-    greeting_bg_img: document.getElementById('settingGreetingBgImg')?.value || '',
-    greeting_bg_color: document.getElementById('settingGreetingBgColor')?.value || '#000000',
-    greeting_bg_mode: document.getElementById('settingGreetingBgMode')?.value || 'color'
+    cover_title: val('settingCoverTitle'),
+    cover_subtitle: val('settingCoverSubtitle'),
+    hero_name: val('settingHeroName'),
+    guest_prefix: val('settingGuestPrefix'),
+    guest_label: val('settingGuestLabel'),
+    hero_button: val('settingHeroButton'),
+    notification_retention: val('settingNotificationRetention'),
+    wishes_limit: val('settingWishesLimit', '0'),
+    notifications_enabled: checked('settingEnableNotifications'),
+    music_autoplay: checked('settingAutoPlay'),
+    music_start_time: val('settingMusicStart', '0'),
+    bg_music: val('settingBgMusic'),
+    greeting_heading: val('settingGreetingHeading'),
+    greeting_quote: val('settingGreetingQuote'),
+    greeting_logo: val('settingGreetingLogo'),
+    greeting_invitation: val('settingGreetingInvitation'),
+    couple_section_title: val('settingCoupleSectionTitle'),
+    event_header_quote: val('settingEventHeaderQuote'),
+    event_header_title: val('settingEventHeaderTitle'),
+    rsvp_caption: val('settingRsvpCaption'),
+    event_bg: val('settingEventBg'),
+    lovestory_bg: val('settingLovestoryBg'),
+    lovestory_card_bg: val('settingLovestoryCardBg'),
+    gift_bg_img: val('settingGiftBgImg'),
+    gift_bg_color: val('settingGiftBgColor'),
+    wishes_bg_img: val('settingWishesBgImg'),
+    wishes_bg_color: val('settingWishesBgColor'),
+    wishes_bg_mode: checked('settingWishesBgMode') === 'true' ? 'image' : 'color',
+    rsvp_bg_img: val('settingRsvpBgImg'),
+    rsvp_bg_color: val('settingRsvpBgColor'),
+    opening_bg_color: val('settingOpeningBgColor'),
+    couple_bg_color: val('settingCoupleBgColor', '#000000'),
+    couple_bg_img: val('settingCoupleBgImg'),
+    gallery_bg_img: val('settingGalleryBgImg'),
+    gallery_bg_color: val('settingGalleryBgColor', '#000000'),
+    couple_bg_mode: val('settingCoupleBgMode', 'color'),
+    event_bg_color: val('settingEventBgColor'),
+    lovestory_bg_color: val('settingLovestoryBgColor'),
+    lovestory_card_bg_color: val('settingLovestoryCardBgColor'),
+    wa_template: val('waTemplateInput'),
+    opening_bg_img: val('settingOpeningBgImg'),
+    opening_bg_mode: val('settingOpeningBgMode', 'color'),
+    greeting_bg_img: val('settingGreetingBgImg'),
+    greeting_bg_color: val('settingGreetingBgColor', '#000000'),
+    greeting_bg_mode: val('settingGreetingBgMode', 'color')
   };
   
-  await api('/api/admin/settings', { method: 'PUT', body: JSON.stringify(payload) });
-  
+  const response = await fetch('/api/admin/settings', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const text = await response.text();
+  let result;
+  try {
+    result = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Respon server tidak valid (bukan JSON).');
+  }
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.error || 'Gagal menyimpan pengaturan.');
+  }
+
   // Update local state immediately
   if (!state.dashboard.settings) state.dashboard.settings = {};
   Object.assign(state.dashboard.settings, payload);
@@ -3742,6 +3753,7 @@ window.setOpeningBgMode = function(mode) {
         textWarna.className = 'mode-text transition-colors duration-300 text-white';
         textGambar.className = 'mode-text transition-colors duration-300 text-slate-400 dark:text-slate-100';
     }
+    saveSettings();
 };
 
 window.syncOpeningColor = function(val, target) {
@@ -3763,9 +3775,10 @@ window.syncOpeningColor = function(val, target) {
 window.saveOpeningSettings = async function() {
     try {
         await saveSettings(true);
-        showToast("Halaman Pembuka Berhasil di simpan", "success");
-    } catch (error) {
-        showToast("Gagal menyimpan Halaman Pembuka", "error");
+        showToast('Halaman Pembuka berhasil disimpan', 'success');
+    } catch (err) {
+        console.error('Error saving opening settings:', err);
+        showToast(`Gagal menyimpan Halaman Pembuka: ${err.message}`, 'error');
     }
 };
 
@@ -3779,7 +3792,6 @@ function initOpeningUI() {
         }, 100);
     }
 }
-initOpeningUI();
 
 window.renderOpeningSlider = function() {
     const listContainer = document.getElementById('openingBgList');
@@ -3863,6 +3875,7 @@ window.uploadOpeningSliderImg = async function(input) {
             
             window.renderOpeningSlider();
             showToast('Gambar slider ditambahkan', 'success');
+            saveSettings();
         } else {
             showToast(result.error || 'Gagal mengunggah gambar', 'error');
         }
@@ -3902,6 +3915,7 @@ window.setGreetingBgMode = function(mode) {
         if (textWarna) textWarna.className = 'greeting-mode-text transition-colors duration-300 text-white';
         if (textGambar) textGambar.className = 'greeting-mode-text transition-colors duration-300 text-slate-400 dark:text-slate-100';
     }
+    saveSettings();
 };
 
 window.syncGreetingColor = function(val, target) {
@@ -3932,6 +3946,7 @@ window.setCoupleBgMode = function(mode) {
         if (textWarna) textWarna.className = 'couple-mode-text transition-colors duration-300 text-white';
         if (textGambar) textGambar.className = 'couple-mode-text transition-colors duration-300 text-slate-400 dark:text-slate-100';
     }
+    saveSettings();
 };
 
 window.syncCoupleColor = function(val, target) {
@@ -4037,6 +4052,7 @@ window.uploadGreetingBgImg = async function(input) {
             hiddenInput.value = currentUrls.join(',');
             window.renderGreetingSlider();
             showToast('Gambar background ditambahkan', 'success');
+            saveSettings();
         } else {
             showToast(result.error || 'Gagal mengunggah gambar', 'error');
         }
