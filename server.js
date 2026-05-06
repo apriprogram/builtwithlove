@@ -507,6 +507,18 @@ app.post('/api/admin/settings/upload', requireAdmin, upload.single('image'), asy
   }
 });
 
+app.post('/api/admin/music/upload', requireAdmin, audioUpload.single('audio'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No audio uploaded' });
+  const src = `/audio/${req.file.filename}`;
+  try {
+    await runSql('INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', ['bg_music', src, src]);
+    res.json({ success: true, src });
+  } catch (error) {
+    console.error('Music upload error:', error);
+    res.status(500).json({ error: 'Gagal menyimpan konfigurasi musik' });
+  }
+});
+
 app.post('/api/admin/guests', requireAdmin, async (req, res) => {
   const { name } = req.body;
   try {
