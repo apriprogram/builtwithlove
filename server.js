@@ -618,7 +618,9 @@ app.get('/api/admin/lovestory', requireAdmin, async (req, res) => {
         male_avatar: settings.ls_male_avatar || '',
         female_avatar: settings.ls_female_avatar || '',
         lovestory_bg: settings.lovestory_bg || '',
-        lovestory_card_bg: settings.lovestory_card_bg || ''
+        lovestory_card_bg: settings.lovestory_card_bg || '',
+        lovestory_bg_mode: settings.lovestory_bg_mode || 'color',
+        lovestory_bg_img: settings.lovestory_bg_img || ''
     };
 
     res.json({ messages, settings: formattedSettings });
@@ -629,7 +631,7 @@ app.get('/api/admin/lovestory', requireAdmin, async (req, res) => {
 });
 
 app.put('/api/admin/lovestory', requireAdmin, async (req, res) => {
-  const { title, lovestory_bg, lovestory_card_bg, messages } = req.body;
+  const { title, lovestory_bg, lovestory_card_bg, lovestory_bg_mode, lovestory_bg_img, messages } = req.body;
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
@@ -638,6 +640,8 @@ app.put('/api/admin/lovestory', requireAdmin, async (req, res) => {
     await conn.query('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', ['ls_title', title, title]);
     if (lovestory_bg !== undefined) await conn.query('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', ['lovestory_bg', lovestory_bg, lovestory_bg]);
     if (lovestory_card_bg !== undefined) await conn.query('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', ['lovestory_card_bg', lovestory_card_bg, lovestory_card_bg]);
+    if (lovestory_bg_mode !== undefined) await conn.query('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', ['lovestory_bg_mode', lovestory_bg_mode, lovestory_bg_mode]);
+    if (lovestory_bg_img !== undefined) await conn.query('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', ['lovestory_bg_img', lovestory_bg_img, lovestory_bg_img]);
 
     // Update messages
     if (Array.isArray(messages)) {

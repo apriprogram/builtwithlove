@@ -401,7 +401,21 @@ window.showSection = function (name) {
 
     // Special Section Loading
     if (name === 'profile') loadProfileData();
-    if (name === 'lovestory' || name === 'events') loadLoveStoryAdmin();
+    if (name === 'lovestory' || name === 'events') {
+        loadLoveStoryAdmin();
+        if (name === 'events') {
+            // Default to first tab when entering 'Atur Halaman'
+            setTimeout(() => {
+                const activeTab = document.querySelector('.atur-tab-btn.active');
+                if (activeTab) {
+                    const tabId = activeTab.getAttribute('data-tab');
+                    window.switchAturTab(tabId);
+                } else {
+                    window.switchAturTab('pembuka');
+                }
+            }, 50);
+        }
+    }
     scrollTo(0, 0);
 }
 
@@ -821,20 +835,39 @@ function renderSettings() {
     }
 
 
-    if (document.getElementById('settingLovestoryBgColor')) {
+    // Love Story background logic
+    const lsSet = state.dashboard.lovestory_settings || {};
+    if (document.getElementById('ls_title')) document.getElementById('ls_title').value = lsSet.ls_title || '';
+    if (document.getElementById('settingLovestoryBg')) document.getElementById('settingLovestoryBg').value = lsSet.lovestory_bg || '';
+    if (document.getElementById('settingLovestoryCardBg')) document.getElementById('settingLovestoryCardBg').value = lsSet.lovestory_card_bg || '';
+    if (document.getElementById('settingLovestoryBgImg')) document.getElementById('settingLovestoryBgImg').value = lsSet.lovestory_bg_img || '';
 
-
-        const lsColor = settings.lovestory_bg_color || '#000000';
-        document.getElementById('settingLovestoryBgColor').value = lsColor;
-        if (document.getElementById('lovestoryColorPicker') && lsColor.startsWith('#')) {
-            document.getElementById('lovestoryColorPicker').value = lsColor;
-        }
+    if (document.getElementById('settingLovestoryBgMode')) {
+        const lsMode = lsSet.lovestory_bg_mode || 'color';
+        window.setLovestoryBgMode(lsMode, true);
     }
-    if (document.getElementById('settingLovestoryCardBgColor')) {
-        const lscColor = settings.lovestory_card_bg_color || '#000000';
-        document.getElementById('settingLovestoryCardBgColor').value = lscColor;
-        if (document.getElementById('lovestoryCardColorPicker') && lscColor.startsWith('#')) {
-            document.getElementById('lovestoryCardColorPicker').value = lscColor;
+
+    if (document.getElementById('lovestoryColorPicker')) {
+        const lsCol = lsSet.lovestory_bg || '#000000';
+        if (lsCol.startsWith('#')) document.getElementById('lovestoryColorPicker').value = lsCol;
+    }
+    if (document.getElementById('lovestoryCardColorPicker')) {
+        const lscCol = lsSet.lovestory_card_bg || '#000000';
+        if (lscCol.startsWith('#')) document.getElementById('lovestoryCardColorPicker').value = lscCol;
+    }
+
+    const lsImg = lsSet.lovestory_bg_img || '';
+    const lsPreview = document.getElementById('lovestoryBgPreview');
+    const lsPlaceholder = document.getElementById('lovestoryBgPreviewPlaceholder');
+    if (lsPreview && lsPlaceholder) {
+        if (lsImg) {
+            lsPreview.src = lsImg;
+            lsPreview.classList.remove('hidden');
+            lsPlaceholder.classList.add('hidden');
+        } else {
+            lsPreview.src = '';
+            lsPreview.classList.add('hidden');
+            lsPlaceholder.classList.remove('hidden');
         }
     }
 
@@ -1492,106 +1525,74 @@ window.editGuest = function (id, name) {
 function renderGallery() {
     const body = document.getElementById('galleryTableBody');
     if (!body) return;
-    if (!state.dashboard.gallery) {
-        body.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-slate-400">Belum ada foto galeri</td></tr>';
+    if (!state.dashboard.gallery || state.dashboard.gallery.length === 0) {
+        body.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400">Belum ada foto galeri</td></tr>';
         return;
     }
     body.innerHTML = '';
 
-    let dragSrcEl = null;
-
-    async function handleDrop(e) {
-        if (e.stopPropagation) e.stopPropagation();
-        this.classList.remove('bg-indigo-50/50', 'border-indigo-200', 'shadow-inner');
-
-        if (dragSrcEl !== this) {
-            const siblings = [...body.children];
-            const draggedIndex = siblings.indexOf(dragSrcEl);
-            const droppedIndex = siblings.indexOf(this);
-
-            if (draggedIndex < droppedIndex) {
-                this.parentNode.insertBefore(dragSrcEl, this.nextSibling);
-            } else {
-                this.parentNode.insertBefore(dragSrcEl, this);
-            }
-
-            dragSrcEl.style.opacity = '1';
-
-            // Update backend using the new sequence
-            const newSequence = [...body.children].map(tr => tr.dataset.id);
-            try {
-                const response = await api('/api/admin/gallery/reorder', {
-                    method: 'PUT',
-                    body: JSON.stringify({ sequence: newSequence })
-                });
-                showToast(currentLang === 'id' ? 'Urutan galeri berhasil disimpan!' : 'Gallery order saved!', 'success');
-                await loadDashboard(); // refresh to correct the index numbers
-            } catch (err) {
-                showToast(err.message, 'error');
-            }
-        }
-        return false;
-    }
-
     state.dashboard.gallery.forEach((item, index) => {
         const tr = document.createElement('tr');
         tr.dataset.id = item.id;
-        tr.draggable = true;
-        tr.className = "cursor-move transition-colors duration-200 hover:bg-slate-50/50";
-
-        tr.addEventListener('dragstart', function (e) {
-            this.style.opacity = '0.4';
-            dragSrcEl = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
-        });
-        tr.addEventListener('dragenter', function (e) {
-            this.classList.add('bg-indigo-50/50', 'border-indigo-200', 'shadow-inner');
-        });
-        tr.addEventListener('dragover', function (e) {
-            if (e.preventDefault) e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        });
-        tr.addEventListener('dragleave', function (e) {
-            this.classList.remove('bg-indigo-50/50', 'border-indigo-200', 'shadow-inner');
-        });
-        tr.addEventListener('drop', handleDrop);
-        tr.addEventListener('dragend', function (e) {
-            this.style.opacity = '1';
-            [...body.children].forEach(row => {
-                row.classList.remove('bg-indigo-50/50', 'border-indigo-200', 'shadow-inner');
-            });
-        });
+        tr.className = "group hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/50 last:border-0";
 
         tr.innerHTML = `
-      <td class="text-center px-3 sm:px-4 align-middle text-slate-300">
-        <i class="fas fa-grip-vertical text-xs sm:text-base"></i>
+      <td class="text-center px-4 align-middle text-slate-300 dark:text-slate-600 drag-handle cursor-grab active:cursor-grabbing">
+        <i class="fas fa-grip-vertical text-sm"></i>
       </td>
-      <td class="font-black text-slate-200 text-[9px] sm:text-[10px] px-3 sm:px-6 align-middle pointer-events-none">${index + 1}</td>
-      <td class="px-3 sm:px-6 py-2 sm:py-3">
-        <div class="flex items-center gap-3 sm:gap-4">
-             <div class="w-16 h-16 sm:w-24 sm:h-24 shrink-0 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-300 overflow-hidden shadow-sm group cursor-pointer" onclick="openImagePreview('${item.src}')">
-                <img src="${item.src}" alt="${item.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 pointer-events-none" onerror="this.src='https://ui-avatars.com/api/?name=${index + 1}&background=f1f5f9&color=94a3b8'">
+      <td class="font-black text-slate-300 dark:text-slate-600 text-[10px] px-6 align-middle">${index + 1}</td>
+      <td class="px-6 py-3">
+        <div class="flex items-center gap-4">
+             <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-300 overflow-hidden shadow-sm group cursor-pointer" onclick="openImagePreview('${item.src}')">
+                <img src="${item.src}" alt="${item.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${index + 1}&background=f1f5f9&color=94a3b8'">
              </div>
-             <span class="max-w-[100px] sm:max-w-[200px] truncate text-[9px] sm:text-[11px] font-mono text-slate-500 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 pointer-events-none">${item.src}</span>
+             <div class="flex flex-col gap-1">
+                <span class="max-w-[150px] truncate text-[10px] font-mono text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900/50 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-800">${item.src}</span>
+             </div>
         </div>
       </td>
-      <td class="font-bold text-slate-700 dark:text-slate-200 text-xs sm:text-base tracking-tight px-3 sm:px-6 align-middle pointer-events-none">${item.alt}</td>
+      <td class="font-bold text-slate-700 dark:text-slate-200 text-xs tracking-tight px-6 align-middle">${item.alt}</td>
 
-      <td class="text-right px-3 sm:px-6 align-middle">
+      <td class="text-right px-6 align-middle">
         <div class="flex items-center justify-end gap-2">
-            <button class="btn-premium btn-secondary !p-0 w-8 h-8 sm:w-10 sm:h-10 shrink-0 text-amber-500 hover:!bg-amber-500 hover:!text-white hover:!border-amber-500" onclick="window.editGalleryImage('${item.id}', \`${item.alt.replace(/`/g, '\\`').replace(/"/g, '&quot;')}\`, '${item.src}')">
-                <i class="fas fa-edit text-[10px] sm:text-sm pointer-events-none"></i>
+            <button class="btn-premium btn-secondary !p-0 w-9 h-9 shrink-0 text-slate-400 hover:!text-amber-500 hover:!border-amber-500" onclick="window.editGalleryImage('${item.id}', '${item.alt.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${item.src}')">
+                <i class="fas fa-edit text-xs pointer-events-none"></i>
             </button>
-            <button class="btn-premium btn-secondary !p-0 w-8 h-8 sm:w-10 sm:h-10 shrink-0 text-red-500 hover:!bg-red-500 hover:!text-white hover:!border-red-500" onclick="window.deleteGalleryImage('${item.id}')">
-                <i class="fas fa-trash-can text-[10px] sm:text-sm pointer-events-none"></i>
+            <button class="btn-premium btn-secondary !p-0 w-9 h-9 shrink-0 text-slate-400 hover:!text-red-500 hover:!border-red-500" onclick="window.deleteGalleryImage('${item.id}')">
+                <i class="fas fa-trash-can text-xs pointer-events-none"></i>
             </button>
         </div>
       </td>
     `;
         body.appendChild(tr);
     });
+
+    // Initialize SortableJS for Gallery
+    if (window.Sortable && state.dashboard.gallery.length > 0) {
+        new Sortable(body, {
+            animation: 250,
+            handle: '.drag-handle',
+            ghostClass: 'bg-indigo-50/50',
+            onEnd: async function () {
+                const newSequence = Array.from(body.querySelectorAll('tr')).map(tr => tr.dataset.id);
+                try {
+                    await api('/api/admin/gallery/reorder', {
+                        method: 'POST',
+                        body: JSON.stringify({ sequence: newSequence })
+                    });
+                    showToast(currentLang === 'id' ? 'Urutan galeri berhasil disimpan!' : 'Gallery order saved!', 'success');
+                    // We don't necessarily need loadDashboard() here if we want it to be smooth, 
+                    // but we might want to update the index numbers.
+                    const rows = body.querySelectorAll('tr');
+                    rows.forEach((row, idx) => {
+                        row.querySelector('td:nth-child(2)').innerText = idx + 1;
+                    });
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
+            }
+        });
+    }
 }
 
 function renderDataLists() {
@@ -2065,8 +2066,7 @@ async function saveSettings(quiet = false, customMsg = null) {
         gallery_bg_color: 'settingGalleryBgColor',
         couple_bg_mode: 'settingCoupleBgMode',
         event_bg_color: 'settingEventBgColor',
-        lovestory_bg_color: 'settingLovestoryBgColor',
-        lovestory_card_bg_color: 'settingLovestoryCardBgColor',
+        lovestory_bg_img: 'settingLovestoryBgImg',
         wa_template: 'waTemplateInput',
         opening_bg_img: 'settingOpeningBgImg',
         opening_bg_mode: 'settingOpeningBgMode',
@@ -2100,6 +2100,9 @@ async function saveSettings(quiet = false, customMsg = null) {
     }
     if (document.getElementById('settingGiftBgMode')) {
         payload.gift_bg_mode = document.getElementById('settingGiftBgMode').checked ? 'image' : 'color';
+    }
+    if (document.getElementById('settingLovestoryBgMode')) {
+        payload.lovestory_bg_mode = document.getElementById('settingLovestoryBgMode').checked ? 'image' : 'color';
     }
     if (document.getElementById('waTemplateInput')) {
         payload.wa_template = document.getElementById('waTemplateInput').innerHTML;
@@ -2978,14 +2981,96 @@ window.uploadLsAvatar = async function (input, role, previewId) {
     }
 }
 
+window.setLovestoryBgMode = function (mode, skipSave = false) {
+    const slider = document.getElementById('lovestoryBgModeSlider');
+    const colorBtn = document.getElementById('lovestoryModeColorBtn');
+    const imageBtn = document.getElementById('lovestoryModeImageBtn');
+    const modeInput = document.getElementById('settingLovestoryBgMode');
+
+    if (!slider || !colorBtn || !imageBtn || !modeInput) return;
+
+    const isImage = mode === 'image';
+    modeInput.checked = isImage;
+    
+    if (isImage) {
+        slider.style.left = 'calc(50% - 1px)';
+        slider.style.width = 'calc(50% - 3px)';
+        colorBtn.classList.remove('text-white');
+        colorBtn.classList.add('text-slate-400');
+        imageBtn.classList.remove('text-slate-400');
+        imageBtn.classList.add('text-white');
+    } else {
+        slider.style.left = '4px';
+        slider.style.width = 'calc(50% - 3px)';
+        colorBtn.classList.remove('text-slate-400');
+        colorBtn.classList.add('text-white');
+        imageBtn.classList.remove('text-white');
+        imageBtn.classList.add('text-slate-400');
+    }
+
+    if (!skipSave) window.saveLoveStory();
+};
+
+window.uploadLovestoryBgImg = async function (input) {
+    if (!input.files || !input.files[0]) return;
+    const formData = new FormData();
+    formData.append('image', input.files[0]);
+    formData.append('setting_key', 'lovestory_bg_img');
+
+    try {
+        const response = await fetch('/api/admin/settings/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            const hiddenInput = document.getElementById('settingLovestoryBgImg');
+            if (hiddenInput) hiddenInput.value = result.src;
+            
+            const preview = document.getElementById('lovestoryBgPreview');
+            if (preview) {
+                preview.src = result.src;
+                preview.classList.remove('hidden');
+                document.getElementById('lovestoryBgPreviewPlaceholder')?.classList.add('hidden');
+            }
+            window.saveLoveStory();
+            showToast('Background berhasil diunggah', 'success');
+        } else {
+            showToast(result.error || 'Gagal mengunggah gambar', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Gagal mengunggah gambar', 'error');
+    }
+};
+
+window.syncLovestoryColor = function (val, source) {
+    const input = document.getElementById('settingLovestoryBg');
+    const picker = document.getElementById('lovestoryColorPicker');
+    if (!input || !picker) return;
+
+    if (source === 'picker') input.value = val;
+    else if (source === 'input') picker.value = val.startsWith('#') ? val : '#000000';
+
+    window.saveLoveStory();
+};
+
 window.saveLoveStory = async function () {
-    const title = document.getElementById('ls_title').value;
+    const titleInput = document.getElementById('ls_title');
+    if (!titleInput) return;
+    const title = titleInput.value;
+    
     const lovestory_bg = document.getElementById('settingLovestoryBg')?.value || '';
     const lovestory_card_bg = document.getElementById('settingLovestoryCardBg')?.value || '';
+    const lovestory_bg_img = document.getElementById('settingLovestoryBgImg')?.value || '';
+    const lovestory_bg_mode = document.getElementById('settingLovestoryBgMode')?.checked ? 'image' : 'color';
+
     const body = {
         title: title,
         lovestory_bg: lovestory_bg,
         lovestory_card_bg: lovestory_card_bg,
+        lovestory_bg_img: lovestory_bg_img,
+        lovestory_bg_mode: lovestory_bg_mode,
         messages: lsMessages
     };
 
@@ -2999,7 +3084,7 @@ window.saveLoveStory = async function () {
     } catch (err) {
         showToast(err.message, 'error');
     }
-}
+};
 
 window.showImportExcelModal = function () {
     const modal = document.createElement('div');
@@ -3009,42 +3094,42 @@ window.showImportExcelModal = function () {
     };
 
     modal.innerHTML = `
-    <div class="bg-white rounded-2xl shadow-2xl w-[90%] max-w-sm overflow-hidden scale-95 transition-transform duration-300 flex flex-col" id="importExcelWrapper">
-      <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl dark:shadow-none border border-slate-100 dark:border-slate-800 w-[90%] max-w-sm overflow-hidden scale-95 transition-transform duration-300 flex flex-col" id="importExcelWrapper">
+      <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg">
                 <i class="fas fa-file-excel"></i>
             </div>
             <div>
-                <h3 class="font-bold text-slate-900 text-sm">Import Tamu</h3>
-                <p class="text-[11px] sm:text-xs font-semibold text-slate-600 mt-0.5">Format: Excel</p>
+                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Import Tamu</h3>
+                <p class="text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-500 mt-0.5">Format: Excel</p>
             </div>
         </div>
-        <button onclick="window.closeImportExcelModal(this.closest('.fixed'))" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-colors flex items-center justify-center font-bold pb-0.5">&times;</button>
+        <button onclick="window.closeImportExcelModal(this.closest('.fixed'))" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-red-500 transition-colors flex items-center justify-center font-bold pb-0.5">&times;</button>
       </div>
       <div class="p-6">
-        <label class="block w-full cursor-pointer hover:border-emerald-400 transition-colors border-2 border-dashed border-slate-200 rounded-2xl p-10 text-center bg-slate-50/50 group shadow-sm mb-4">
-          <i class="fas fa-file-import text-3xl text-emerald-500 mb-3 group-hover:scale-110 transition-transform"></i>
-          <p class="text-xs font-bold text-slate-700">Pilih berkas Excel (.xlsx / .xls / .csv)</p>
-          <p class="text-[10px] text-slate-400 mt-1">Klik untuk memilih atau seret file ke sini</p>
+        <label class="block w-full cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center bg-slate-50/50 dark:bg-slate-800/20 group mb-4">
+          <i class="fas fa-file-import text-3xl text-emerald-500 dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform"></i>
+          <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Pilih berkas Excel (.xlsx / .xls / .csv)</p>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Klik untuk memilih atau seret file ke sini</p>
           <input type="file" accept=".xlsx, .xls, .csv" class="hidden" id="excelFileInput" onchange="window.handleSelectedExcel(this)">
         </label>
-
-        <p id="excelFileName" class="text-center font-bold text-xs text-indigo-600 mb-4 hidden bg-indigo-50/50 py-2 rounded-lg border border-indigo-100"></p>
+        
+        <p id="excelFileName" class="text-center font-bold text-xs text-indigo-600 dark:text-indigo-400 mb-4 hidden bg-indigo-50/50 dark:bg-indigo-500/10 py-2 rounded-lg border border-indigo-100 dark:border-indigo-500/20"></p>
 
         <div class="flex items-center justify-center">
-            <button onclick="window.downloadExcelTemplate()" class="text-[9px] sm:text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex flex-col items-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-indigo-50 rounded-xl border border-indigo-100 transition-all hover:bg-indigo-100 active:scale-95 shadow-sm">
+            <button onclick="window.downloadExcelTemplate()" class="text-[9px] sm:text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex flex-col items-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20 transition-all hover:bg-indigo-100 dark:hover:bg-indigo-500/20 active:scale-95">
                 <div class="flex items-center gap-1.5 sm:gap-2">
                     <i class="fas fa-download text-[11px] sm:text-base"></i> 
                     <span>UNDUH TEMPLATE EXCEL</span>
                 </div>
-                <span class="text-[7px] sm:text-[8px] opacity-60 uppercase tracking-wider font-medium">(Template Exel Undangan Tamu)</span>
+                <span class="text-[7px] sm:text-[8px] opacity-60 uppercase tracking-wider font-medium">(TEMPLATE EXEL UNDANGAN TAMU)</span>
             </button>
         </div>
       </div>
-      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-        <button onclick="window.closeImportExcelModal(this.closest('.fixed'))" class="px-5 py-2.5 rounded-xl font-bold text-[11px] text-slate-600 hover:bg-slate-200 transition-colors">BATAL</button>
-        <button id="importSubmitBtn" onclick="window.uploadExcel()" class="bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl text-[11px] hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+      <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end gap-3">
+        <button onclick="window.closeImportExcelModal(this.closest('.fixed'))" class="px-5 py-2.5 rounded-xl font-bold text-[11px] text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">BATAL</button>
+        <button id="importSubmitBtn" onclick="window.uploadExcel()" class="bg-emerald-600 dark:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl text-[11px] hover:bg-emerald-700 dark:hover:bg-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
           MULAI IMPORT
         </button>
       </div>
@@ -3155,6 +3240,19 @@ async function loadLoveStoryAdmin() {
 
         if (bgInput) bgInput.value = settings.lovestory_bg || '';
         if (cardBgInput) cardBgInput.value = settings.lovestory_card_bg || '';
+
+        const bgImgInput = document.getElementById('settingLovestoryBgImg');
+        const bgPreview = document.getElementById('lovestoryBgPreview');
+        if (bgImgInput) bgImgInput.value = settings.lovestory_bg_img || '';
+        if (bgPreview && settings.lovestory_bg_img) {
+            bgPreview.src = settings.lovestory_bg_img;
+            bgPreview.classList.remove('hidden');
+            document.getElementById('lovestoryBgPreviewPlaceholder')?.classList.add('hidden');
+        }
+
+        if (settings.lovestory_bg_mode) {
+            window.setLovestoryBgMode(settings.lovestory_bg_mode, true);
+        }
 
         renderLoveStoryChat();
     } catch (err) {
@@ -4695,3 +4793,39 @@ window.saveWaTemplate = function () {
     }
     initOpeningUI();
 })();
+
+// Atur Halaman Tab Logic
+window.switchAturTab = function (tabId) {
+    // Hide all sections
+    document.querySelectorAll('.atur-section').forEach(section => {
+        section.classList.add('hidden');
+    });
+
+    // Show target section
+    const targetSection = document.getElementById('section_' + tabId);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    }
+
+    // Update tab button states
+    document.querySelectorAll('.atur-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    // Scroll to top of events section smoothly
+    const eventsSection = document.getElementById('events');
+    if (eventsSection) {
+        const headerOffset = 100;
+        const elementPosition = eventsSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
+};

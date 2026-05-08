@@ -163,6 +163,36 @@
                 @apply bg-red-600 text-white shadow-none hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/40 hover:ring-1 hover:ring-red-600;
             }
 
+            /* Atur Halaman Tab System */
+            .atur-tab-btn {
+                @apply flex items-center justify-center gap-2.5 px-4 py-3 text-[12px] sm:text-[13px] font-semibold whitespace-nowrap transition-all duration-300 border-b-2 border-transparent;
+                color: #94a3b8;
+            }
+
+            .atur-tab-btn:hover {
+                @apply text-slate-900 dark:text-white border-slate-200 dark:border-slate-700;
+            }
+
+            .atur-tab-btn.active {
+                @apply text-indigo-600 dark:text-indigo-400 border-indigo-600 dark:border-indigo-500 bg-indigo-50/30 dark:bg-indigo-500/5;
+            }
+
+            .atur-tab-btn i {
+                @apply text-sm opacity-50 transition-opacity;
+            }
+
+            .atur-tab-btn.active i {
+                @apply opacity-100;
+            }
+
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+
             /* Mobile Modal Adjustments */
             @media (max-width: 639px) {
                 .modal-premium-header { @apply p-4 pb-2; }
@@ -193,6 +223,14 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: #cbd5e1;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
 
         /* Mobile Search Safety */
@@ -255,7 +293,6 @@
         .glass-nav-btn:hover {
             background: rgba(255, 255, 255, 0.2) !important;
             border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            transform: scale(1.1);
         }
 
         .glass-nav-btn:active {
@@ -1514,10 +1551,50 @@
                 </div>
                 </section>
 
-                <section id="events" class="admin-section hidden pt-5">
+                <section id="events" class="admin-section hidden">
+                    <!-- Tab Bar Atur Halaman -->
+                    <div
+                        class="mb-8 sticky top-[80px] z-[40] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 -mx-4 sm:-mx-6 lg:-mx-10 px-0 transition-all duration-300 shadow-sm">
+                        <div
+                            class="flex items-center justify-start lg:justify-between overflow-x-auto no-scrollbar scroll-smooth">
+                            <button onclick="switchAturTab('pembuka')"
+                                class="atur-tab-btn active flex-1 lg:flex-none lg:px-6" data-tab="pembuka">
+                                <i class="fas fa-door-open"></i> <span>Halaman Pembuka</span>
+                            </button>
+                            <button onclick="switchAturTab('sambutan')" class="atur-tab-btn flex-1 lg:flex-none lg:px-6"
+                                data-tab="sambutan">
+                                <i class="fas fa-hand-holding-heart"></i> <span>Sambutan</span>
+                            </button>
+                            <button onclick="switchAturTab('pasangan')" class="atur-tab-btn flex-1 lg:flex-none lg:px-6"
+                                data-tab="pasangan">
+                                <i class="fas fa-user-friends"></i> <span>Pasangan</span>
+                            </button>
+                            <button onclick="switchAturTab('galeri')" class="atur-tab-btn flex-1 lg:flex-none lg:px-6"
+                                data-tab="galeri">
+                                <i class="fas fa-images"></i> <span>Galeri Foto</span>
+                            </button>
+                            <button onclick="switchAturTab('jadwal')" class="atur-tab-btn flex-1 lg:flex-none lg:px-6"
+                                data-tab="jadwal">
+                                <i class="fas fa-calendar-alt"></i> <span>Jadwal Pernikahan</span>
+                            </button>
+                            <button onclick="switchAturTab('kisah')" class="atur-tab-btn flex-1 lg:flex-none lg:px-6"
+                                data-tab="kisah">
+                                <i class="fas fa-heart"></i> <span>Kisah Cinta</span>
+                            </button>
+                            <button onclick="switchAturTab('kado')" class="atur-tab-btn flex-1 lg:flex-none lg:px-6"
+                                data-tab="kado">
+                                <i class="fas fa-gift"></i> <span>Kado Digital</span>
+                            </button>
+                            <button onclick="switchAturTab('kehadiran')"
+                                class="atur-tab-btn flex-1 lg:flex-none lg:px-6" data-tab="kehadiran">
+                                <i class="fas fa-clipboard-list"></i> <span>Kehadiran & Ucapan</span>
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Halaman Buka Undangan -->
-                    <div class="card-premium overflow-hidden mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
+                    <div id="section_pembuka"
+                        class="atur-section card-premium overflow-hidden mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
                         <div
                             class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                             <div>
@@ -1650,17 +1727,17 @@
                                 <span class="text-[10px] text-slate-400 font-semibold italic">Geser horizontal untuk
                                     melihat lebih banyak</span>
                             </div>
-                            
+
                             <!-- Slider Container with Navigation Arrows -->
                             <div class="relative group/slider">
                                 <!-- Arrow Left -->
-                                <button type="button" onclick="window.scrollOpeningBg('left')" 
+                                <button type="button" onclick="window.scrollOpeningBg('left')"
                                     class="absolute left-2 top-[calc(50%-16px)] -translate-y-1/2 z-30 w-10 h-10 rounded-full glass-nav-btn text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-all duration-300">
                                     <i class="fas fa-chevron-left"></i>
                                 </button>
-                                
+
                                 <!-- Arrow Right -->
-                                <button type="button" onclick="window.scrollOpeningBg('right')" 
+                                <button type="button" onclick="window.scrollOpeningBg('right')"
                                     class="absolute right-2 top-[calc(50%-16px)] -translate-y-1/2 z-30 w-10 h-10 rounded-full glass-nav-btn text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-all duration-300">
                                     <i class="fas fa-chevron-right"></i>
                                 </button>
@@ -1675,8 +1752,8 @@
                     </div>
 
                     <!-- Greeting Section -->
-                    <article
-                        class="card-premium overflow-hidden mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
+                    <article id="section_sambutan"
+                        class="atur-section hidden card-premium overflow-hidden mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
                         <div
                             class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                             <div>
@@ -1845,8 +1922,8 @@
 
                     <!-- Couple Section -->
                     <!-- Couple Section -->
-                    <article
-                        class="card-premium overflow-hidden mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
+                    <article id="section_pasangan"
+                        class="atur-section hidden card-premium overflow-hidden mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
                         <div
                             class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                             <div>
@@ -1988,8 +2065,8 @@
                     </article>
 
                     <!-- Gallery Section -->
-                    <div
-                        class="bg-white card-premium overflow-hidden border border-slate-100 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                    <div id="section_galeri"
+                        class="atur-section hidden bg-white card-premium overflow-hidden border border-slate-100 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                         <div
                             class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
 
@@ -2052,8 +2129,8 @@
                     </div>
 
                     <!-- Wedding Event Section -->
-                    <article
-                        class="bg-white dark:bg-slate-800 card-premium mb-6 border border-slate-100 dark:border-slate-700">
+                    <article id="section_jadwal"
+                        class="atur-section hidden bg-white dark:bg-slate-800 card-premium mb-6 border border-slate-100 dark:border-slate-700">
                         <div
                             class="bg-slate-100 dark:bg-slate-900/50 flex items-center justify-between mb-2 border-b border-slate-200 dark:border-slate-700 p-4 sm:p-5 rounded-t-2xl">
                             <div class="flex items-center gap-4">
@@ -2194,7 +2271,8 @@
 
 
                     <!-- Kisah Cinta Section (Moved here) -->
-                    <div id="lovestory-container" class="mb-5 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                    <div id="section_kisah"
+                        class="atur-section hidden mb-5 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                         <div
                             class="bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700">
                             <div
@@ -2220,95 +2298,62 @@
                             </div>
 
                             <div class="p-6 bg-slate-50/20">
-                                <div class="mb-6">
-                                    <label
-                                        class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 uppercase tracking-wider">Judul
-                                    </label>
-                                    <input type="text" id="ls_title" class="input-premium h-10 w-full mt-1"
-                                        placeholder="Cth: Kisah Cinta Kami">
-                                </div>
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-                                    <!-- Avatar Selection -->
-                                    <div class="space-y-4">
-                                        <label
-                                            class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 uppercase tracking-wider">Avatar
-                                            Chat</label>
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <!-- Groom Avatar -->
-                                            <div class="space-y-2">
-                                                <span
-                                                    class="text-[10px] font-bold text-slate-400 block px-1">Pria</span>
-                                                <div
-                                                    class="relative group w-16 h-16 mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 transition-all cursor-pointer">
-                                                    <img id="lsGroomAvatar"
-                                                        src="https://ui-avatars.com/api/?name=Groom&background=3b82f6&color=fff"
-                                                        class="w-full h-full object-cover">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+                                    <!-- Column 1: Alamat Fisik -> Judul & Avatar Selection -->
+                                    <div class="space-y-6">
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 uppercase tracking-wider">Judul
+                                            </label>
+                                            <input type="text" id="ls_title" class="input-premium h-10 w-full"
+                                                placeholder="Cth: Kisah Cinta Kami">
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 uppercase tracking-wider">Avatar
+                                                Chat</label>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <!-- Groom Avatar -->
+                                                <div class="space-y-2">
+                                                    <span
+                                                        class="text-[10px] font-bold text-slate-400 block px-1">Pria</span>
                                                     <div
-                                                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                                                        <i class="fas fa-camera text-white text-xs"></i>
+                                                        class="relative group w-16 h-16 mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 transition-all cursor-pointer">
+                                                        <img id="lsGroomAvatar"
+                                                            src="https://ui-avatars.com/api/?name=Groom&background=3b82f6&color=fff"
+                                                            class="w-full h-full object-cover">
+                                                        <div
+                                                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                                            <i class="fas fa-camera text-white text-xs"></i>
+                                                        </div>
+                                                        <input type="file"
+                                                            onchange="window.uploadLsAvatar(this, 'male', 'lsGroomAvatar')"
+                                                            class="absolute inset-0 opacity-0 cursor-pointer">
                                                     </div>
-                                                    <input type="file"
-                                                        onchange="window.uploadLsAvatar(this, 'groom', 'lsGroomAvatar')"
-                                                        class="absolute inset-0 opacity-0 cursor-pointer">
                                                 </div>
-                                            </div>
-                                            <!-- Bride Avatar -->
-                                            <div class="space-y-2">
-                                                <span
-                                                    class="text-[10px] font-bold text-slate-400 block px-1">Wanita</span>
-                                                <div
-                                                    class="relative group w-16 h-16 mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 transition-all cursor-pointer">
-                                                    <img id="lsBrideAvatar"
-                                                        src="https://ui-avatars.com/api/?name=Bride&background=ec4899&color=fff"
-                                                        class="w-full h-full object-cover">
+                                                <!-- Bride Avatar -->
+                                                <div class="space-y-2">
+                                                    <span
+                                                        class="text-[10px] font-bold text-slate-400 block px-1">Wanita</span>
                                                     <div
-                                                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                                                        <i class="fas fa-camera text-white text-xs"></i>
+                                                        class="relative group w-16 h-16 mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 transition-all cursor-pointer">
+                                                        <img id="lsBrideAvatar"
+                                                            src="https://ui-avatars.com/api/?name=Bride&background=ec4899&color=fff"
+                                                            class="w-full h-full object-cover">
+                                                        <div
+                                                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                                            <i class="fas fa-camera text-white text-xs"></i>
+                                                        </div>
+                                                        <input type="file"
+                                                            onchange="window.uploadLsAvatar(this, 'female', 'lsBrideAvatar')"
+                                                            class="absolute inset-0 opacity-0 cursor-pointer">
                                                     </div>
-                                                    <input type="file"
-                                                        onchange="window.uploadLsAvatar(this, 'bride', 'lsBrideAvatar')"
-                                                        class="absolute inset-0 opacity-0 cursor-pointer">
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Background Settings -->
-                                    <div class="space-y-4">
-                                        <label
-                                            class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 uppercase tracking-wider">Tampilan
-                                            Section</label>
-                                        <div class="space-y-3">
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] font-bold text-slate-400 px-1">Background
-                                                    Utama</label>
-                                                <div class="flex items-center gap-2">
-                                                    <input type="text" id="settingLovestoryBg"
-                                                        class="input-premium flex-1 !h-9 !py-1 text-xs"
-                                                        placeholder="Warna hex / gradient">
-                                                    <input type="color"
-                                                        oninput="document.getElementById('settingLovestoryBg').value = this.value"
-                                                        class="w-9 h-9 rounded-lg border-none cursor-pointer">
-                                                </div>
-                                            </div>
-                                            <div class="space-y-1">
-                                                <label class="text-[10px] font-bold text-slate-400 px-1">Background
-                                                    Bubble</label>
-                                                <div class="flex items-center gap-2">
-                                                    <input type="text" id="settingLovestoryCardBg"
-                                                        class="input-premium flex-1 !h-9 !py-1 text-xs"
-                                                        placeholder="Warna hex bubble">
-                                                    <input type="color"
-                                                        oninput="document.getElementById('settingLovestoryCardBg').value = this.value"
-                                                        class="w-9 h-9 rounded-lg border-none cursor-pointer">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Action Column -->
-                                    <div class="flex flex-col justify-end lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-8">
-                                        <div class="relative group/menu w-full">
+                                        <div class="relative group/menu w-full mt-4">
                                             <button
                                                 class="btn-premium btn-primary !h-11 w-full flex items-center justify-center gap-2 group-hover/menu:rounded-b-none transition-all">
                                                 <i class="fas fa-plus-circle"></i>
@@ -2334,6 +2379,100 @@
                                         <p class="text-[10px] text-slate-400 mt-3 text-center italic">Klik tombol di
                                             atas untuk memilih jenis pesan.</p>
                                     </div>
+
+                                    <!-- Column 2: Background Controls -->
+                                    <div
+                                        class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-6">
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan
+                                                Background</label>
+                                            <div
+                                                class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
+                                                <input type="checkbox" id="settingLovestoryBgMode" class="hidden"
+                                                    onchange="window.setLovestoryBgMode(this.checked ? 'image' : 'color');">
+                                                <div id="lovestoryBgModeSlider"
+                                                    class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1">
+                                                </div>
+                                                <button type="button"
+                                                    onclick="document.getElementById('settingLovestoryBgMode').checked = false; window.setLovestoryBgMode('color');"
+                                                    class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 lovestory-mode-btn text-white"
+                                                    id="lovestoryModeColorBtn">Warna</button>
+                                                <button type="button"
+                                                    onclick="document.getElementById('settingLovestoryBgMode').checked = true; window.setLovestoryBgMode('image');"
+                                                    class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 lovestory-mode-btn text-slate-400"
+                                                    id="lovestoryModeImageBtn">Gambar</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <div class="flex items-center justify-between px-1">
+                                                <label
+                                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna
+                                                    Utama</label>
+                                                <input type="color" id="lovestoryColorPicker"
+                                                    oninput="window.syncLovestoryColor(this.value, 'picker')"
+                                                    class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
+                                            </div>
+                                            <input type="text" id="settingLovestoryBg" onchange="window.saveLoveStory()"
+                                                class="input-premium font-mono text-[10px]"
+                                                placeholder="Cth: #000000 atau linear-gradient(...)">
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <div class="flex items-center justify-between px-1">
+                                                <label
+                                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna
+                                                    Bubble</label>
+                                                <input type="color" id="lovestoryCardColorPicker"
+                                                    oninput="document.getElementById('settingLovestoryCardBg').value = this.value; window.saveLoveStory();"
+                                                    class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
+                                            </div>
+                                            <input type="text" id="settingLovestoryCardBg"
+                                                onchange="window.saveLoveStory()"
+                                                class="input-premium font-mono text-[10px]"
+                                                placeholder="Warna hex bubble">
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background
+                                                Gambar</label>
+                                            <button type="button" onclick="this.nextElementSibling.click()"
+                                                class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
+                                            </button>
+                                            <input type="file"
+                                                onchange="window.uploadLovestoryBgImg(this)"
+                                                class="hidden">
+                                        </div>
+                                    </div>
+
+                                    <!-- Column 3: Preview -->
+                                    <div
+                                        class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-4">
+                                        <label
+                                            class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 block mb-2">Preview
+                                            Background</label>
+                                        <div id="lovestoryBgPreviewContainer"
+                                            class="relative group aspect-video lg:h-[220px] w-full rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl bg-white dark:bg-slate-900/50 flex items-center justify-center">
+                                            <img id="lovestoryBgPreview" class="w-full h-full object-cover hidden">
+                                            <div id="lovestoryBgPreviewPlaceholder"
+                                                class="flex flex-col items-center justify-center text-slate-900 p-8 text-center">
+                                                <p
+                                                    class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">
+                                                    Preview Gambar</p>
+                                                <p class="text-[9px] text-slate-500 font-medium">Tampilkan
+                                                    foto<br>background disini</p>
+                                            </div>
+                                            <button type="button"
+                                                onclick="window.deleteSettingImg('lovestory_bg_img', 'lovestoryBgPreview'); document.getElementById('lovestoryBgPreview').classList.add('hidden'); document.getElementById('lovestoryBgPreviewPlaceholder').classList.remove('hidden');"
+                                                class="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-red-600 active:scale-90 z-20">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" id="settingLovestoryBgImg" value="">
+                                    </div>
                                 </div>
 
                                 <!-- Stories List -->
@@ -2353,8 +2492,8 @@
                     </div>
 
                     <!-- Kado Digital & Amplop -->
-                    <div
-                        class="bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
+                    <div id="section_kado"
+                        class="atur-section hidden bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-700">
                         <div
                             class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                             <div>
@@ -2382,10 +2521,13 @@
                                     <button onclick="window.saveGiftAddress()"
                                         class="btn-premium btn-primary w-full py-2.5 text-xs">Simpan Alamat</button>
 
-                                    <div class="p-4 mt-4 rounded-2xl bg-indigo-50/50 border border-indigo-100/50">
-                                        <h5 class="text-[10px] font-bold text-indigo-900 uppercase tracking-wider mb-2">
+                                    <div
+                                        class="p-4 mt-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-500/10 border border-indigo-100/50 dark:border-indigo-500/20">
+                                        <h5
+                                            class="text-[10px] font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider mb-2">
                                             Panduan</h5>
-                                        <p class="text-[10px] text-indigo-700 leading-relaxed">Gunakan tombol "TAMBAH
+                                        <p class="text-[10px] text-indigo-700 dark:text-indigo-400 leading-relaxed">
+                                            Gunakan tombol "TAMBAH
                                             BANK" di bawah untuk menambah opsi transfer.</p>
                                     </div>
                                 </div>
@@ -2466,260 +2608,273 @@
                                     <input type="hidden" id="settingGiftBgImg" value="">
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-
-                    <div class="flex justify-end mb-6">
-                        <button onclick="window.addGiftItem()"
-                            class="btn-premium btn-primary !h-10 !px-6 whitespace-nowrap"><i
-                                class="fas fa-plus mr-2"></i>
-                            TAMBAH BANK</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10" id="giftsContainer">
-                        <!-- Bank items rendered by JS -->
-                    </div>
-
-
-
-
-                    <!-- Kehadiran (Consolidated Card) -->
-                    <div
-                        class="bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-1000">
-                        <div
-                            class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-                            <div>
-                                <h3
-                                    class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-                                    Kehadiran</h3>
-                                <p
-                                    class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">
-                                    Header, Teks Instruksi & Background Section</p>
-                            </div>
-                            <button onclick="saveSettings()" class="btn-premium btn-primary !h-9 !px-6">
-                                SIMPAN
-                            </button>
-                        </div>
-                        <div class="p-6 bg-slate-50/20">
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-                                <!-- Kolom 1: Konten Teks -->
-                                <div class="space-y-6">
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul
-                                            Section</label>
-                                        <input id="settingRsvpHeaderTitle" type="text" class="input-premium"
-                                            placeholder="Cth: Kehadiran Tamu">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Teks
-                                            Harapan Kehadiran</label>
-                                        <textarea id="settingRsvpHeaderQuote" class="input-premium min-h-[80px] text-sm"
-                                            placeholder="Cth: Kami sangat berharap kehadiran Anda..."></textarea>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Teks
-                                            Instruksi Konfirmasi (RSVP)</label>
-                                        <textarea id="settingRsvpCaption" class="input-premium min-h-[80px] text-sm"
-                                            placeholder="Cth: Mohon konfirmasikan kehadiran Anda..."></textarea>
-                                        <p class="text-[9px] text-slate-400 italic px-1 mt-1">Muncul di atas tombol
-                                            konfirmasi kehadiran.</p>
-                                    </div>
+                            <!-- Bank Management (Inside p-6 for better spacing) -->
+                            <div class="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700/50">
+                                <div class="flex items-center justify-between mb-8">
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Daftar Rekening / E-Wallet</h4>
+                                    <button onclick="window.addGiftItem()"
+                                        class="btn-premium btn-primary !h-10 !px-6 whitespace-nowrap"><i
+                                            class="fas fa-plus mr-2"></i>
+                                        TAMBAH BANK</button>
                                 </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-6" id="giftsContainer">
+                                    <!-- Bank items rendered by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <!-- Kolom 2: Background Controls -->
-                                <div class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-6">
-                                    <div class="space-y-2">
+
+
+
+                    <!-- Kehadiran & Ucapan -->
+                    <div id="section_kehadiran" class="atur-section hidden space-y-5">
+                        <!-- Kehadiran (Consolidated Card) -->
+                        <div
+                            class="bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-1000">
+                            <div
+                                class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                                <div>
+                                    <h3
+                                        class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                                        Kehadiran</h3>
+                                    <p
+                                        class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">
+                                        Header, Teks Instruksi & Background Section</p>
+                                </div>
+                                <button onclick="saveSettings()" class="btn-premium btn-primary !h-9 !px-6">
+                                    SIMPAN
+                                </button>
+                            </div>
+                            <div class="p-6 bg-slate-50/20">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+                                    <!-- Kolom 1: Konten Teks -->
+                                    <div class="space-y-6">
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul
+                                                Section</label>
+                                            <input id="settingRsvpHeaderTitle" type="text" class="input-premium"
+                                                placeholder="Cth: Kehadiran Tamu">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Teks
+                                                Harapan Kehadiran</label>
+                                            <textarea id="settingRsvpHeaderQuote"
+                                                class="input-premium min-h-[80px] text-sm"
+                                                placeholder="Cth: Kami sangat berharap kehadiran Anda..."></textarea>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Teks
+                                                Instruksi Konfirmasi (RSVP)</label>
+                                            <textarea id="settingRsvpCaption" class="input-premium min-h-[80px] text-sm"
+                                                placeholder="Cth: Mohon konfirmasikan kehadiran Anda..."></textarea>
+                                            <p class="text-[9px] text-slate-400 italic px-1 mt-1">Muncul di atas tombol
+                                                konfirmasi kehadiran.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Kolom 2: Background Controls -->
+                                    <div
+                                        class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-6">
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan
+                                                Background</label>
+                                            <div
+                                                class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
+                                                <input type="checkbox" id="settingRsvpBgMode" class="hidden"
+                                                    onchange="window.setRsvpBgMode(this.checked ? 'image' : 'color');">
+                                                <div id="rsvpBgModeSlider"
+                                                    class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1">
+                                                </div>
+                                                <button type="button"
+                                                    onclick="document.getElementById('settingRsvpBgMode').checked = false; window.setRsvpBgMode('color');"
+                                                    class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 rsvp-mode-btn text-white"
+                                                    id="rsvpModeColorBtn">Warna</button>
+                                                <button type="button"
+                                                    onclick="document.getElementById('settingRsvpBgMode').checked = true; window.setRsvpBgMode('image');"
+                                                    class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 rsvp-mode-btn text-slate-400"
+                                                    id="rsvpModeImageBtn">Gambar</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <div class="flex items-center justify-between px-1">
+                                                <label
+                                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna
+                                                    / Gradient</label>
+                                                <input type="color" id="rsvpColorPicker"
+                                                    oninput="window.syncRsvpColor(this.value, 'picker')"
+                                                    class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
+                                            </div>
+                                            <input type="text" id="settingRsvpBgColor" onchange="saveSettings()"
+                                                class="input-premium font-mono text-[10px]"
+                                                placeholder="Cth: #000000 atau linear-gradient(...)">
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background
+                                                Gambar</label>
+                                            <button type="button" onclick="this.nextElementSibling.click()"
+                                                class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
+                                            </button>
+                                            <input type="file"
+                                                onchange="uploadSettingImg(this, 'rsvp_bg_img', 'rsvpBgPreview')"
+                                                class="hidden">
+                                        </div>
+                                    </div>
+
+                                    <!-- Kolom 3: Preview -->
+                                    <div
+                                        class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-4">
                                         <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan
+                                            class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 block mb-2">Preview
                                             Background</label>
-                                        <div
-                                            class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
-                                            <input type="checkbox" id="settingRsvpBgMode" class="hidden"
-                                                onchange="window.setRsvpBgMode(this.checked ? 'image' : 'color');">
-                                            <div id="rsvpBgModeSlider"
-                                                class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1">
+                                        <div id="rsvpBgPreviewContainer"
+                                            class="relative group aspect-video lg:h-[200px] w-full rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl bg-white dark:bg-slate-900/50 flex items-center justify-center">
+                                            <img id="rsvpBgPreview" class="w-full h-full object-cover hidden">
+                                            <div id="rsvpBgPreviewPlaceholder"
+                                                class="flex flex-col items-center justify-center text-slate-900 p-8 text-center">
+                                                <p
+                                                    class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">
+                                                    Preview Gambar</p>
+                                                <p class="text-[9px] text-slate-500 font-medium">Tampilkan
+                                                    foto<br>background disini</p>
                                             </div>
                                             <button type="button"
-                                                onclick="document.getElementById('settingRsvpBgMode').checked = false; window.setRsvpBgMode('color');"
-                                                class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 rsvp-mode-btn text-white"
-                                                id="rsvpModeColorBtn">Warna</button>
-                                            <button type="button"
-                                                onclick="document.getElementById('settingRsvpBgMode').checked = true; window.setRsvpBgMode('image');"
-                                                class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 rsvp-mode-btn text-slate-400"
-                                                id="rsvpModeImageBtn">Gambar</button>
+                                                onclick="window.deleteSettingImg('rsvp_bg_img', 'rsvpBgPreview'); document.getElementById('rsvpBgPreview').classList.add('hidden'); document.getElementById('rsvpBgPreviewPlaceholder').classList.remove('hidden');"
+                                                class="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-red-600 active:scale-90 z-20">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
                                         </div>
+                                        <input type="hidden" id="settingRsvpBgImg" value="">
                                     </div>
-
-                                    <div class="space-y-2">
-                                        <div class="flex items-center justify-between px-1">
-                                            <label
-                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna
-                                                / Gradient</label>
-                                            <input type="color" id="rsvpColorPicker"
-                                                oninput="window.syncRsvpColor(this.value, 'picker')"
-                                                class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
-                                        </div>
-                                        <input type="text" id="settingRsvpBgColor" onchange="saveSettings()"
-                                            class="input-premium font-mono text-[10px]"
-                                            placeholder="Cth: #000000 atau linear-gradient(...)">
-                                    </div>
-
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background
-                                            Gambar</label>
-                                        <button type="button" onclick="this.nextElementSibling.click()"
-                                            class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
-                                            <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
-                                        </button>
-                                        <input type="file"
-                                            onchange="uploadSettingImg(this, 'rsvp_bg_img', 'rsvpBgPreview')"
-                                            class="hidden">
-                                    </div>
-                                </div>
-
-                                <!-- Kolom 3: Preview -->
-                                <div class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-4">
-                                    <label
-                                        class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 block mb-2">Preview
-                                        Background</label>
-                                    <div id="rsvpBgPreviewContainer"
-                                        class="relative group aspect-video lg:h-[200px] w-full rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl bg-white dark:bg-slate-900/50 flex items-center justify-center">
-                                        <img id="rsvpBgPreview" class="w-full h-full object-cover hidden">
-                                        <div id="rsvpBgPreviewPlaceholder"
-                                            class="flex flex-col items-center justify-center text-slate-900 p-8 text-center">
-                                            <p class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">
-                                                Preview Gambar</p>
-                                            <p class="text-[9px] text-slate-500 font-medium">Tampilkan
-                                                foto<br>background disini</p>
-                                        </div>
-                                        <button type="button"
-                                            onclick="window.deleteSettingImg('rsvp_bg_img', 'rsvpBgPreview'); document.getElementById('rsvpBgPreview').classList.add('hidden'); document.getElementById('rsvpBgPreviewPlaceholder').classList.remove('hidden');"
-                                            class="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-red-600 active:scale-90 z-20">
-                                            <i class="fas fa-trash-alt text-xs"></i>
-                                        </button>
-                                    </div>
-                                    <input type="hidden" id="settingRsvpBgImg" value="">
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-
-                    <!-- Ucapan Pernikahan Section -->
-                    <div
-                        class="bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-1000">
+                        <!-- Ucapan Pernikahan Section -->
                         <div
-                            class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-                            <div>
-                                <h3
-                                    class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-                                    Ucapan Pernikahan</h3>
-                                <p
-                                    class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">
-                                    Warna atau Gambar untuk Section Ucapan</p>
-                            </div>
-                            <button onclick="saveSettings()" class="btn-premium btn-primary !h-9 !px-6">
-                                SIMPAN
-                            </button>
-                        </div>
-                        <div class="p-6 bg-slate-50/20">
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-                                <!-- Kolom 1: Konten Teks -->
-                                <div class="space-y-6">
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul
-                                            Section Ucapan</label>
-                                        <input id="settingWishesTitle" type="text" class="input-premium"
-                                            placeholder="Cth: Ucapan & Doa Restu">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Deskripsi
-                                            Section Ucapan</label>
-                                        <textarea id="settingWishesQuote" class="input-premium min-h-[120px] text-sm"
-                                            placeholder="Cth: Doa restu Anda merupakan karunia yang sangat berarti bagi kami..."></textarea>
-                                    </div>
+                            class="bg-white dark:bg-slate-800 card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-1000">
+                            <div
+                                class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                                <div>
+                                    <h3
+                                        class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                                        Ucapan Pernikahan</h3>
+                                    <p
+                                        class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">
+                                        Warna atau Gambar untuk Section Ucapan</p>
                                 </div>
+                                <button onclick="saveSettings()" class="btn-premium btn-primary !h-9 !px-6">
+                                    SIMPAN
+                                </button>
+                            </div>
+                            <div class="p-6 bg-slate-50/20">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+                                    <!-- Kolom 1: Konten Teks -->
+                                    <div class="space-y-6">
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul
+                                                Section Ucapan</label>
+                                            <input id="settingWishesTitle" type="text" class="input-premium"
+                                                placeholder="Cth: Ucapan & Doa Restu">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Deskripsi
+                                                Section Ucapan</label>
+                                            <textarea id="settingWishesQuote"
+                                                class="input-premium min-h-[120px] text-sm"
+                                                placeholder="Cth: Doa restu Anda merupakan karunia yang sangat berarti bagi kami..."></textarea>
+                                        </div>
+                                    </div>
 
-                                <!-- Kolom 2: Background Controls -->
-                                <div class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-6">
-                                    <div class="space-y-2">
+                                    <!-- Kolom 2: Background Controls -->
+                                    <div
+                                        class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-6">
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan
+                                                Background</label>
+                                            <div
+                                                class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
+                                                <input type="checkbox" id="settingWishesBgMode" class="hidden"
+                                                    onchange="window.setWishesBgMode(this.checked ? 'image' : 'color');">
+                                                <div id="wishesBgModeSlider"
+                                                    class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1">
+                                                </div>
+                                                <button type="button"
+                                                    onclick="document.getElementById('settingWishesBgMode').checked = false; window.setWishesBgMode('color');"
+                                                    class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 wishes-mode-btn text-white"
+                                                    id="wishesModeColorBtn">Warna</button>
+                                                <button type="button"
+                                                    onclick="document.getElementById('settingWishesBgMode').checked = true; window.setWishesBgMode('image');"
+                                                    class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 wishes-mode-btn text-slate-400"
+                                                    id="wishesModeImageBtn">Gambar</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <div class="flex items-center justify-between px-1">
+                                                <label
+                                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna
+                                                    / Gradient</label>
+                                                <input type="color" id="wishesColorPicker"
+                                                    oninput="window.syncWishesColor(this.value, 'picker')"
+                                                    class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
+                                            </div>
+                                            <input type="text" id="settingWishesBgColor" onchange="saveSettings()"
+                                                class="input-premium font-mono text-[10px]"
+                                                placeholder="Cth: #000000 atau linear-gradient(...)">
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background
+                                                Gambar</label>
+                                            <button type="button" onclick="this.nextElementSibling.click()"
+                                                class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
+                                            </button>
+                                            <input type="file"
+                                                onchange="uploadSettingImg(this, 'wishes_bg_img', 'wishesBgPreview')"
+                                                class="hidden">
+                                        </div>
+                                    </div>
+
+                                    <!-- Kolom 3: Preview -->
+                                    <div
+                                        class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-4">
                                         <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan
+                                            class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 block mb-2">Preview
                                             Background</label>
-                                        <div
-                                            class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
-                                            <input type="checkbox" id="settingWishesBgMode" class="hidden"
-                                                onchange="window.setWishesBgMode(this.checked ? 'image' : 'color');">
-                                            <div id="wishesBgModeSlider"
-                                                class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1">
+                                        <div id="wishesBgPreviewContainer"
+                                            class="relative group aspect-video lg:h-[200px] w-full rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl bg-white dark:bg-slate-900/50 flex items-center justify-center">
+                                            <img id="wishesBgPreview" class="w-full h-full object-cover hidden">
+                                            <div id="wishesBgPreviewPlaceholder"
+                                                class="flex flex-col items-center justify-center text-slate-900 p-8 text-center">
+                                                <p
+                                                    class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">
+                                                    Preview Gambar</p>
+                                                <p class="text-[9px] text-slate-500 font-medium">Tampilkan
+                                                    foto<br>background disini</p>
                                             </div>
                                             <button type="button"
-                                                onclick="document.getElementById('settingWishesBgMode').checked = false; window.setWishesBgMode('color');"
-                                                class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 wishes-mode-btn text-white"
-                                                id="wishesModeColorBtn">Warna</button>
-                                            <button type="button"
-                                                onclick="document.getElementById('settingWishesBgMode').checked = true; window.setWishesBgMode('image');"
-                                                class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 wishes-mode-btn text-slate-400"
-                                                id="wishesModeImageBtn">Gambar</button>
+                                                onclick="window.deleteSettingImg('wishes_bg_img', 'wishesBgPreview'); document.getElementById('wishesBgPreview').classList.add('hidden'); document.getElementById('wishesBgPreviewPlaceholder').classList.remove('hidden');"
+                                                class="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-red-600 active:scale-90 z-20">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
                                         </div>
+                                        <input type="hidden" id="settingWishesBgImg" value="">
                                     </div>
-
-                                    <div class="space-y-2">
-                                        <div class="flex items-center justify-between px-1">
-                                            <label
-                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna
-                                                / Gradient</label>
-                                            <input type="color" id="wishesColorPicker"
-                                                oninput="window.syncWishesColor(this.value, 'picker')"
-                                                class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
-                                        </div>
-                                        <input type="text" id="settingWishesBgColor" onchange="saveSettings()"
-                                            class="input-premium font-mono text-[10px]"
-                                            placeholder="Cth: #000000 atau linear-gradient(...)">
-                                    </div>
-
-                                    <div class="space-y-2">
-                                        <label
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background
-                                            Gambar</label>
-                                        <button type="button" onclick="this.nextElementSibling.click()"
-                                            class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
-                                            <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
-                                        </button>
-                                        <input type="file"
-                                            onchange="uploadSettingImg(this, 'wishes_bg_img', 'wishesBgPreview')"
-                                            class="hidden">
-                                    </div>
-                                </div>
-
-                                <!-- Kolom 3: Preview -->
-                                <div class="lg:border-l border-slate-200 dark:border-slate-700/50 lg:pl-10 space-y-4">
-                                    <label
-                                        class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 block mb-2">Preview
-                                        Background</label>
-                                    <div id="wishesBgPreviewContainer"
-                                        class="relative group aspect-video lg:h-[200px] w-full rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl bg-white dark:bg-slate-900/50 flex items-center justify-center">
-                                        <img id="wishesBgPreview" class="w-full h-full object-cover hidden">
-                                        <div id="wishesBgPreviewPlaceholder"
-                                            class="flex flex-col items-center justify-center text-slate-900 p-8 text-center">
-                                            <p class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">
-                                                Preview Gambar</p>
-                                            <p class="text-[9px] text-slate-500 font-medium">Tampilkan
-                                                foto<br>background disini</p>
-                                        </div>
-                                        <button type="button"
-                                            onclick="window.deleteSettingImg('wishes_bg_img', 'wishesBgPreview'); document.getElementById('wishesBgPreview').classList.add('hidden'); document.getElementById('wishesBgPreviewPlaceholder').classList.remove('hidden');"
-                                            class="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-red-600 active:scale-90 z-20">
-                                            <i class="fas fa-trash-alt text-xs"></i>
-                                        </button>
-                                    </div>
-                                    <input type="hidden" id="settingWishesBgImg" value="">
                                 </div>
                             </div>
                         </div>
@@ -3562,11 +3717,11 @@
                                     class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-sm">📍</button>
                                 <div class="w-px h-5 bg-slate-200 mx-0.5"></div>
                                 <button onclick="window.insertWaTag('@nama')"
-                                    class="px-2.5 sm:px-3 h-7 sm:h-8 rounded-lg bg-indigo-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 uppercase">
+                                    class="px-2.5 sm:px-3 h-7 sm:h-8 rounded-lg bg-indigo-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center hover:bg-indigo-700 transition-all uppercase">
                                     @nama
                                 </button>
                                 <button onclick="window.insertWaTag('@link')"
-                                    class="px-2.5 sm:px-3 h-7 sm:h-8 rounded-lg bg-indigo-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 uppercase">
+                                    class="px-2.5 sm:px-3 h-7 sm:h-8 rounded-lg bg-indigo-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center hover:bg-indigo-700 transition-all uppercase">
                                     @link
                                 </button>
                             </div>
