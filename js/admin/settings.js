@@ -364,9 +364,10 @@ window.renderSettings = function() {
     }
 };
 
-window.saveSettings = async function(quiet = false, customMsg = null) {
+window.saveSettings = async function(quiet = false, customMsg = null, skipReload = false) {
     if (!isAppLoaded) return;
     const payload = {};
+
     const fields = {
         cover_title: 'settingCoverTitle',
         cover_subtitle: 'settingCoverSubtitle',
@@ -451,8 +452,8 @@ window.saveSettings = async function(quiet = false, customMsg = null) {
             method: 'PUT',
             body: JSON.stringify(payload)
         });
-        if (!quiet) showToast(customMsg || 'Pengaturan berhasil disimpan!', 'success');
-        await window.loadDashboard();
+         if (!quiet) window.showToast(customMsg || 'Pengaturan berhasil disimpan!', 'success');
+        if (!skipReload) await window.loadDashboard();
     } catch (err) {
         if (!quiet) showToast(err.message, 'error');
     }

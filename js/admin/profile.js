@@ -10,14 +10,22 @@ window.loadProfileData = async function() {
         if (document.getElementById('profileEmail')) document.getElementById('profileEmail').value = admin.email || '';
         if (document.getElementById('profilePhone')) document.getElementById('profilePhone').value = admin.phone || '';
         
-        const avatarImg = document.getElementById('headerUserAvatar');
-        if (avatarImg && admin.avatar) avatarImg.src = admin.avatar;
+        // Sync avatars
+        ['headerUserAvatar', 'profileAvatarPreview', 'dropdownUserAvatar'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && admin.avatar) el.src = admin.avatar;
+        });
         
-        const profileAvatar = document.getElementById('profileAvatarPreview');
-        if (profileAvatar && admin.avatar) profileAvatar.src = admin.avatar;
-        
-        const headerName = document.getElementById('headerUserName');
-        if (headerName && admin.full_name) headerName.innerText = admin.full_name;
+        // Sync names
+        ['headerUserName', 'dropdownUserName'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && admin.full_name) el.innerText = admin.full_name;
+        });
+
+        // Sync email in dropdown
+        const dropEmail = document.getElementById('dropdownUserEmail');
+        if (dropEmail && admin.email) dropEmail.innerText = admin.email;
+
     } catch (e) {
         console.error('Failed to load profile:', e);
     }
@@ -62,7 +70,7 @@ window.saveProfile = async function(btn) {
     }
 };
 
-window.uploadAdminAvatar = async function(input) {
+window.uploadProfileAvatar = async function(input) {
     if (!input.files || !input.files[0]) return;
     const formData = new FormData();
     formData.append('avatar', input.files[0]);

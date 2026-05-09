@@ -115,31 +115,58 @@ window.saveAllCoupleData = async function(btn) {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> MENYIMPAN...';
         }
 
-        await window.saveSettings(true);
-
-        const promises = [1, 2].map(id => {
+        // 1. Ambil data dari input SEBELUM saveSettings (agar tidak kena tindih refresh)
+        const couplePayloads = [1, 2].map(id => {
             const prefix = `couple${id}`;
-            let instagram = document.getElementById(`${prefix}Instagram`).value.trim();
+            const roleEl = document.getElementById(`${prefix}Role`);
+            const nameEl = document.getElementById(`${prefix}Name`);
+            const parentsEl = document.getElementById(`${prefix}Parents`);
+            const igEl = document.getElementById(`${prefix}Instagram`);
+            const igLinkEl = document.getElementById(`${prefix}InstagramLink`);
+            const imgEl = document.getElementById(`${prefix}Image`);
+
+            let instagram = igEl ? igEl.value.trim() : '';
             if (instagram && !instagram.startsWith('@')) instagram = '@' + instagram;
 
-            const payload = {
-                role: document.getElementById(`${prefix}Role`).value,
-                name: document.getElementById(`${prefix}Name`).value,
-                parents: document.getElementById(`${prefix}Parents`).value,
-                instagram: instagram,
-                instagram_link: document.getElementById(`${prefix}InstagramLink`).value,
-                image_src: document.getElementById(`${prefix}Image`).value,
+            return {
+                id,
+                payload: {
+                    role: roleEl ? roleEl.value : '',
+                    name: nameEl ? nameEl.value : '',
+                    parents: parentsEl ? parentsEl.value : '',
+                    instagram: instagram,
+                    instagram_link: igLinkEl ? igLinkEl.value : '',
+                    image_src: imgEl ? imgEl.value : '',
+                    description: '' // Sesuai kolom di database
+                }
             };
-            return api(`/api/admin/couple/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
         });
 
-        await Promise.all(promises);
+        // 2. Simpan pengaturan umum (Lewati reload otomatis)
+        await window.saveSettings(true, null, true);
+
+        // 3. Simpan data pasangan satu per satu secara berurutan (Sequential)
+        for (const item of couplePayloads) {
+            await api(`/api/admin/couple/${item.id}`, { 
+                method: 'PUT', 
+                body: JSON.stringify(item.payload) 
+            });
+        }
+        
         window.showToast('Semua data pasangan berhasil diperbarui!', 'success');
+        
+        // 4. Muat ulang dashboard SEKALI saja di akhir
         await window.loadDashboard();
     } catch (err) {
-        const msg = err.data?.detail || err.message;
+        console.error('Save error:', err);
+        let msg = err.message;
+        if (err.data && err.data.error) msg = err.data.error;
         window.showToast('Gagal menyimpan data: ' + msg, 'error');
     } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = 'Simpan';
+        }
         const btns = document.querySelectorAll('button[onclick="window.saveAllCoupleData(this)"]');
         btns.forEach(b => {
             if (b) {
