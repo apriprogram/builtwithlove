@@ -953,25 +953,12 @@ updateCountdown();
 
 
 function updateGuestForms() {
-    // Universal fallback for RSVP caption
-    const defaultRsvpMsg = (window.invitationSettings && window.invitationSettings.rsvp_caption) 
-        ? window.invitationSettings.rsvp_caption 
-        : 'Silakan isi kehadiran dan ucapan Anda untuk langsung mengisi konfirmasi.';
-
-    const guestMessage = currentGuest 
-        ? `Halo ${currentGuest.name}, ${defaultRsvpMsg}` 
-        : defaultRsvpMsg;
     const disabled = !currentGuest;
     const hasRsvp = currentGuest && currentGuest.rsvp_status;
 
-    const guestNoticeRsvp = document.getElementById('guestNoticeRsvp');
-    const guestNoticeWish = document.getElementById('guestNoticeWish');
     const rsvpCount = document.getElementById('rsvpCount');
     const rsvpSubmit = document.querySelector('#rsvpForm button[type="submit"]');
     const wishSubmit = document.querySelector('#wishesForm button');
-
-    if (guestNoticeRsvp) guestNoticeRsvp.innerText = guestMessage;
-    if (guestNoticeWish) guestNoticeWish.innerText = guestMessage;
     
     if (rsvpCount) {
         rsvpCount.disabled = disabled || hasRsvp;
@@ -1071,6 +1058,28 @@ function setupPage() {
 
         scrollToTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // Gallery Arrows Navigation
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (!galleryState.slides || galleryState.slides.length === 0) return;
+            galleryState.currentIndex = (galleryState.currentIndex - 1 + galleryState.slides.length) % galleryState.slides.length;
+            updateGalleryCarousel(true);
+            resetGalleryTimer();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (!galleryState.slides || galleryState.slides.length === 0) return;
+            galleryState.currentIndex = (galleryState.currentIndex + 1) % galleryState.slides.length;
+            updateGalleryCarousel(true);
+            resetGalleryTimer();
         });
     }
 }
