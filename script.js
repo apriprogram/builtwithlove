@@ -521,8 +521,8 @@ function renderPublicEvents(events) {
                         </div>
                         <p class="font-sans font-light text-white/60 mt-4 tracking-wider text-[11px] md:text-sm">${event.address || '-'}</p>
                         ${event.map_src ? `
-                        <div class="mt-8 w-full h-48 md:h-64 rounded-xl overflow-hidden border border-white/20">
-                            <iframe src="${event.map_src}" width="100%" height="100%" style="border:0; filter: invert(100%) hue-rotate(180deg) contrast(90%);" allowfullscreen="" loading="lazy"></iframe>
+                        <div class="mt-8 w-full h-48 md:h-64 rounded-xl overflow-hidden border border-white/20 bg-[#111]">
+                            <iframe src="${event.map_src}" width="100%" height="100%" style="border:0; filter: invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.2);" allowfullscreen="" loading="lazy"></iframe>
                         </div>
                         ` : ''}
                         ${event.map_link ? `
@@ -715,13 +715,17 @@ function renderLoveStory(messages, settings) {
                     <i class="fas ${isFemale ? 'fa-venus' : 'fa-mars'} text-white/50 text-base md:text-xl"></i>
                    </div>`;
 
+            const radiusStyle = isStacked 
+                ? 'border-radius: 16px;' 
+                : (isFemale ? 'border-radius: 0 16px 16px 16px;' : 'border-radius: 16px 0 16px 16px;');
+            
             const msgHtml = `
-                <div class="flex w-full ${isFemale ? 'justify-start' : 'justify-end'} ${isStacked ? 'mt-1' : 'mt-4 md:mt-6'} animate-fadeInUp px-2 items-end">
+                <div class="flex w-full ${isFemale ? 'justify-start' : 'justify-end'} ${isStacked ? 'mt-1' : 'mt-4 md:mt-6'} animate-fadeInUp px-2 items-start">
                     ${isFemale ? (isStacked ? '<div class="w-8 h-8 md:w-11 shrink-0 mr-2"></div>' : avatarHtml) : ''}
-                    <div class="${bgClass} text-[#e9edef] px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg ${isStacked ? '' : roundClass} shadow-sm relative max-w-[80%] md:max-w-[70%]">
-                        <div class="flex flex-wrap items-end justify-end gap-x-2">
-                            <p class="text-[13px] md:text-[15px] leading-relaxed break-words flex-1 min-w-0">${msg.message}</p>
-                            <div class="flex items-center gap-1 pb-0.5 shrink-0 opacity-80">
+                    <div class="${bgClass} text-[#e9edef] px-3 py-2 md:px-4 md:py-3 shadow-sm relative max-w-[80%] md:max-w-[70%]" style="${radiusStyle}">
+                        <div class="flex flex-col gap-1">
+                            <p class="text-[13px] md:text-[15px] leading-relaxed break-words">${msg.message}</p>
+                            <div class="flex items-center justify-end gap-1 opacity-80 mt-1">
                                 <span class="text-[#8696a0] text-[9px] md:text-[10px] font-sans font-medium uppercase">${msg.time}</span>
                                 ${doubleCheck}
                             </div>
@@ -745,6 +749,11 @@ function renderGifts(gifts, physicalAddress, settings) {
     if (!section || !bankContainer || !physContainer || !physText) {
         console.warn('Gifts elements not found in DOM');
         return;
+    }
+
+    const giftTitleEl = document.getElementById('giftTitle');
+    if (giftTitleEl && settings && settings.gift_title) {
+        giftTitleEl.innerText = settings.gift_title;
     }
 
     // Apply Background
@@ -778,13 +787,13 @@ function renderGifts(gifts, physicalAddress, settings) {
     if (gifts && gifts.length > 0) {
         bankContainer.innerHTML = gifts.map(gift => `
             <div class="flex flex-col items-center">
-                <div class="${gift.logo_src ? 'w-24 h-12 mb-3' : 'hidden'}">
+                <div class="${gift.logo_src ? 'w-24 h-12 mb-2 md:mb-3' : 'hidden'}">
                     <img src="${gift.logo_src}" alt="${gift.bank_name}" class="w-full h-full object-contain" onerror="this.src=''; this.parentElement.className='hidden'">
                 </div>
-                ${!gift.logo_src ? `<p class="font-sans font-bold text-xl mb-1 text-[#e6d5b8] tracking-widest">${gift.bank_name}</p>` : ''}
-                <p class="font-sans text-[14px] md:text-[15px] font-semibold tracking-[0.15em] text-[#e6d5b8] uppercase mb-1 drop-shadow-md">${gift.logo_src ? gift.bank_name + ' &mdash; ' : ''}<span id="account-${gift.id}">${gift.account_number}</span></p>
-                <p class="font-sans text-[11px] md:text-xs font-medium tracking-[0.2em] text-[#e6d5b8]/70 uppercase mt-2 mb-6">${gift.account_name}</p>
-                <button onclick="window.copyToClipboard('${gift.account_number}')" class="backdrop-blur-md bg-black/40 hover:bg-black/60 border border-[#988a70]/50 text-[#f3e3c6] px-8 py-3 rounded-full font-sans text-xs tracking-[0.2em] uppercase transition-all shadow-2xl inline-flex items-center gap-3">
+                ${!gift.logo_src ? `<p class="font-sans font-bold text-xl mb-0.5 text-[#e6d5b8] tracking-widest">${gift.bank_name}</p>` : ''}
+                <p class="font-sans text-[14px] md:text-[15px] font-semibold tracking-[0.15em] text-[#e6d5b8] uppercase mb-0.5 drop-shadow-md">${gift.logo_src ? gift.bank_name + ' &mdash; ' : ''}<span id="account-${gift.id}">${gift.account_number}</span></p>
+                <p class="font-sans text-[11px] md:text-xs font-medium tracking-[0.2em] text-[#e6d5b8]/70 uppercase mt-1 mb-4 md:mb-6">${gift.account_name}</p>
+                <button onclick="window.copyToClipboard('${gift.account_number}')" class="backdrop-blur-md bg-black/40 hover:bg-black/60 border border-[#988a70]/50 text-[#f3e3c6] px-6 py-2.5 rounded-full font-sans text-[9px] md:text-[11px] tracking-[0.2em] uppercase transition-all shadow-2xl inline-flex items-center gap-3 cursor-pointer">
                     <i class="far fa-clone text-sm"></i> Salin Rekening
                 </button>
             </div>

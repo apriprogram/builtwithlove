@@ -132,12 +132,12 @@
 
                 <div data-aos="fade-up" data-aos-delay="500" data-aos-duration="1200">
                     <p id="greetingQuote"
-                        class="max-w-2xl mx-auto font-serif leading-relaxed text-white/90 italic text-base md:text-xl mb-4 px-4 drop-shadow-md">
+                        class="max-w-2xl mx-auto font-serif leading-relaxed text-white/90 italic text-[13px] md:text-xl mb-4 px-4 drop-shadow-md">
                         "Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan
                         Allah, tidak boleh diceraikan manusia." <br>(Matius 19:6)
                     </p>
                     <p id="greetingInvitation"
-                        class="max-w-2xl mx-auto font-sans not-italic text-[8px] md:text-xs tracking-[0.1em] leading-loose font-semibold uppercase opacity-80 text-white mb-8 px-4 drop-shadow-md">
+                        class="max-w-2xl mx-auto font-sans not-italic text-[10px] md:text-xs tracking-[0.1em] leading-loose font-semibold uppercase opacity-80 text-white mb-8 px-4 drop-shadow-md">
                         Atas Kasih Karunia Tuhan Yesus Kristus, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk
                         menghadiri acara pernikahan kami.
                     </p>
@@ -404,7 +404,7 @@
             <div class="container mx-auto max-w-4xl relative z-10" data-aos="fade-up">
                 <div class="w-full flex flex-col items-center text-center">
                     <h3 id="giftTitle" class="font-script text-5xl md:text-6xl text-center mb-16 text-[#F5A623]">Kado Digital</h3>
-                    <div id="bankAccountsContainer" class="w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-14">
+                    <div id="bankAccountsContainer" class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14">
                         <!-- Banks will be dynamically rendered here -->
                     </div>
 
@@ -417,7 +417,7 @@
                             class="font-sans text-[13px] md:text-sm text-[#e6d5b8] font-medium leading-relaxed mb-8 px-4 drop-shadow-sm">
                         </p>
                         <button onclick="window.copyPhysicalAddress()"
-                            class="backdrop-blur-md bg-black/40 hover:bg-black/60 border border-[#988a70]/50 text-[#f3e3c6] px-8 py-3 rounded-full font-sans text-xs tracking-[0.2em] uppercase transition-all shadow-2xl inline-flex items-center gap-3">
+                            class="backdrop-blur-md bg-black/40 hover:bg-black/60 border border-[#988a70]/50 text-[#f3e3c6] px-6 py-2.5 rounded-full font-sans text-[9px] md:text-[11px] tracking-[0.2em] uppercase transition-all shadow-2xl inline-flex items-center gap-3 cursor-pointer">
                             <i class="far fa-clone text-sm"></i> Salin Alamat
                         </button>
                     </div>
@@ -439,10 +439,12 @@
                         <input id="rsvpCount" type="number" placeholder="Jumlah Tamu" min="1"
                             class="bg-white/10 border border-white/20 rounded-xl px-4 py-4 w-full text-white placeholder-white/50 focus:outline-none focus:border-white">
                     </div>
-                    <button type="submit"
-                        class="w-full bg-white text-black font-sans font-bold text-lg uppercase tracking-wide py-4 px-6 rounded-xl hover:bg-gray-200 transition-all duration-500 shadow-xl border-2 border-transparent">
-                        Konfirmasi Kehadiran
-                    </button>
+                    <div class="flex justify-center">
+                        <button type="submit"
+                            class="bg-white/10 backdrop-blur-md border border-white/30 text-white font-sans uppercase tracking-[0.2em] text-[9px] md:text-[11px] px-6 py-2.5 rounded-full hover:bg-white hover:text-black transition-all duration-500 shadow-xl inline-flex justify-center items-center gap-3 cursor-pointer">
+                            <i class="fa-solid fa-paper-plane text-xs md:text-sm"></i> KIRIM KONFIRMASI
+                        </button>
+                    </div>
                 </form>
             </div>
         </section>
@@ -457,7 +459,7 @@
                 <!-- Form Container -->
                 <div class="bg-black/30 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-xl shadow-2xl mb-12">
                     <h3 id="wishesTitle"
-                        class="font-serif text-4xl md:text-5xl text-center text-white mb-2 tracking-wide">Wedding Wishes
+                        class="font-script text-5xl md:text-6xl text-center text-[#F5A623] mb-4 tracking-wide">Wedding Wishes
                     </h3>
                     <p id="wishesQuote"
                         class="text-white/70 text-center mb-8 px-4 font-sans italic text-sm md:text-base"></p>
@@ -473,10 +475,12 @@
                                     id="charCount">300</span></p>
                         </div>
 
-                        <button type="button" onclick="submitWish()"
-                            class="w-full bg-white/10 backdrop-blur-md border border-white/30 text-white font-sans uppercase tracking-[0.2em] text-[10px] md:text-xs px-8 py-4 rounded-full hover:bg-white hover:text-black transition-all duration-500 shadow-xl inline-flex justify-center items-center gap-3 mt-4">
-                            <i class="fa-regular fa-paper-plane text-base"></i> SEND
-                        </button>
+                        <div class="flex justify-center">
+                            <button type="button" onclick="submitWish()"
+                                class="bg-white/10 backdrop-blur-md border border-white/30 text-white font-sans uppercase tracking-[0.2em] text-[9px] md:text-[11px] px-6 py-2.5 rounded-full hover:bg-white hover:text-black transition-all duration-500 shadow-xl inline-flex justify-center items-center gap-3 mt-4 cursor-pointer">
+                                <i class="fa-regular fa-paper-plane text-base"></i> KIRIM UCAPAN
+                            </button>
+                        </div>
                     </form>
                 </div>
 

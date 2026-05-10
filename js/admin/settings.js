@@ -57,6 +57,7 @@ window.renderSettings = function() {
     if (document.getElementById('settingWishesBgImg')) document.getElementById('settingWishesBgImg').value = settings.wishes_bg_img || '';
     if (document.getElementById('settingRsvpBgImg')) document.getElementById('settingRsvpBgImg').value = settings.rsvp_bg_img || '';
     if (document.getElementById('settingGreetingBgImg')) document.getElementById('settingGreetingBgImg').value = settings.greeting_bg_img || '';
+    if (document.getElementById('settingGiftTitle')) document.getElementById('settingGiftTitle').value = settings.gift_title || '';
     if (document.getElementById('giftPhysicalAddress')) document.getElementById('giftPhysicalAddress').value = settings.gift_physical_address || '';
     
     // Background Color Handlers
@@ -412,7 +413,8 @@ window.saveSettings = async function(quiet = false, customMsg = null, skipReload
         greeting_bg_mode: 'settingGreetingBgMode',
         bg_music: 'settingBgMusic',
         music_start_time: 'settingMusicStart',
-        gift_physical_address: 'giftPhysicalAddress'
+        gift_physical_address: 'giftPhysicalAddress',
+        gift_title: 'settingGiftTitle'
     };
 
     for (const [key, id] of Object.entries(fields)) {
