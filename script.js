@@ -610,15 +610,15 @@ function renderWishes(wishes) {
             replyHTML = `
                 <div class="flex flex-col items-end gap-1 w-full mt-2 pr-1 md:pr-2 animate-fadeInUp">
                     <div class="flex items-center gap-2 mr-1">
-                        <span class="text-white/40 text-[8px] md:text-[9px] font-sans">${replyTimeString}</span>
-                        <span class="text-white/60 text-[9px] md:text-[10px] font-sans tracking-wide font-medium">${heroName}</span>
+                        <span class="text-white/40 text-[7px] md:text-[9px] font-sans">${replyTimeString}</span>
+                        <span class="text-white/60 text-[8px] md:text-[10px] font-sans tracking-wide font-medium">${heroName}</span>
                     </div>
-                    <div class="flex gap-1.5 md:gap-2 items-start justify-end w-full">
-                        <div class="relative bg-blue-600/90 backdrop-blur-sm text-white px-3.5 py-2 md:px-5 md:py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-xl border border-white/10">
-                            <p class="font-sans text-[13px] md:text-[15px] leading-relaxed italic">"${item.reply}"</p>
+                    <div class="flex gap-1 md:gap-2 items-start justify-end w-full">
+                        <div class="relative bg-blue-600/90 backdrop-blur-sm text-white px-2.5 py-1.5 md:px-5 md:py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-xl border border-white/10">
+                            <p class="font-sans text-[11px] md:text-[15px] leading-relaxed italic">"${item.reply}"</p>
                         </div>
-                        <div class="w-7 h-7 md:w-8 md:h-8 shrink-0 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl border border-white/20 animate-pulse-slow">
-                            <i class="fas fa-heart text-[10px] md:text-xs"></i>
+                        <div class="w-6 h-6 md:w-8 md:h-8 shrink-0 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl border border-white/20 animate-pulse-slow">
+                            <i class="fas fa-heart text-[8px] md:text-xs"></i>
                         </div>
                     </div>
                 </div>
@@ -628,18 +628,18 @@ function renderWishes(wishes) {
         const wishHTML = `
             <div class="flex flex-col items-start gap-0 w-full ${!isFirstInStack ? 'mt-[2px]' : 'mt-4 md:mt-6'} animate-fadeInUp">
                 ${isFirstInStack ? `
-                <div class="flex items-center gap-2 ml-10 md:ml-12 mb-1">
-                    <span class="text-white/60 text-[9px] md:text-[10px] font-sans tracking-wide font-medium">${guestName}</span>
-                    <span class="text-white/40 text-[8px] md:text-[9px] font-sans">${timeString}</span>
+                <div class="flex items-center gap-2 ml-8 md:ml-12 mb-1">
+                    <span class="text-white/60 text-[8px] md:text-[10px] font-sans tracking-wide font-medium">${guestName}</span>
+                    <span class="text-white/40 text-[7px] md:text-[9px] font-sans">${timeString}</span>
                 </div>` : ''}
-                <div class="flex gap-1.5 md:gap-2 items-end justify-start w-full">
-                    <div class="w-7 h-7 md:w-8 md:h-8 shrink-0 ${!isFirstInStack ? 'invisible' : 'bg-white'} rounded-full flex items-center justify-center text-black font-bold font-sans text-xs md:text-sm shadow-xl">${initial}</div>
-                    <div class="relative bg-white/90 backdrop-blur-sm text-black px-3.5 py-2 md:px-5 md:py-3 
+                <div class="flex gap-1 md:gap-2 items-end justify-start w-full">
+                    <div class="w-6 h-6 md:w-8 md:h-8 shrink-0 ${!isFirstInStack ? 'invisible' : 'bg-white'} rounded-full flex items-center justify-center text-black font-bold font-sans text-[10px] md:text-sm shadow-xl">${initial}</div>
+                    <div class="relative bg-white/90 backdrop-blur-sm text-black px-2.5 py-1.5 md:px-5 md:py-3 
                         ${(isFirstInStack && isLastInStack) ? 'rounded-2xl rounded-bl-sm' : 
                           isFirstInStack ? 'rounded-2xl rounded-bl-sm' : 
                           isLastInStack ? 'rounded-2xl rounded-tl-sm' : 
                           'rounded-2xl rounded-bl-sm rounded-tl-sm'} max-w-[80%] shadow-xl border border-white/20">
-                        <p class="font-sans text-[13px] md:text-[15px] leading-relaxed">${item.message.replace(/\n/g, '<br>')}</p>
+                        <p class="font-sans text-[11px] md:text-[15px] leading-relaxed">${item.message.replace(/\n/g, '<br>')}</p>
                     </div>
                 </div>
                 ${replyHTML}
@@ -710,9 +710,9 @@ function renderLoveStory(messages, settings) {
             const doubleCheck = isFemale ? '' : '<i class="fas fa-check-double text-[#53bdeb] text-[10px] md:text-[11px]"></i>';
 
             const avatarHtml = avatarSrc 
-                ? `<img src="${avatarSrc}" class="w-8 h-8 md:w-11 md:h-11 rounded-full object-cover shrink-0 ${isFemale ? 'mr-2' : 'ml-2'}">`
-                : `<div class="w-8 h-8 md:w-11 md:h-11 rounded-full shrink-0 ${isFemale ? 'mr-2' : 'ml-2'} bg-[#202c33] flex items-center justify-center">
-                    <i class="fas ${isFemale ? 'fa-venus' : 'fa-mars'} text-white/50 text-base md:text-xl"></i>
+                ? `<img src="${avatarSrc}" class="w-7 h-7 md:w-11 md:h-11 rounded-full object-cover shrink-0 ${isFemale ? 'mr-2' : 'ml-2'}">`
+                : `<div class="w-7 h-7 md:w-11 md:h-11 rounded-full shrink-0 ${isFemale ? 'mr-2' : 'ml-2'} bg-[#202c33] flex items-center justify-center">
+                    <i class="fas ${isFemale ? 'fa-venus' : 'fa-mars'} text-white/50 text-sm md:text-xl"></i>
                    </div>`;
 
             const radiusStyle = isStacked 
@@ -721,12 +721,12 @@ function renderLoveStory(messages, settings) {
             
             const msgHtml = `
                 <div class="flex w-full ${isFemale ? 'justify-start' : 'justify-end'} ${isStacked ? 'mt-1' : 'mt-4 md:mt-6'} animate-fadeInUp px-2 items-start">
-                    ${isFemale ? (isStacked ? '<div class="w-8 h-8 md:w-11 shrink-0 mr-2"></div>' : avatarHtml) : ''}
-                    <div class="${bgClass} text-[#e9edef] px-3 py-2 md:px-4 md:py-3 shadow-sm relative max-w-[80%] md:max-w-[70%]" style="${radiusStyle}">
+                    ${isFemale ? (isStacked ? '<div class="w-7 h-7 md:w-11 shrink-0 mr-2"></div>' : avatarHtml) : ''}
+                    <div class="${bgClass} text-[#e9edef] px-2.5 py-1.5 md:px-4 md:py-3 shadow-sm relative max-w-[80%] md:max-w-[70%]" style="${radiusStyle}">
                         <div class="flex flex-col gap-1">
-                            <p class="text-[13px] md:text-[15px] leading-relaxed break-words">${msg.message}</p>
+                            <p class="text-[11px] md:text-[15px] leading-relaxed break-words">${msg.message}</p>
                             <div class="flex items-center justify-end gap-1 opacity-80 mt-1">
-                                <span class="text-[#8696a0] text-[9px] md:text-[10px] font-sans font-medium uppercase">${msg.time}</span>
+                                <span class="text-[#8696a0] text-[8px] md:text-[10px] font-sans font-medium uppercase">${msg.time}</span>
                                 ${doubleCheck}
                             </div>
                         </div>
