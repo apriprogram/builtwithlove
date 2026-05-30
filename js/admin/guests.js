@@ -47,6 +47,7 @@ window.renderGuests = function() {
       <td class="font-semibold text-slate-500 dark:text-slate-400 text-xs px-8 py-0">${absoluteIndex}</td>
       <td class="px-8 py-0 whitespace-nowrap">
          <span class="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm tracking-tight">${guest.name}</span>
+         ${guest.jabatan ? `<p class="text-[9px] sm:text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">${guest.jabatan}</p>` : ''}
       </td>
       <td class="px-8 py-0">
          <div class="flex items-center gap-2">
@@ -67,7 +68,7 @@ window.renderGuests = function() {
         <div class="flex items-center justify-end gap-2">
             <button class="btn-premium !p-0 w-9 h-9 bg-amber-100 text-amber-700 border border-amber-200 hover:bg-amber-200 hover:border-amber-600 
                            dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20 dark:hover:bg-amber-500/20 dark:hover:border-amber-500/40
-                           transition-all duration-300 rounded-lg !shadow-none" onclick="window.editGuest('${guest.id}', \`${(guest.name || '').replace(/`/g, '\\`').replace(/"/g, '&quot;')}\`)" title="Edit Nama">
+                           transition-all duration-300 rounded-lg !shadow-none" onclick="window.editGuest('${guest.id}', \`${(guest.name || '').replace(/`/g, '\\`').replace(/"/g, '&quot;')}\`, \`${(guest.jabatan || '').replace(/`/g, '\\`').replace(/"/g, '&quot;')}\`)" title="Edit Nama">
                 <i class="fas fa-edit text-xs pointer-events-none"></i>
             </button>
             <button class="btn-premium !p-0 w-9 h-9 bg-red-100 text-red-700 border border-red-200 hover:bg-red-200 hover:border-red-600 
@@ -158,17 +159,20 @@ window.copyGuestMessage = async function(name, link) {
 
 window.addGuest = async function() {
     const input = document.getElementById('guestNameInput');
+    const jabatanInput = document.getElementById('guestJabatanInput');
     if (!input || !input.value.trim()) return;
     const name = input.value.trim();
+    const jabatan = jabatanInput ? jabatanInput.value.trim() : '';
     const btn = document.querySelector('button[onclick="window.addGuest()"]');
     if (btn) btn.disabled = true;
 
     try {
         await api('/api/admin/guests', {
             method: 'POST',
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, jabatan })
         });
         input.value = '';
+        if (jabatanInput) jabatanInput.value = '';
         showToast('Tamu berhasil ditambahkan!', 'success');
         await window.loadDashboard();
     } catch (err) {
@@ -178,20 +182,22 @@ window.addGuest = async function() {
     }
 };
 
-window.editGuest = function(id, name) {
+window.editGuest = function(id, name, jabatan) {
     window.showActionModal({
         title: window.currentLang === 'id' ? 'Ubah Nama Tamu' : 'Edit Guest Name',
         icon: 'fa-user-edit',
         color: 'bg-indigo-600',
         fields: [
-            { label: window.currentLang === 'id' ? 'Nama Lengkap' : 'Full Name', id: 'editGuestName', type: 'text', value: name, icon: 'fa-user' }
+            { label: window.currentLang === 'id' ? 'Nama Lengkap' : 'Full Name', id: 'editGuestName', type: 'text', value: name, icon: 'fa-user' },
+            { label: window.currentLang === 'id' ? 'Jabatan (Opsional)' : 'Job Title (Optional)', id: 'editGuestJabatan', type: 'text', value: jabatan || '', icon: 'fa-briefcase' }
         ],
         onSubmit: async () => {
             const newName = document.getElementById('editGuestName').value.trim();
+            const newJabatan = document.getElementById('editGuestJabatan').value.trim();
             if (!newName) throw new Error('Name is required');
             await api(`/api/admin/guests/${id}`, {
                 method: 'PUT',
-                body: JSON.stringify({ name: newName })
+                body: JSON.stringify({ name: newName, jabatan: newJabatan })
             });
             showToast(window.currentLang === 'id' ? 'Nama tamu diperbarui!' : 'Guest name updated!', 'success');
             await window.loadDashboard();

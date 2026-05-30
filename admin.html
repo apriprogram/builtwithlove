@@ -3135,9 +3135,13 @@
                             </div>
                             <div class="flex flex-wrap items-center justify-center gap-2 w-full lg:w-auto">
                                 <div class="relative w-full sm:w-64 lg:w-72 group">
-                                    <i
-                                        class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 z-10 group-focus-within:text-indigo-500 transition-colors text-xs"></i>
+                                    <i class="fas fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 z-10 group-focus-within:text-indigo-500 transition-colors text-xs"></i>
                                     <input id="guestNameInput" type="text" placeholder="Nama tamu..."
+                                        class="input-premium h-9 sm:h-10 w-full !pl-10 text-[11px] sm:text-sm bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500 transition-all opacity-90 focus:opacity-100">
+                                </div>
+                                <div class="relative w-full sm:w-48 lg:w-56 group">
+                                    <i class="fas fa-briefcase absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 z-10 group-focus-within:text-indigo-500 transition-colors text-xs"></i>
+                                    <input id="guestJabatanInput" type="text" placeholder="Jabatan (Opsional)"
                                         class="input-premium h-9 sm:h-10 w-full !pl-10 text-[11px] sm:text-sm bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 outline-none focus:border-indigo-500 transition-all opacity-90 focus:opacity-100">
                                 </div>
                                 <button id="addGuestButton" onclick="window.addGuest()"

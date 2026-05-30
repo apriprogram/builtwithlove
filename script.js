@@ -361,7 +361,36 @@ async function loadPublicData() {
             }
         }
 
-        safeText('guestName', currentGuest?.name || settings.guest_label || '-');
+        const nameEl = document.getElementById('guestName');
+        const jabatanEl = document.getElementById('guestJabatan');
+        const guestNameStr = currentGuest?.name || settings.guest_label || '-';
+        if (nameEl) {
+            nameEl.innerText = guestNameStr;
+            const adjustFontSize = () => {
+                nameEl.style.fontSize = ''; 
+                setTimeout(() => {
+                    let containerWidth = window.innerWidth * 0.9;
+                    if (nameEl.parentElement) containerWidth = nameEl.parentElement.clientWidth;
+                    if (nameEl.scrollWidth > containerWidth) {
+                        let size = parseFloat(window.getComputedStyle(nameEl).fontSize);
+                        while (nameEl.scrollWidth > containerWidth && size > 14) {
+                            size -= 1;
+                            nameEl.style.fontSize = size + 'px';
+                        }
+                    }
+                }, 10);
+            };
+            adjustFontSize();
+            window.addEventListener('resize', adjustFontSize);
+        }
+        if (jabatanEl) {
+            if (currentGuest?.jabatan) {
+                jabatanEl.innerText = currentGuest.jabatan;
+                jabatanEl.classList.remove('hidden');
+            } else {
+                jabatanEl.classList.add('hidden');
+            }
+        }
         updateGuestForms();
 
         renderPublicEvents(events);

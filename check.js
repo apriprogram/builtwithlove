@@ -1,2 +1,15 @@
-const db=require('./db'); 
-db.query('SELECT value FROM settings WHERE `key`="opening_bg_img"').then(r=>{console.log(r[0]);process.exit()}).catch(e=>{console.error(e);process.exit()});
+const db = require('./db');
+async function run() {
+    try {
+        await db.query('ALTER TABLE guests ADD COLUMN jabatan VARCHAR(255) DEFAULT NULL;');
+        console.log("Column 'jabatan' added successfully.");
+    } catch (e) {
+        if (e.code === 'ER_DUP_FIELDNAME') {
+            console.log("Column 'jabatan' already exists.");
+        } else {
+            console.error(e);
+        }
+    }
+    process.exit();
+}
+run();

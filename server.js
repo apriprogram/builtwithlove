@@ -351,6 +351,7 @@ async function initDb() {
 
     // Run migrations
     await ensureColumn('guests', 'first_name', 'TEXT');
+    await ensureColumn('guests', 'jabatan', 'VARCHAR(255)');
     await ensureColumn('rsvps', 'guest_id', 'INT');
     await ensureColumn('wishes', 'guest_id', 'INT');
     await ensureColumn('wishes', 'reply', 'TEXT');
@@ -530,7 +531,7 @@ app.get('/api/public', async (req, res) => {
     const wishes = await queryAll(`SELECT w.id, w.message, w.created_at, w.reply, w.replied_at, g.name AS guest_name FROM wishes w LEFT JOIN guests g ON g.id = w.guest_id ORDER BY w.id DESC LIMIT 30`);
     let guest = null;
     if (token) {
-      guest = await queryGet(`SELECT g.id, g.name, g.token, r.status AS rsvp_status, r.guest_count AS rsvp_guest_count FROM guests g LEFT JOIN rsvps r ON r.guest_id = g.id WHERE g.token = ? ORDER BY r.id DESC LIMIT 1`, [token]);
+      guest = await queryGet(`SELECT g.id, g.name, g.jabatan, g.token, r.status AS rsvp_status, r.guest_count AS rsvp_guest_count FROM guests g LEFT JOIN rsvps r ON r.guest_id = g.id WHERE g.token = ? ORDER BY r.id DESC LIMIT 1`, [token]);
     }
     const lovestory = await queryAll('SELECT * FROM lovestory ORDER BY order_no ASC, id ASC');
     const lsSettingsRows = await queryAll('SELECT `key`, value FROM lovestory_settings');
@@ -666,22 +667,22 @@ app.post('/api/admin/music/upload', requireAdmin, handleUpload(audioUpload.singl
 });
 
 app.post('/api/admin/guests', requireAdmin, async (req, res) => {
-  const { name } = req.body;
+  const { name, jabatan } = req.body;
   try {
     const firstName = extractFirstName(name);
     const token = await generateTokenFromFirstName(firstName);
-    const result = await runSql('INSERT INTO guests (name, first_name, token, created_at) VALUES (?, ?, ?, ?)', [name, firstName, token, new Date().toISOString()]);
-    res.json({ success: true, guest: { id: result.lastID, name, token } });
+    const result = await runSql('INSERT INTO guests (name, jabatan, first_name, token, created_at) VALUES (?, ?, ?, ?, ?)', [name, jabatan || null, firstName, token, new Date().toISOString()]);
+    res.json({ success: true, guest: { id: result.lastID, name, jabatan: jabatan || null, token } });
   } catch (error) {
     res.status(500).json({ error: 'Failed to create guest' });
   }
 });
 
 app.put('/api/admin/guests/:id', requireAdmin, async (req, res) => {
-  const { name } = req.body;
+  const { name, jabatan } = req.body;
   try {
     const firstName = extractFirstName(name);
-    await runSql('UPDATE guests SET name = ?, first_name = ? WHERE id = ?', [name, firstName, req.params.id]);
+    await runSql('UPDATE guests SET name = ?, jabatan = ?, first_name = ? WHERE id = ?', [name, jabatan || null, firstName, req.params.id]);
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update guest' });
