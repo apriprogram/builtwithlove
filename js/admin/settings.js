@@ -503,8 +503,57 @@ window.saveSettings = async function(quiet = false, customMsg = null, skipReload
 
 window.uploadSettingImg = async function(input, key, previewId) {
     if (!input.files || !input.files[0]) return;
+    
+    let file = input.files[0];
+
+    // Client-side compression for images to ensure they stay under ~300KB (WhatsApp limit)
+    if (file.type.startsWith('image/') && !file.type.includes('gif')) {
+        try {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const MAX_WIDTH = 1200;
+            const MAX_HEIGHT = 1200;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.6));
+            if (blob.size < file.size) {
+                file = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpeg", {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                });
+            }
+        } catch (e) {
+            console.error('Image compression failed', e);
+        }
+    }
+
     const formData = new FormData();
-    formData.append('image', input.files[0]);
+    formData.append('image', file);
     formData.append('setting_key', key);
 
     try {
