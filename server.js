@@ -133,6 +133,39 @@ app.get('/admin.html', (req, res) => {
   res.redirect('/dashboard');
 });
 
+app.get('/', async (req, res) => {
+  try {
+    const [settingsRows] = await db.query('SELECT `key`, value FROM settings');
+    const settings = {};
+    settingsRows.forEach((row) => (settings[row.key] = row.value));
+    
+    let ogImage = '';
+    if (settings.opening_bg_img) {
+      const imgs = settings.opening_bg_img.split(',').filter(u => u.trim() !== '');
+      if (imgs.length > 0) ogImage = imgs[0];
+    }
+    
+    let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    
+    const baseUrl = 'https://' + (req.headers.host || 'riandanaurora.my.id');
+    const fullImageUrl = ogImage ? (ogImage.startsWith('http') ? ogImage : baseUrl + ogImage) : '';
+    
+    const title = settings.hero_name ? `The Wedding of ${settings.hero_name}` : 'The Wedding of Riandino & Aurora';
+    const ogTags = `
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di acara pernikahan kami.">
+    ${fullImageUrl ? `<meta property="og:image" content="${fullImageUrl}">` : ''}
+    <meta property="og:url" content="${baseUrl}${req.url}">
+    <meta property="og:type" content="website">`;
+    
+    html = html.replace('</title>', '</title>\n' + ogTags);
+    res.send(html);
+  } catch (err) {
+    console.error('Error serving index:', err);
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(uploadsDir));
 app.use('/audio', express.static(audioDir));
