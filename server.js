@@ -145,7 +145,7 @@ app.get('/', async (req, res) => {
       if (imgs.length > 0) ogImage = imgs[0];
     }
     
-    let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    let html = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
     
     const host = req.headers['x-forwarded-host'] || req.headers.host || 'riandanaurora.my.id';
     const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
@@ -201,7 +201,7 @@ app.get('/', async (req, res) => {
     res.send(html);
   } catch (err) {
     console.error('Error serving index:', err);
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'template.html'));
   }
 });
 
