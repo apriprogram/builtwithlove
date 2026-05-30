@@ -536,23 +536,17 @@ async function checkLogin() {
 
         const status = await api('/api/admin/status');
         if (status.authenticated) {
-            loginPanel.classList.add('hidden');
-            dashboardPanel.classList.remove('hidden');
+            const dashboardPanel = document.getElementById('dashboardPanel');
+            if (dashboardPanel) dashboardPanel.classList.remove('hidden');
             const profileContainer = document.getElementById('profileDropdownContainer');
             if (profileContainer) profileContainer.classList.remove('hidden');
             await window.loadDashboard();
         } else {
-            applyTranslations();
-            showLoginUI();
+            window.location.href = '/login';
         }
     } catch (err) {
-        showLoginUI();
+        window.location.href = '/login';
     }
-}
-
-function showLoginUI() {
-    loginPanel.classList.remove('hidden');
-    dashboardPanel.classList.add('hidden');
 }
 
 window.logout = function () {
@@ -562,7 +556,7 @@ window.logout = function () {
         } catch (e) {
             console.error('Logout API failed:', e);
         }
-        window.location.href = 'admin.html';
+        window.location.href = '/login';
     }, {
         message: t('alert_logout'),
         confirmText: 'Keluar Sekarang',
@@ -572,39 +566,6 @@ window.logout = function () {
 };
 
 // Event Listeners
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        try {
-            await api('/api/admin/login', {
-                method: 'POST',
-                body: JSON.stringify({ email, password }),
-            });
-            await checkLogin();
-        } catch (err) {
-            window.showToast(err.message, 'error');
-        }
-    });
-}
-
-window.togglePasswordVisibility = function (inputId, eyeId) {
-    const input = document.getElementById(inputId);
-    const eye = document.getElementById(eyeId);
-    if (!input || !eye) return;
-
-    if (input.type === 'password') {
-        input.type = 'text';
-        eye.classList.remove('fa-eye');
-        eye.classList.add('fa-eye-slash');
-    } else {
-        input.type = 'password';
-        eye.classList.remove('fa-eye-slash');
-        eye.classList.add('fa-eye');
-    }
-};
 
 document.addEventListener('click', (e) => {
     const navBtn = e.target.closest('.admin-nav-button');

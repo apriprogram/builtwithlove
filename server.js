@@ -125,13 +125,28 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 }
 }));
 
-app.get('/dashboard', (req, res) => {
+// Middleware to protect routes via redirect
+const requireAuthRedirect = (req, res, next) => {
+  if (!req.session || !req.session.adminUser) {
+    return res.redirect('/login');
+  }
+  next();
+};
+
+app.get('/login', (req, res) => {
+  if (req.session && req.session.adminUser) {
+    return res.redirect('/admin');
+  }
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.get('/admin', requireAuthRedirect, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-app.get('/admin.html', (req, res) => {
-  res.redirect('/dashboard');
-});
+// Legacy redirects
+app.get('/dashboard', (req, res) => res.redirect('/admin'));
+app.get('/admin.html', (req, res) => res.redirect('/admin'));
 
 app.get('/', async (req, res) => {
   try {
