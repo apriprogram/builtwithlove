@@ -1160,7 +1160,8 @@ function setupPage() {
                 mainContent.classList.add('opacity-100');
             }
             
-            // Inisialisasi AOS setelah transisi opacity selesai agar posisinya dihitung dengan benar
+            // Tunggu sampai animasi cover selesai sepenuhnya (1200ms) sebelum inisialisasi AOS
+            // agar semua elemen terdeteksi posisinya dengan benar oleh AOS
             setTimeout(() => {
                 if (window.initAOS) {
                     window.initAOS();
@@ -1168,12 +1169,16 @@ function setupPage() {
                     AOS.init({
                         duration: 1000,
                         once: false,
-                        mirror: false,
+                        mirror: true,
                         offset: 80,
                         easing: 'ease-out-quart'
                     });
                 }
-            }, 600);
+                // Refresh ulang posisi setelah AOS init agar elemen tidak dianggap sudah "animated"
+                if (window.AOS) {
+                    setTimeout(() => AOS.refreshHard(), 100);
+                }
+            }, 1400);
             
             if (bgMusic) {
                 // Check if autoplay is enabled in settings

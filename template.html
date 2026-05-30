@@ -20,7 +20,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     <style>
         /* Performance Tweaks */
         #cover {
@@ -541,13 +541,13 @@
     <!-- AOS Script -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Global AOS Configuration for smoothness
+        // Global AOS Configuration
         window.initAOS = function() {
             if (window.AOS) {
                 AOS.init({
                     duration: 1000,
-                    once: false,       // Mengulang animasi setiap kali masuk layar
-                    mirror: false,     // Nonaktifkan mirror agar saat scroll ke atas animasi masuknya tetap berjalan seperti biasa dari bawah/arah aslinya
+                    once: false,
+                    mirror: true,   // elemen atas hilang saat scroll bawah, muncul lagi saat scroll atas
                     offset: 80,
                     delay: 0,
                     easing: 'ease-out-quart',
@@ -556,7 +556,7 @@
             }
         };
     </script>
-    <script src="script.js?v=24"></script>
+    <script src="script.js?v=25"></script>
 </body>
 
 </html>

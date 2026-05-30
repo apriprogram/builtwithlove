@@ -173,9 +173,9 @@ app.get('/', async (req, res) => {
     
     let defaultDesc = 'Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di acara pernikahan kami.';
     try {
-      const [eventsRows] = await db.query('SELECT cal_date FROM events ORDER BY id ASC LIMIT 1');
-      if (eventsRows && eventsRows.length > 0 && eventsRows[0].cal_date) {
-        const d = new Date(eventsRows[0].cal_date);
+      const [eventsRows] = await db.query('SELECT date FROM events ORDER BY id ASC LIMIT 1');
+      if (eventsRows && eventsRows.length > 0 && eventsRows[0].date) {
+        const d = new Date(eventsRows[0].date);
         if (!isNaN(d.getTime())) {
           const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
           const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
