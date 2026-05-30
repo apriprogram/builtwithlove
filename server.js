@@ -155,13 +155,47 @@ app.get('/', async (req, res) => {
     
     const defaultTitle = settings.hero_name ? `The Wedding of ${settings.hero_name}` : 'The Wedding of Riandino & Aurora';
     const title = settings.og_title || defaultTitle;
-    const description = settings.og_description || 'Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di acara pernikahan kami.';
+    
+    let defaultDesc = 'Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di acara pernikahan kami.';
+    try {
+      const [eventsRows] = await db.query('SELECT cal_date FROM events ORDER BY id ASC LIMIT 1');
+      if (eventsRows && eventsRows.length > 0 && eventsRows[0].cal_date) {
+        const d = new Date(eventsRows[0].cal_date);
+        if (!isNaN(d.getTime())) {
+          const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+          const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+          defaultDesc = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch event date for OG description', e);
+    }
+    
+    const description = settings.og_description || defaultDesc;
+    
     const ogTags = `
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="${title}">
+    <meta name="description" content="${description}">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="${baseUrl}${req.url}">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
-    ${fullImageUrl ? `<meta property="og:image" content="${fullImageUrl}">` : ''}
-    <meta property="og:url" content="${baseUrl}${req.url}">
-    <meta property="og:type" content="website">`;
+    ${fullImageUrl ? `
+    <meta property="og:image" itemprop="image" content="${fullImageUrl}">
+    <meta property="og:image:secure_url" itemprop="image" content="${fullImageUrl}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">` : ''}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="${baseUrl}${req.url}">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    ${fullImageUrl ? `<meta name="twitter:image" content="${fullImageUrl}">` : ''}`;
     
     html = html.replace('</title>', '</title>\n' + ogTags);
     res.send(html);
