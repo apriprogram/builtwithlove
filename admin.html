@@ -3763,21 +3763,21 @@
     <div id="adminConfirmModal" class="modal-premium-container">
         <div class="modal-premium-backdrop" id="confirmModalBackdrop"></div>
         <div class="modal-premium-content !max-w-sm" id="confirmModalContent">
-            <div class="p-8 text-center pt-10">
+            <div class="p-5 sm:p-8 text-center pt-8 sm:pt-10">
                 <div
-                    class="w-20 h-20 rounded-2xl bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl shadow-rose-100/50 dark:shadow-rose-900/20">
+                    class="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 flex items-center justify-center text-xl sm:text-3xl mx-auto mb-4 sm:mb-6 shadow-xl shadow-rose-100/50 dark:shadow-rose-900/20">
                     <i class="fas fa-trash-alt"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mb-2">Apakah Anda yakin?
+                <h3 class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mb-1 sm:mb-2">Apakah Anda yakin?
                 </h3>
-                <p id="confirmModalMessage" class="text-slate-400 dark:text-slate-500 text-sm leading-relaxed px-4">
+                <p id="confirmModalMessage" class="text-slate-400 dark:text-slate-500 text-[10px] sm:text-sm leading-relaxed px-2 sm:px-4">
                     Tindakan ini bersifat permanen dan tidak dapat dibatalkan.</p>
 
-                <div class="grid grid-cols-1 gap-3 mt-10">
-                    <button id="confirmModalSubmit" class="btn-premium btn-danger !h-14">
+                <div class="grid grid-cols-1 gap-2 sm:gap-3 mt-6 sm:mt-10">
+                    <button id="confirmModalSubmit" class="btn-premium btn-danger !h-10 sm:!h-14 text-xs sm:text-sm">
                         Hapus
                     </button>
-                    <button onclick="hideModal('adminConfirmModal')" class="btn-premium btn-secondary !h-14">
+                    <button onclick="hideModal('adminConfirmModal')" class="btn-premium btn-secondary !h-10 sm:!h-14 text-xs sm:text-sm">
                         Batal
                     </button>
                 </div>
