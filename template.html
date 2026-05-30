@@ -546,9 +546,9 @@
             if (window.AOS) {
                 AOS.init({
                     duration: 1200,
-                    once: false,       // Mengulang animasi ketika elemen masuk viewport kembali
-                    mirror: false,     // Menghilangkan efek pembalikan arah agar ketika di-scroll ke atas arah animasinya tetap natural masuk dari bawah/atas
-                    offset: 80,        // Offset sedikit dinaikkan agar trigger memicu dengan pas di layar mobile dan desktop
+                    once: false,       // Mengulang animasi secara terus menerus
+                    mirror: true,      // Mengaktifkan kembali efek mirror (elemen menghilang saat di-scroll menjauh dan muncul kembali dengan kebalikannya)
+                    offset: 100,       // Offset yang cukup agar trigger bekerja dengan halus
                     delay: 0,
                     easing: 'ease-out-quart',
                     disable: false
@@ -556,7 +556,7 @@
             }
         };
     </script>
-    <script src="script.js?v=19"></script>
+    <script src="script.js?v=20"></script>
 </body>
 
 </html>

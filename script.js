@@ -1168,8 +1168,8 @@ function setupPage() {
                     AOS.init({
                         duration: 1200,
                         once: false,
-                        mirror: false,
-                        offset: 80,
+                        mirror: true,
+                        offset: 100,
                         easing: 'ease-out-quart'
                     });
                 }
