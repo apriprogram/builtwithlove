@@ -369,7 +369,6 @@ async function loadPublicData() {
             const adjustFontSize = () => {
                 nameEl.style.fontSize = ''; 
                 document.fonts.ready.then(() => {
-                    // Use 95% of window width directly to avoid parent container collapse issues
                     let containerWidth = window.innerWidth * 0.95;
                     
                     let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || (window.innerWidth < 768 ? 60 : 96);
@@ -379,6 +378,10 @@ async function loadPublicData() {
                         size -= 1;
                         nameEl.style.fontSize = size + 'px';
                     }
+                    
+                    // Reveal smoothly after sizing is done
+                    nameEl.classList.remove('opacity-0');
+                    nameEl.classList.add('opacity-100');
                 });
             };
             adjustFontSize();
