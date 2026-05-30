@@ -827,7 +827,7 @@ function renderGifts(gifts, physicalAddress, settings) {
 
     if (gifts && gifts.length > 0) {
         bankContainer.innerHTML = gifts.map((gift, index) => `
-            <div class="flex flex-col items-center bg-black/50 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-2xl shadow-xl transition-all duration-300 hover:scale-105" data-aos="zoom-in" data-aos-delay="${index * 150 + 100}" data-aos-anchor="#digitalEnvelope">
+            <div class="flex flex-col items-center bg-black/50 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-2xl shadow-xl transition-all duration-300 hover:scale-105" data-aos="zoom-in" data-aos-delay="${index * 150 + 100}" data-aos-duration="1200">
                 <div class="${gift.logo_src ? 'w-24 h-12 mb-2 md:mb-3' : 'hidden'}">
                     <img src="${gift.logo_src}" alt="${gift.bank_name}" class="w-full h-full object-contain" onerror="this.src=''; this.parentElement.className='hidden'">
                 </div>

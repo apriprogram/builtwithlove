@@ -149,9 +149,9 @@ body {
     border-radius: 50% !important;
 }
 
-/* Smoother AOS animations */
+/* Smoother AOS animations - let AOS handle its own timing */
 [data-aos] {
-    transition-duration: 1200ms !important;
+    will-change: transform, opacity;
 }
 
 /* Section Card styling */
@@ -287,6 +287,25 @@ body {
     
     #countdown .font-sans {
         font-size: 8px !important;
+    }
+
+    /* Ensure AOS animations work properly on mobile */
+    [data-aos] {
+        pointer-events: auto;
+    }
+    
+    /* Smaller translateY values on mobile for smoother feel */
+    [data-aos="fade-up"] {
+        transform: translateY(30px);
+    }
+    [data-aos="fade-down"] {
+        transform: translateY(-30px);
+    }
+    [data-aos="fade-right"] {
+        transform: translateX(-30px);
+    }
+    [data-aos="fade-left"] {
+        transform: translateX(30px);
     }
 }
 
