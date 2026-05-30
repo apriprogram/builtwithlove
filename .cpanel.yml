@@ -2,4 +2,5 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/tanjunak/public/riandanaurora.my.id
+    - /bin/rm -f $DEPLOYPATH/index.html
     - /bin/cp -R * $DEPLOYPATH
