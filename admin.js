@@ -54,6 +54,26 @@ window.resetPageViews = function() {
         message: `Semua data Page Views (${document.getElementById('totalPageViews')?.innerText || '0'} kunjungan) akan dihapus permanen. Hitungan akan dimulai dari nol.`
     });
 };
+
+window.deleteAllData = function(type) {
+    let title = '';
+    let url = '';
+    if (type === 'guests') { title = 'semua Undangan Tamu'; url = '/api/admin/guests/all'; }
+    if (type === 'rsvps') { title = 'semua Kehadiran (RSVP)'; url = '/api/admin/rsvps/all'; }
+    if (type === 'wishes') { title = 'semua Papan Pesan (Ucapan)'; url = '/api/admin/wishes/all'; }
+
+    window.deleteWithConfirm(async () => {
+        try {
+            await api(url, { method: 'DELETE' });
+            window.showToast('Data berhasil dihapus semua!', 'success');
+            await window.loadDashboard();
+        } catch (err) {
+            window.showToast('Gagal menghapus data: ' + err.message, 'error');
+        }
+    }, {
+        message: `Apakah Anda yakin ingin menghapus ${title}? Tindakan ini tidak dapat dibatalkan.`
+    });
+};
 const translations = {
     id: {
         // HTML Translations

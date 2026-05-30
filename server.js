@@ -688,6 +688,17 @@ app.delete('/api/admin/guests/:id', requireAdmin, async (req, res) => {
   }
 });
 
+app.delete('/api/admin/guests/all', requireAdmin, async (req, res) => {
+  try {
+    await runSql('DELETE FROM guests');
+    await runSql('DELETE FROM rsvps');
+    await runSql('DELETE FROM wishes');
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Delete all failed' });
+  }
+});
+
 // GIFTS MANAGEMENT
 app.post('/api/admin/gifts', requireAdmin, async (req, res) => {
   try {
@@ -1031,6 +1042,24 @@ app.delete('/api/admin/wishes/:id', requireAdmin, async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Delete failed' });
+  }
+});
+
+app.delete('/api/admin/rsvps/all', requireAdmin, async (req, res) => {
+  try {
+    await runSql('DELETE FROM rsvps');
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Delete all failed' });
+  }
+});
+
+app.delete('/api/admin/wishes/all', requireAdmin, async (req, res) => {
+  try {
+    await runSql('DELETE FROM wishes');
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Delete all failed' });
   }
 });
 

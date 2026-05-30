@@ -3105,9 +3105,12 @@
                                 </button>
                                 <button onclick="window.showImportExcelModal()"
                                     class="bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20 px-4 py-2.5 rounded-xl font-bold text-[10px] sm:text-[11px] uppercase tracking-tight flex items-center gap-2 hover:bg-orange-100 dark:hover:bg-orange-500/20 hover:border-orange-300 dark:hover:border-orange-500/40 transition-all group shadow-sm">
-                                    <i
-                                        class="fas fa-file-excel text-sm sm:text-base"></i>
+                                    <i class="fas fa-file-excel text-sm sm:text-base"></i>
                                     <span>Import</span>
+                                </button>
+                                <button onclick="window.deleteAllData('guests')" class="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-500/20 px-4 py-2.5 rounded-xl font-bold text-[10px] sm:text-[11px] uppercase tracking-tight flex items-center gap-2 hover:bg-red-100 dark:hover:bg-red-500/20 transition-all shadow-sm" title="Hapus Semua Data">
+                                    <i class="fas fa-trash-alt text-sm sm:text-base"></i>
+                                    <span>Hapus Semua Data</span>
                                 </button>
                             </div>
                         </div>
@@ -3293,12 +3296,17 @@
                                     <span class="text-[9px] sm:text-[11px] font-bold text-slate-600 dark:text-slate-300">data</span>
                                 </div>
                             </div>
-                            <div class="relative w-full sm:w-64">
-                                <i
-                                    class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                <input type="text" onkeyup="window.handleLiveSearch('rsvp', this)"
-                                    placeholder="Cari nama atau status..."
-                                    class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-emerald-500 outline-none transition-all ">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                                <div class="relative w-full sm:w-64">
+                                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                    <input type="text" onkeyup="window.handleLiveSearch('rsvp', this)"
+                                        placeholder="Cari nama atau status..."
+                                        class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-2 text-[10px] sm:text-sm text-slate-900 dark:text-slate-100 focus:border-emerald-500 outline-none transition-all font-semibold">
+                                </div>
+                                <button onclick="window.deleteAllData('rsvps')" class="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-500/20 px-4 py-2 rounded-lg font-bold text-[10px] sm:text-[11px] uppercase tracking-tight flex items-center justify-center gap-2 hover:bg-red-100 dark:hover:bg-red-500/20 transition-all shadow-sm shrink-0" title="Hapus Semua Data">
+                                    <i class="fas fa-trash-alt text-sm sm:text-base"></i>
+                                    <span>Hapus Semua Data</span>
+                                </button>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
@@ -3418,12 +3426,17 @@
                                 <span class="text-[10px] sm:text-xs font-semibold uppercase text-white"
                                     data-i18n="tbl_msg_title">Pesan Ucapan</span>
                             </div>
-                            <div class="relative w-full sm:w-64">
-                                <i
-                                    class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                <input type="text" onkeyup="window.handleLiveSearch('wishes', this)"
-                                    placeholder="Cari nama, pesan, atau tanggal..."
-                                    class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-purple-500 outline-none transition-all ">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                                <div class="relative w-full sm:w-64">
+                                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                    <input type="text" onkeyup="window.handleLiveSearch('wishes', this)"
+                                        placeholder="Cari nama, pesan, atau tanggal..."
+                                        class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-purple-500 outline-none transition-all ">
+                                </div>
+                                <button onclick="window.deleteAllData('wishes')" class="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-500/20 px-4 py-2 rounded-xl font-bold text-[10px] sm:text-[11px] uppercase tracking-tight flex items-center justify-center gap-2 hover:bg-red-100 dark:hover:bg-red-500/20 transition-all shadow-sm shrink-0" title="Hapus Semua Data">
+                                    <i class="fas fa-trash-alt text-sm sm:text-base"></i>
+                                    <span>Hapus Semua Data</span>
+                                </button>
                             </div>
                         </div>
                         <div id="wishesCardContainer"
