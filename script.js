@@ -1159,6 +1159,12 @@ function setupPage() {
                 mainContent.classList.remove('opacity-0');
                 mainContent.classList.add('opacity-100');
             }
+            
+            // Initialize animations ONLY after opening the invitation
+            if (window.initAOS) {
+                window.initAOS();
+            }
+            
             if (bgMusic) {
                 // Check if autoplay is enabled in settings
                 const isAutoPlay = window.invitationSettings?.music_autoplay !== 'false';
