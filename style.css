@@ -249,16 +249,16 @@ body {
 
 /* Fix for background zoom on mobile */
 @media (max-width: 768px) {
-    /* Allow sambutan and events to stay fixed on mobile as requested */
+    /* Allow sambutan, events, wishes, and digital envelope to stay fixed on mobile as requested */
     #greetingSection,
-    #events {
+    #events,
+    #sectionWishes,
+    #digitalEnvelope {
         background-attachment: fixed !important;
     }
 
     #lovestory, 
     #sectionRsvp, 
-    #sectionWishes, 
-    #digitalEnvelope,
     section[style*="background"] {
         background-attachment: scroll !important;
         background-size: cover !important;
