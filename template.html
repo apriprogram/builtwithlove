@@ -546,7 +546,8 @@
             if (window.AOS) {
                 AOS.init({
                     duration: 1200,
-                    once: true,
+                    once: false,       // Repeat animation every time element enters viewport
+                    mirror: true,      // Animate out when scrolling past going upward
                     offset: 30,
                     delay: 0,
                     easing: 'ease-out-quart',
@@ -557,7 +558,7 @@
             }
         };
     </script>
-    <script src="script.js?v=15"></script>
+    <script src="script.js?v=16"></script>
 </body>
 
 </html>
