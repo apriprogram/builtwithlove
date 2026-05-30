@@ -509,7 +509,7 @@ function renderPublicEvents(events) {
             
             if (hasData) {
                 html = `
-                    <div class="flex flex-col items-center group w-full" data-aos="fade-up" data-aos-delay="${i === 0 ? '100' : '300'}">
+                    <div class="flex flex-col items-center group w-full bg-black/50 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-2xl shadow-xl transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="${i === 0 ? '100' : '300'}">
                         <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border border-white/20 flex items-center justify-center mb-6 group-hover:border-white transition-colors duration-500 bg-white/5 backdrop-blur-sm">
                             <img src="${event.icon_src || (i === 0 ? 'img/icon/Gereja.png' : 'img/icon/Traditional%20Batak%20house%20icon.png')}" class="w-8 h-8 md:w-10 md:h-10 object-contain filter brightness-0 invert opacity-70 group-hover:opacity-100 transition-opacity duration-500" alt="Icon">
                         </div>
@@ -786,14 +786,14 @@ function renderGifts(gifts, physicalAddress, settings) {
 
     if (gifts && gifts.length > 0) {
         bankContainer.innerHTML = gifts.map(gift => `
-            <div class="flex flex-col items-center">
+            <div class="flex flex-col items-center bg-black/50 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-2xl shadow-xl transition-all duration-300 hover:scale-105">
                 <div class="${gift.logo_src ? 'w-24 h-12 mb-2 md:mb-3' : 'hidden'}">
                     <img src="${gift.logo_src}" alt="${gift.bank_name}" class="w-full h-full object-contain" onerror="this.src=''; this.parentElement.className='hidden'">
                 </div>
                 ${!gift.logo_src ? `<p class="font-sans font-bold text-xl mb-0.5 text-[#e6d5b8] tracking-widest">${gift.bank_name}</p>` : ''}
                 <p class="font-sans text-[14px] md:text-[15px] font-semibold tracking-[0.15em] text-[#e6d5b8] uppercase mb-0.5 drop-shadow-md">${gift.logo_src ? gift.bank_name + ' &mdash; ' : ''}<span id="account-${gift.id}">${gift.account_number}</span></p>
                 <p class="font-sans text-[11px] md:text-xs font-medium tracking-[0.2em] text-[#e6d5b8]/70 uppercase mt-1 mb-4 md:mb-6">${gift.account_name}</p>
-                <button onclick="window.copyToClipboard('${gift.account_number}')" class="backdrop-blur-md bg-black/40 hover:bg-black/60 border border-[#988a70]/50 text-[#f3e3c6] px-6 py-2.5 rounded-full font-sans text-[9px] md:text-[11px] tracking-[0.2em] uppercase transition-all shadow-2xl inline-flex items-center gap-3 cursor-pointer">
+                <button onclick="window.copyToClipboard('${gift.account_number}')" class="backdrop-blur-md bg-black/40 hover:bg-black/60 border border-[#988a70]/50 text-[#f3e3c6] px-6 py-2.5 rounded-full font-sans text-[9px] md:text-[11px] tracking-[0.2em] uppercase transition-all shadow-2xl inline-flex items-center gap-3 cursor-pointer mt-auto">
                     <i class="far fa-clone text-sm"></i> Salin Rekening
                 </button>
             </div>
