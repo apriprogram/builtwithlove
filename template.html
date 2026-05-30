@@ -546,19 +546,17 @@
             if (window.AOS) {
                 AOS.init({
                     duration: 1200,
-                    once: false,       // Repeat animation every time element enters viewport
-                    mirror: true,      // Animate out when scrolling past going upward
-                    offset: 30,
+                    once: false,       // Mengulang animasi ketika elemen masuk viewport lagi
+                    mirror: true,      // Mengulang animasi saat scroll ke atas melewati elemen
+                    offset: 50,        // Offset standar yang pas agar terpicu dengan baik
                     delay: 0,
                     easing: 'ease-out-quart',
-                    disable: false,
-                    startEvent: 'DOMContentLoaded',
-                    anchorPlacement: 'top-bottom'
+                    disable: false
                 });
             }
         };
     </script>
-    <script src="script.js?v=16"></script>
+    <script src="script.js?v=17"></script>
 </body>
 
 </html>

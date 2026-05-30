@@ -1160,10 +1160,20 @@ function setupPage() {
                 mainContent.classList.add('opacity-100');
             }
             
-            // Initialize animations ONLY after opening the invitation
-            if (window.initAOS) {
-                window.initAOS();
-            }
+            // Inisialisasi AOS setelah transisi opacity selesai agar posisinya dihitung dengan benar
+            setTimeout(() => {
+                if (window.initAOS) {
+                    window.initAOS();
+                } else if (window.AOS) {
+                    AOS.init({
+                        duration: 1200,
+                        once: false,
+                        mirror: true,
+                        offset: 30,
+                        easing: 'ease-out-quart'
+                    });
+                }
+            }, 600);
             
             if (bgMusic) {
                 // Check if autoplay is enabled in settings
