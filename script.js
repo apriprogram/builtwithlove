@@ -372,12 +372,13 @@ async function loadPublicData() {
                 let baseSize = window.innerWidth < 768 ? 48 : 72;
                 
                 document.fonts.ready.then(() => {
+                    // Use 95% of window width directly to avoid parent container collapse issues
                     let containerWidth = window.innerWidth * 0.95;
-                    if (nameEl.parentElement) containerWidth = nameEl.parentElement.clientWidth;
                     
                     let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || baseSize;
+                    let minSize = window.innerWidth < 768 ? 26 : 42;
                     
-                    while (nameEl.scrollWidth > containerWidth && size > 26) {
+                    while (nameEl.scrollWidth > containerWidth && size > minSize) {
                         size -= 1;
                         nameEl.style.fontSize = size + 'px';
                     }
