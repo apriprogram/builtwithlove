@@ -369,14 +369,22 @@ async function loadPublicData() {
             const adjustFontSize = () => {
                 nameEl.style.fontSize = ''; 
                 document.fonts.ready.then(() => {
-                    let containerWidth = window.innerWidth * 0.95;
+                    // Script fonts often have long tails/swashes that overflow the exact bounding box.
+                    // Use 85% on mobile and 90% on desktop to leave a safe margin so edges aren't cut off.
+                    let containerWidth = window.innerWidth < 768 ? (window.innerWidth * 0.85) : (window.innerWidth * 0.90);
                     
                     let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || (window.innerWidth < 768 ? 60 : 96);
                     let minSize = window.innerWidth < 768 ? 20 : 36;
                     
+                    let lastScrollWidth = nameEl.scrollWidth;
+                    
                     while (nameEl.scrollWidth > containerWidth && size > minSize) {
                         size -= 1;
                         nameEl.style.fontSize = size + 'px';
+                        
+                        // Prevent infinite loop if size reduction doesn't reduce scrollWidth
+                        if (nameEl.scrollWidth >= lastScrollWidth && size < (lastScrollWidth/2)) break;
+                        lastScrollWidth = nameEl.scrollWidth;
                     }
                     
                     // Reveal smoothly after sizing is done
