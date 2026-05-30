@@ -679,15 +679,6 @@ app.post('/api/admin/guests/import', requireAdmin, handleUpload(excelUpload.sing
   }
 });
 
-app.delete('/api/admin/guests/:id', requireAdmin, async (req, res) => {
-  try {
-    await runSql('DELETE FROM guests WHERE id = ?', [req.params.id]);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Delete failed' });
-  }
-});
-
 app.delete('/api/admin/guests/all', requireAdmin, async (req, res) => {
   try {
     await runSql('DELETE FROM guests');
@@ -696,6 +687,15 @@ app.delete('/api/admin/guests/all', requireAdmin, async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Delete all failed' });
+  }
+});
+
+app.delete('/api/admin/guests/:id', requireAdmin, async (req, res) => {
+  try {
+    await runSql('DELETE FROM guests WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Delete failed' });
   }
 });
 
@@ -1027,24 +1027,6 @@ app.delete('/api/admin/gallery/:id', requireAdmin, async (req, res) => {
 });
 
 // RSVPS & WISHES MANAGEMENT
-app.delete('/api/admin/rsvps/:id', requireAdmin, async (req, res) => {
-  try {
-    await runSql('DELETE FROM rsvps WHERE id = ?', [req.params.id]);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Delete failed' });
-  }
-});
-
-app.delete('/api/admin/wishes/:id', requireAdmin, async (req, res) => {
-  try {
-    await runSql('DELETE FROM wishes WHERE id = ?', [req.params.id]);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Delete failed' });
-  }
-});
-
 app.delete('/api/admin/rsvps/all', requireAdmin, async (req, res) => {
   try {
     await runSql('DELETE FROM rsvps');
@@ -1060,6 +1042,24 @@ app.delete('/api/admin/wishes/all', requireAdmin, async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Delete all failed' });
+  }
+});
+
+app.delete('/api/admin/rsvps/:id', requireAdmin, async (req, res) => {
+  try {
+    await runSql('DELETE FROM rsvps WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Delete failed' });
+  }
+});
+
+app.delete('/api/admin/wishes/:id', requireAdmin, async (req, res) => {
+  try {
+    await runSql('DELETE FROM wishes WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Delete failed' });
   }
 });
 
