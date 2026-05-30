@@ -368,15 +368,12 @@ async function loadPublicData() {
             nameEl.innerText = guestNameStr;
             const adjustFontSize = () => {
                 nameEl.style.fontSize = ''; 
-                // Default fallback size for safety
-                let baseSize = window.innerWidth < 768 ? 48 : 72;
-                
                 document.fonts.ready.then(() => {
                     // Use 95% of window width directly to avoid parent container collapse issues
                     let containerWidth = window.innerWidth * 0.95;
                     
-                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || baseSize;
-                    let minSize = window.innerWidth < 768 ? 26 : 42;
+                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || (window.innerWidth < 768 ? 60 : 96);
+                    let minSize = window.innerWidth < 768 ? 20 : 36;
                     
                     while (nameEl.scrollWidth > containerWidth && size > minSize) {
                         size -= 1;
