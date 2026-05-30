@@ -120,19 +120,35 @@ window.copyGuestMessage = async function(name, link) {
     const settings = window.state.dashboard?.settings || {};
     let templateHtml = settings.wa_template || "Halo *{nama}*,\nKami mengundang Anda ke pernikahan kami.\nLink: {link}";
     
-    // Use the browser to cleanly parse HTML to text (handles spacing and unescapes &amp;)
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = templateHtml;
-    let templateText = tempDiv.innerText || tempDiv.textContent;
-    
-    // Support multiple formats: @nama, {nama}, @link, {link} (case insensitive)
-    let msg = templateText
+    // 1. Handle HTML structure spacing FIRST
+    let msg = templateHtml
+        // Remove <br> that are immediately followed by </div> or </p> (browser caret placeholders)
+        .replace(/<br\s*\/?>\s*(?=<\/div>|<\/p>)/gi, '')
+        // Convert block starts to newlines
+        .replace(/<div[^>]*>/gi, '\n')
+        .replace(/<p[^>]*>/gi, '\n')
+        .replace(/<li[^>]*>/gi, '\n- ')
+        // Convert remaining <br> to newlines
+        .replace(/<br\s*\/?>/gi, '\n')
+        // Strip all remaining HTML tags
+        .replace(/<[^>]+>/g, '')
+        // Replace non-breaking spaces
+        .replace(/&nbsp;/gi, ' ');
+        
+    // 2. Decode HTML entities safely (e.g., &amp; to &)
+    const txt = document.createElement("textarea");
+    txt.innerHTML = msg;
+    msg = txt.value.trim();
+        
+    // Support multiple formats: @nama, {nama}, @link, {link}
+    msg = msg
         .replace(/@nama/gi, name)
         .replace(/{nama}/gi, name)
         .replace(/@link/gi, link)
         .replace(/{link}/gi, link);
-    
-    msg = msg.trim();
+        
+    // Collapse 3+ newlines into 2 to prevent huge gaps
+    msg = msg.replace(/\n{3,}/g, '\n\n');
 
     try {
         await navigator.clipboard.writeText(msg);
