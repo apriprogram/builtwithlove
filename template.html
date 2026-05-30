@@ -544,12 +544,12 @@
         // Global AOS Configuration for smoothness
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({
-                duration: 1000,
+                duration: 1500, // Increased duration for smoother effect
                 once: true,
                 offset: 50,
                 delay: 0,
-                easing: 'ease-out-cubic',
-                disable: 'mobile' ? false : false // Keep enabled but smooth
+                easing: 'ease-out-quart', // Smoother easing curve
+                disable: false // Keep enabled but smooth
             });
         });
     </script>

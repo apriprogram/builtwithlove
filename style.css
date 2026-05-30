@@ -31,11 +31,11 @@
 }
 
 .animate-fadeInDown {
-    animation: fadeInDown 1.5s ease-out forwards;
+    animation: fadeInDown 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-fadeInUp {
-    animation: fadeInUp 1.5s ease-out forwards;
+    animation: fadeInUp 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Ensure music widget is visible on mobile after invitation opens */
