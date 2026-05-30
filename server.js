@@ -147,7 +147,10 @@ app.get('/', async (req, res) => {
     
     let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
     
-    const baseUrl = 'https://' + (req.headers.host || 'riandanaurora.my.id');
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'riandanaurora.my.id';
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+    const baseUrl = isLocal ? 'https://riandanaurora.my.id' : `https://${host}`;
+    
     const fullImageUrl = ogImage ? (ogImage.startsWith('http') ? ogImage : baseUrl + ogImage) : '';
     
     const title = settings.hero_name ? `The Wedding of ${settings.hero_name}` : 'The Wedding of Riandino & Aurora';
