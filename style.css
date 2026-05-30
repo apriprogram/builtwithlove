@@ -249,8 +249,12 @@ body {
 
 /* Fix for background zoom on mobile */
 @media (max-width: 768px) {
-    #greetingSection, 
-    #events, 
+    /* Allow sambutan and events to stay fixed on mobile as requested */
+    #greetingSection,
+    #events {
+        background-attachment: fixed !important;
+    }
+
     #lovestory, 
     #sectionRsvp, 
     #sectionWishes, 
