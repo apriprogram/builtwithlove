@@ -118,25 +118,21 @@ window.sortGuests = function(key) {
 
 window.copyGuestMessage = async function(name, link) {
     const settings = window.state.dashboard?.settings || {};
-    let template = settings.wa_template || "Halo *{nama}*,\nKami mengundang Anda ke pernikahan kami.\nLink: {link}";
+    let templateHtml = settings.wa_template || "Halo *{nama}*,\nKami mengundang Anda ke pernikahan kami.\nLink: {link}";
+    
+    // Use the browser to cleanly parse HTML to text (handles spacing and unescapes &amp;)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = templateHtml;
+    let templateText = tempDiv.innerText || tempDiv.textContent;
     
     // Support multiple formats: @nama, {nama}, @link, {link} (case insensitive)
-    let msg = template
+    let msg = templateText
         .replace(/@nama/gi, name)
         .replace(/{nama}/gi, name)
         .replace(/@link/gi, link)
         .replace(/{link}/gi, link);
     
-    // Clean up HTML tags and handle newlines from rich text
-    msg = msg
-        .replace(/<div[^>]*>/g, '')
-        .replace(/<\/div>/g, '\n')
-        .replace(/<p[^>]*>/g, '')
-        .replace(/<\/p>/g, '\n')
-        .replace(/<br[^>]*>/g, '\n')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/<[^>]+>/g, '') // Strip remaining tags
-        .trim();
+    msg = msg.trim();
 
     try {
         await navigator.clipboard.writeText(msg);
