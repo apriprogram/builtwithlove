@@ -342,9 +342,14 @@ button,
     }
 }
 
+#cover {
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
 #cover.cover-out {
     transform: translateY(-100%);
     opacity: 0;
+    pointer-events: none;
 }
 
 /* Gallery Thumbnails Styling */
