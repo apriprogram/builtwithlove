@@ -149,10 +149,7 @@ body {
     border-radius: 50% !important;
 }
 
-/* Smoother AOS animations - let AOS handle its own timing */
-[data-aos] {
-    will-change: transform, opacity;
-}
+
 
 /* Section Card styling */
 .section-card {
