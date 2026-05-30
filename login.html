@@ -25,12 +25,8 @@
             }
         }
 
-        // Dark Mode Initialization
-        if (localStorage.getItem('admin-theme') === 'dark' || (!('admin-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        // Force Dark Mode for Login
+        document.documentElement.classList.add('dark');
     </script>
     <style type="text/tailwindcss">
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
@@ -63,8 +59,8 @@
             <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/20 rounded-full -mr-16 -mt-16 opacity-50 font-bold"></div>
             <div class="relative z-10">
                 <div class="text-center mb-10">
-                    <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 shadow-lg shadow-indigo-600/30">
-                        <i class="fas fa-lock"></i>
+                    <div class="w-24 h-24 mx-auto flex items-center justify-center mb-6">
+                        <img src="img/logoweddingadmin.png" alt="Wedding Logo" class="w-full h-full object-contain drop-shadow-2xl">
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="login_title">Area Terlindungi</h3>
                     <p class="text-slate-500 dark:text-slate-400 text-sm mt-2" data-i18n="login_subtitle">Masuk untuk mengelola portal masa pernikahan Anda</p>
