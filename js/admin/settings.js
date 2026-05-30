@@ -31,6 +31,30 @@ window.renderSettings = function() {
         }
     }
 
+    if (document.getElementById('settingOgTitle')) document.getElementById('settingOgTitle').value = settings.og_title || '';
+    if (document.getElementById('settingOgDescription')) document.getElementById('settingOgDescription').value = settings.og_description || '';
+    
+    if (document.getElementById('settingOgImage')) {
+        const ogImage = settings.og_image || '';
+        document.getElementById('settingOgImage').value = ogImage;
+        const ogPreview = document.getElementById('ogImagePreview');
+        const ogPlaceholder = document.getElementById('ogImagePlaceholder');
+        const btnRemoveOg = document.getElementById('btnRemoveOgImage');
+        if (ogPreview && ogPlaceholder) {
+            if (ogImage && ogImage !== 'null' && ogImage !== 'undefined') {
+                ogPreview.src = ogImage;
+                ogPreview.classList.remove('hidden');
+                ogPlaceholder.classList.add('hidden');
+                if (btnRemoveOg) btnRemoveOg.classList.remove('hidden');
+            } else {
+                ogPreview.src = '';
+                ogPreview.classList.add('hidden');
+                ogPlaceholder.classList.remove('hidden');
+                if (btnRemoveOg) btnRemoveOg.classList.add('hidden');
+            }
+        }
+    }
+
     // Greeting Settings
     if (document.getElementById('settingGreetingHeading')) document.getElementById('settingGreetingHeading').value = settings.greeting_heading || '';
     if (document.getElementById('settingGreetingQuote')) document.getElementById('settingGreetingQuote').value = settings.greeting_quote || '';
@@ -376,6 +400,9 @@ window.saveSettings = async function(quiet = false, customMsg = null, skipReload
         guest_prefix: 'settingGuestPrefix',
         guest_label: 'settingGuestLabel',
         hero_button: 'settingHeroButton',
+        og_title: 'settingOgTitle',
+        og_description: 'settingOgDescription',
+        og_image: 'settingOgImage',
         notification_retention: 'settingNotificationRetention',
         wishes_limit: 'settingWishesLimit',
         greeting_heading: 'settingGreetingHeading',
@@ -959,3 +986,15 @@ window.scrollOpeningBg = function(direction) {
         initDropdowns();
     }
 })();
+
+window.handleOgImageUpload = function(input) {
+    window.uploadSettingImg(input, 'og_image', 'ogImagePreview');
+    const btn = document.getElementById('btnRemoveOgImage');
+    if (btn) btn.classList.remove('hidden');
+};
+
+window.removeOgImage = function() {
+    window.deleteSettingImg('og_image', 'ogImagePreview');
+    const btn = document.getElementById('btnRemoveOgImage');
+    if (btn) btn.classList.add('hidden');
+};

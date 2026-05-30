@@ -139,8 +139,8 @@ app.get('/', async (req, res) => {
     const settings = {};
     settingsRows.forEach((row) => (settings[row.key] = row.value));
     
-    let ogImage = '';
-    if (settings.opening_bg_img) {
+    let ogImage = settings.og_image || '';
+    if (!ogImage && settings.opening_bg_img) {
       const imgs = settings.opening_bg_img.split(',').filter(u => u.trim() !== '');
       if (imgs.length > 0) ogImage = imgs[0];
     }
@@ -153,10 +153,12 @@ app.get('/', async (req, res) => {
     
     const fullImageUrl = ogImage ? (ogImage.startsWith('http') ? ogImage : baseUrl + ogImage) : '';
     
-    const title = settings.hero_name ? `The Wedding of ${settings.hero_name}` : 'The Wedding of Riandino & Aurora';
+    const defaultTitle = settings.hero_name ? `The Wedding of ${settings.hero_name}` : 'The Wedding of Riandino & Aurora';
+    const title = settings.og_title || defaultTitle;
+    const description = settings.og_description || 'Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di acara pernikahan kami.';
     const ogTags = `
     <meta property="og:title" content="${title}">
-    <meta property="og:description" content="Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di acara pernikahan kami.">
+    <meta property="og:description" content="${description}">
     ${fullImageUrl ? `<meta property="og:image" content="${fullImageUrl}">` : ''}
     <meta property="og:url" content="${baseUrl}${req.url}">
     <meta property="og:type" content="website">`;
