@@ -766,7 +766,8 @@ app.get('/api/admin/lovestory', requireAdmin, async (req, res) => {
         lovestory_bg_mode: settings.lovestory_bg_mode || 'color',
         lovestory_bg_img: settings.lovestory_bg_img || '',
         lovestory_card_bg_mode: settings.lovestory_card_bg_mode || 'color',
-        lovestory_card_bg_img: settings.lovestory_card_bg_img || ''
+        lovestory_card_bg_img: settings.lovestory_card_bg_img || '',
+        ls_header_avatar: settings.ls_header_avatar || ''
     };
 
     res.json({ messages, settings: formattedSettings });
@@ -816,7 +817,7 @@ app.post('/api/admin/lovestory/avatar/:role', requireAdmin, handleUpload(upload.
   if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
   const src = `/uploads/${req.file.filename}`;
   const role = req.params.role;
-  const key = role === 'male' ? 'ls_male_avatar' : 'ls_female_avatar';
+  const key = role === 'male' ? 'ls_male_avatar' : (role === 'female' ? 'ls_female_avatar' : 'ls_header_avatar');
   try {
     await runSql('INSERT INTO lovestory_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', [key, src, src]);
     res.json({ success: true, src });

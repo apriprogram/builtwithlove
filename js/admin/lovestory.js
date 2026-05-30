@@ -132,7 +132,7 @@ window.uploadLsAvatar = async function(input, role, previewId) {
         // Update global state
         if (window.state && window.state.dashboard) {
             if (!window.state.dashboard.lovestory_settings) window.state.dashboard.lovestory_settings = {};
-            const key = role === 'male' ? 'ls_male_avatar' : 'ls_female_avatar';
+            const key = role === 'male' ? 'ls_male_avatar' : (role === 'female' ? 'ls_female_avatar' : 'ls_header_avatar');
             window.state.dashboard.lovestory_settings[key] = data.src;
         }
 
@@ -310,6 +310,7 @@ window.loadLoveStoryAdmin = async function() {
         const titleEl = document.getElementById('ls_title');
         const mAvatar = document.getElementById('lsGroomAvatar');
         const fAvatar = document.getElementById('lsBrideAvatar');
+        const hAvatar = document.getElementById('lsHeaderAvatar');
         const bgInput = document.getElementById('settingLovestoryBg');
         const cardBgInput = document.getElementById('settingLovestoryCardBg');
 
@@ -339,6 +340,19 @@ window.loadLoveStoryAdmin = async function() {
                 fAvatar.classList.add('opacity-0');
                 fAvatar.style.opacity = '0';
                 if (fIcon) fIcon.style.display = 'flex';
+            }
+        }
+        if (hAvatar) {
+            hAvatar.src = lsSettings.ls_header_avatar ? (lsSettings.ls_header_avatar + '?t=' + Date.now()) : '';
+            const hIcon = document.getElementById('lsHeaderAvatarIcon');
+            if (lsSettings.ls_header_avatar) {
+                hAvatar.classList.remove('opacity-0');
+                hAvatar.style.opacity = '1';
+                if (hIcon) hIcon.style.display = 'none';
+            } else {
+                hAvatar.classList.add('opacity-0');
+                hAvatar.style.opacity = '0';
+                if (hIcon) hIcon.style.display = 'flex';
             }
         }
 

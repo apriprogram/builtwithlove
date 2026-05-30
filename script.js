@@ -668,7 +668,7 @@ function renderLoveStory(messages, settings) {
     if (chatTitle && settings.ls_title) chatTitle.innerText = settings.ls_title;
     
     if (headerAvatar) {
-        const hAv = settings.ls_female_avatar || '';
+        const hAv = settings.ls_header_avatar || '';
         if (hAv) {
             headerAvatar.src = hAv;
             headerAvatar.style.display = '';
