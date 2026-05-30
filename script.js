@@ -368,17 +368,20 @@ async function loadPublicData() {
             nameEl.innerText = guestNameStr;
             const adjustFontSize = () => {
                 nameEl.style.fontSize = ''; 
-                setTimeout(() => {
-                    let containerWidth = window.innerWidth * 0.9;
+                // Default fallback size for safety
+                let baseSize = window.innerWidth < 768 ? 48 : 72;
+                
+                document.fonts.ready.then(() => {
+                    let containerWidth = window.innerWidth * 0.95;
                     if (nameEl.parentElement) containerWidth = nameEl.parentElement.clientWidth;
-                    if (nameEl.scrollWidth > containerWidth) {
-                        let size = parseFloat(window.getComputedStyle(nameEl).fontSize);
-                        while (nameEl.scrollWidth > containerWidth && size > 14) {
-                            size -= 1;
-                            nameEl.style.fontSize = size + 'px';
-                        }
+                    
+                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || baseSize;
+                    
+                    while (nameEl.scrollWidth > containerWidth && size > 26) {
+                        size -= 1;
+                        nameEl.style.fontSize = size + 'px';
                     }
-                }, 10);
+                });
             };
             adjustFontSize();
             window.addEventListener('resize', adjustFontSize);
