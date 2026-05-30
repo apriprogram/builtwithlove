@@ -545,10 +545,10 @@
         window.initAOS = function() {
             if (window.AOS) {
                 AOS.init({
-                    duration: 1000,    // Durasi standar yang optimal untuk performa mirror
-                    once: false,       // Mengulang animasi secara terus menerus
-                    mirror: true,      // Mengaktifkan efek mirror penuh (menghilang saat keluar layar, muncul kembali saat masuk)
-                    offset: 50,        // Offset 50 piksel agar responsif dan sensitif saat scroll naik/turun
+                    duration: 1000,
+                    once: false,       // Mengulang animasi setiap kali masuk layar
+                    mirror: false,     // Nonaktifkan mirror agar saat scroll ke atas animasi masuknya tetap berjalan seperti biasa dari bawah/arah aslinya
+                    offset: 80,
                     delay: 0,
                     easing: 'ease-out-quart',
                     disable: false
@@ -556,7 +556,7 @@
             }
         };
     </script>
-    <script src="script.js?v=23"></script>
+    <script src="script.js?v=24"></script>
 </body>
 
 </html>
