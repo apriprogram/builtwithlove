@@ -1166,10 +1166,10 @@ function setupPage() {
                     window.initAOS();
                 } else if (window.AOS) {
                     AOS.init({
-                        duration: 1200,
+                        duration: 1000,
                         once: false,
                         mirror: true,
-                        offset: 100,
+                        offset: 50,
                         easing: 'ease-out-quart'
                     });
                 }

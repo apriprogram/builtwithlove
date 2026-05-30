@@ -20,7 +20,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
     <style>
         /* Performance Tweaks */
         #cover, [data-aos] {
@@ -545,10 +545,10 @@
         window.initAOS = function() {
             if (window.AOS) {
                 AOS.init({
-                    duration: 1200,
+                    duration: 1000,    // Durasi standar yang optimal untuk performa mirror
                     once: false,       // Mengulang animasi secara terus menerus
-                    mirror: true,      // Mengaktifkan kembali efek mirror (elemen menghilang saat di-scroll menjauh dan muncul kembali dengan kebalikannya)
-                    offset: 100,       // Offset yang cukup agar trigger bekerja dengan halus
+                    mirror: true,      // Mengaktifkan efek mirror penuh (menghilang saat keluar layar, muncul kembali saat masuk)
+                    offset: 50,        // Offset 50 piksel agar responsif dan sensitif saat scroll naik/turun
                     delay: 0,
                     easing: 'ease-out-quart',
                     disable: false
@@ -556,7 +556,7 @@
             }
         };
     </script>
-    <script src="script.js?v=20"></script>
+    <script src="script.js?v=21"></script>
 </body>
 
 </html>
