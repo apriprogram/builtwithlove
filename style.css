@@ -246,7 +246,7 @@ body {
 
 /* Fix for background zoom on mobile */
 @media (max-width: 768px) {
-    /* Allow sambutan, events, wishes, and digital envelope to stay fixed on mobile as requested */
+    /* Allow sambutan, events, wishes, and digital envelope to stay fixed on mobile as requested, but fall back gracefully if needed */
     #greetingSection,
     #events,
     #sectionWishes,
@@ -261,6 +261,23 @@ body {
         background-size: cover !important;
         background-position: center center !important;
     }
+}
+
+/* Specific fix for iOS (iPhone/iPad) background zoom bug */
+@supports (-webkit-touch-callout: none) {
+    #greetingSection,
+    #events,
+    #sectionWishes,
+    #digitalEnvelope,
+    #lovestory,
+    #sectionRsvp,
+    #gallery,
+    section {
+        background-attachment: scroll !important;
+        background-size: cover !important;
+        background-position: center center !important;
+    }
+}
 
     /* Adjust font sizes for mobile */
     #greetingHeading {
