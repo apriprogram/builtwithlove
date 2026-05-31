@@ -501,18 +501,78 @@ window.saveSettings = async function(quiet = false, customMsg = null, skipReload
     }
 };
 
+// Helper function for client-side image compression
+function compressImage(file, { maxWidth = 1920, maxHeight = 1920, quality = 0.75 } = {}) {
+    return new Promise((resolve) => {
+        if (!file.type.startsWith('image/')) {
+            resolve(file);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round((width * maxHeight) / height);
+                        height = maxHeight;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        resolve(file);
+                        return;
+                    }
+                    const compressedFile = new File([blob], file.name, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+                    resolve(compressedFile.size < file.size ? compressedFile : file);
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+}
+
 window.uploadSettingImg = async function(input, key, previewId) {
     if (!input.files || !input.files[0]) return;
     
-    // Validation for WhatsApp preview limit (300KB)
-    if (key === 'og_image' && input.files[0].size > 300 * 1024) {
-        showToast('Gagal: Ukuran gambar harus di bawah 300 KB agar bisa tampil di WhatsApp.', 'error');
-        input.value = '';
-        return;
+    let file = input.files[0];
+    
+    // Auto-compress large images to speed up uploading
+    if (file.size > 200 * 1024) {
+        window.showToast('Sedang mengompresi gambar untuk mempercepat unggahan...', 'info');
+    }
+    
+    if (key === 'og_image') {
+        file = await compressImage(file, { maxWidth: 600, maxHeight: 600, quality: 0.7 });
+        if (file.size > 300 * 1024) {
+            showToast('Gagal: Ukuran gambar harus di bawah 300 KB agar bisa tampil di WhatsApp.', 'error');
+            input.value = '';
+            return;
+        }
+    } else {
+        file = await compressImage(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.75 });
     }
 
     const formData = new FormData();
-    formData.append('image', input.files[0]);
+    formData.append('image', file);
     formData.append('setting_key', key);
 
     try {
@@ -877,8 +937,15 @@ window.viewImageModal = function(src) {
 
 window.uploadOpeningSliderImg = async function(input) {
     if (!input.files || !input.files[0]) return;
+    
+    let file = input.files[0];
+    if (file.size > 200 * 1024) {
+        window.showToast('Sedang mengompresi gambar untuk mempercepat unggahan...', 'info');
+    }
+    file = await compressImage(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.75 });
+
     const formData = new FormData();
-    formData.append('image', input.files[0]);
+    formData.append('image', file);
     formData.append('setting_key', 'opening_bg_img_temp'); // Use temp key so we just get the URL back
 
     try {

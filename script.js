@@ -373,8 +373,8 @@ async function loadPublicData() {
                     // Use 85% on mobile and 90% on desktop to leave a safe margin so edges aren't cut off.
                     let containerWidth = window.innerWidth < 768 ? (window.innerWidth * 0.85) : (window.innerWidth * 0.90);
                     
-                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || (window.innerWidth < 768 ? 60 : 72);
-                    let minSize = window.innerWidth < 768 ? 20 : 36;
+                    let size = parseFloat(window.getComputedStyle(nameEl).fontSize) || (window.innerWidth < 768 ? 36 : 72);
+                    let minSize = window.innerWidth < 768 ? 28 : 48;
                     
                     let lastScrollWidth = nameEl.scrollWidth;
                     
