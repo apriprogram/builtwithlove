@@ -304,7 +304,8 @@ async function loadPublicData() {
         const eventSection = document.getElementById('events');
         const lovestoryEl = document.getElementById('lovestory');
         const sharedWrapper = document.getElementById('sharedEventWrapper');
-        
+
+        const isMobile = window.innerWidth <= 768;
         const eMode = eventSection ? (settings.event_bg_mode || 'color') : 'color';
         const eBgImg = eventSection ? (settings.event_bg || '') : '';
         const eBgColor = eventSection ? (settings.event_bg_color || '#000000') : '#000000';
@@ -313,60 +314,81 @@ async function loadPublicData() {
         const lsBgImg = (lsSettings.lovestory_bg_mode === 'image') ? (lsSettings.lovestory_bg_img || '') : '';
         const lsBgColor = lsSettings.lovestory_bg || '#000000';
 
-        // Check if both sections have the SAME image background
+        // Normalize URL for comparison (strip domain, trailing slashes, etc.)
+        const normalizeUrl = (url) => (url || '').trim().replace(/^https?:\/\/[^/]+/, '').replace(/\/+$/, '');
         const bothUseImage = (eMode === 'image' && eBgImg && lsBgImg);
-        const sameImage = bothUseImage && (eBgImg.trim() === lsBgImg.trim());
+        const sameImage = bothUseImage && (normalizeUrl(eBgImg) === normalizeUrl(lsBgImg));
+
+        // Helper to clear all bg inline styles from an element
+        const clearElBg = (el) => {
+            if (!el) return;
+            el.style.removeProperty('background-image');
+            el.style.removeProperty('background-color');
+            el.style.removeProperty('background-attachment');
+            el.style.removeProperty('background-size');
+            el.style.removeProperty('background-position');
+            el.style.removeProperty('background-repeat');
+            el.style.removeProperty('background');
+            el.style.removeProperty('--events-bg-img');
+            el.style.removeProperty('--lovestory-bg-img');
+        };
 
         if (sharedWrapper) {
             if (sameImage) {
-                // === SAME BACKGROUND: Use wrapper as single unified fixed background ===
+                // === SAME BACKGROUND: Wrapper shows one unified background ===
                 sharedWrapper.classList.add('shared-bg');
-                // Set the CSS custom property for the mobile pseudo-element ::before
-                sharedWrapper.style.setProperty('--shared-bg-img', `url('${eBgImg}')`);
-                // Also set directly for desktop (background-attachment: fixed)
+                // Set background on wrapper — on desktop uses fixed, on mobile CSS overrides to scroll
                 sharedWrapper.style.backgroundImage = `url('${eBgImg}')`;
+                sharedWrapper.style.backgroundSize = 'cover';
+                sharedWrapper.style.backgroundPosition = 'center center';
+                sharedWrapper.style.backgroundRepeat = 'no-repeat';
+                sharedWrapper.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
 
-                // Fully wipe ALL inline background styles from child sections so CSS can take over
-                const clearBg = (el) => {
-                    if (!el) return;
-                    el.style.backgroundImage = 'none';
-                    el.style.backgroundColor = 'transparent';
-                    el.style.backgroundAttachment = '';
-                    el.style.backgroundSize = '';
-                    el.style.backgroundPosition = '';
-                    el.style.backgroundRepeat = '';
-                    el.style.background = 'transparent';
-                    el.style.removeProperty('--events-bg-img');
-                    el.style.removeProperty('--lovestory-bg-img');
-                };
-                clearBg(eventSection);
-                clearBg(lovestoryEl);
+                // Clear children so the wrapper background shows through
+                clearElBg(eventSection);
+                clearElBg(lovestoryEl);
+                if (eventSection) {
+                    eventSection.style.backgroundImage = 'none';
+                    eventSection.style.background = 'transparent';
+                }
+                if (lovestoryEl) {
+                    lovestoryEl.style.backgroundImage = 'none';
+                    lovestoryEl.style.background = 'transparent';
+                }
 
             } else {
-                // === DIFFERENT BACKGROUNDS: Each section has its own fixed background ===
+                // === DIFFERENT BACKGROUNDS: Each section has its own background ===
                 sharedWrapper.classList.remove('shared-bg');
+                clearElBg(sharedWrapper);
                 sharedWrapper.style.backgroundImage = 'none';
-                sharedWrapper.style.removeProperty('--shared-bg-img');
 
                 // Apply events background
                 if (eventSection) {
                     if (eMode === 'image' && eBgImg) {
-                        applyBg('events', eBgImg, null);
-                        eventSection.style.setProperty('--events-bg-img', `url('${eBgImg}')`);
+                        eventSection.style.backgroundImage = `url('${eBgImg}')`;
+                        eventSection.style.backgroundSize = 'cover';
+                        eventSection.style.backgroundPosition = 'center center';
+                        eventSection.style.backgroundRepeat = 'no-repeat';
+                        eventSection.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
                     } else {
-                        applyBg('events', null, eBgColor);
-                        eventSection.style.setProperty('--events-bg-img', 'none');
+                        eventSection.style.backgroundImage = 'none';
+                        eventSection.style.backgroundColor = eBgColor;
+                        eventSection.style.backgroundAttachment = '';
                     }
                 }
 
                 // Apply lovestory background
                 if (lovestoryEl) {
                     if (lsSettings.lovestory_bg_mode === 'image' && lsBgImg) {
-                        applyBg('lovestory', lsBgImg, null);
-                        lovestoryEl.style.setProperty('--lovestory-bg-img', `url('${lsBgImg}')`);
+                        lovestoryEl.style.backgroundImage = `url('${lsBgImg}')`;
+                        lovestoryEl.style.backgroundSize = 'cover';
+                        lovestoryEl.style.backgroundPosition = 'center center';
+                        lovestoryEl.style.backgroundRepeat = 'no-repeat';
+                        lovestoryEl.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
                     } else {
-                        applyBg('lovestory', null, lsBgColor);
-                        lovestoryEl.style.setProperty('--lovestory-bg-img', 'none');
+                        lovestoryEl.style.backgroundImage = 'none';
+                        lovestoryEl.style.backgroundColor = lsBgColor;
+                        lovestoryEl.style.backgroundAttachment = '';
                     }
                 }
             }

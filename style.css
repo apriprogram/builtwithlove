@@ -248,11 +248,7 @@ body {
 @media (max-width: 768px) {
     #greetingSection,
     #sectionWishes,
-    #digitalEnvelope {
-        background-attachment: fixed !important;
-    }
-
-    #lovestory,
+    #digitalEnvelope,
     #sectionRsvp,
     section[style*="background"] {
         background-attachment: scroll !important;
@@ -266,7 +262,7 @@ body {
     position: relative;
 }
 
-/* === DESKTOP: standard background-attachment fixed on wrapper === */
+/* === DESKTOP: parallax fixed background on wrapper === */
 #sharedEventWrapper.shared-bg {
     position: relative;
     background-attachment: fixed;
@@ -275,71 +271,26 @@ body {
     background-repeat: no-repeat;
 }
 
-/* === MOBILE (all): clip-path + fixed pseudo-element trick — works on Android & iOS === */
-/* The clip-path on the wrapper contains the fixed pseudo-element visually */
+/* === MOBILE: scroll (no parallax, but seamless unified background) === */
 @media (max-width: 768px) {
+    /* Same background: wrapper shows one unified image that scrolls naturally */
     #sharedEventWrapper.shared-bg {
-        background-image: none !important;  /* disable direct bg on mobile */
         background-attachment: scroll !important;
-        clip-path: inset(0 0 0 0);
-        -webkit-clip-path: inset(0 0 0 0);
+        background-size: cover !important;
+        background-position: center top !important;
+        background-repeat: no-repeat !important;
     }
 
-    #sharedEventWrapper.shared-bg::before {
-        content: "";
-        display: block;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: var(--shared-bg-img);
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        z-index: 0;
-        pointer-events: none;
-        will-change: transform;
-    }
-
-    /* Different backgrounds on mobile: each section uses clip-path + fixed pseudo-element */
+    /* Different backgrounds: each section shows its own image */
     #sharedEventWrapper:not(.shared-bg) #events,
     #sharedEventWrapper:not(.shared-bg) #lovestory {
-        position: relative;
-        clip-path: inset(0 0 0 0);
-        -webkit-clip-path: inset(0 0 0 0);
         background-attachment: scroll !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
     }
 
-    #sharedEventWrapper:not(.shared-bg) #events::before {
-        content: "";
-        display: block;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-image: var(--events-bg-img);
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    #sharedEventWrapper:not(.shared-bg) #lovestory::before {
-        content: "";
-        display: block;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-image: var(--lovestory-bg-img);
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    /* Ensure overlay and content are above pseudo-element */
+    /* Ensure content is above overlay */
     #sharedEventWrapper #events > *,
     #sharedEventWrapper #lovestory > * {
         position: relative;
@@ -355,7 +306,7 @@ body {
     background: transparent !important;
 }
 
-/* ===== iOS EXTRA FIX — reinforce with is-ios class ===== */
+/* ===== iOS EXTRA FIX — scroll for all sections ===== */
 body.is-ios #greetingSection,
 body.is-ios #sectionWishes,
 body.is-ios #digitalEnvelope,
@@ -365,41 +316,6 @@ body.is-ios section:not(#events):not(#lovestory) {
     background-attachment: scroll !important;
     background-size: cover !important;
     background-position: center center !important;
-}
-
-/* iOS: individual events & lovestory when diff backgrounds */
-body.is-ios #sharedEventWrapper:not(.shared-bg) #events,
-body.is-ios #sharedEventWrapper:not(.shared-bg) #lovestory {
-    position: relative !important;
-    clip-path: inset(0 0 0 0) !important;
-    -webkit-clip-path: inset(0 0 0 0) !important;
-    background-image: none !important;
-    background-attachment: scroll !important;
-}
-
-/* iOS + SAME background: wrapper handles the single fixed bg */
-body.is-ios #sharedEventWrapper.shared-bg {
-    position: relative;
-    clip-path: inset(0 0 0 0);
-    -webkit-clip-path: inset(0 0 0 0);
-    background-image: none !important;
-    background-attachment: scroll !important;
-}
-
-body.is-ios #sharedEventWrapper.shared-bg::before {
-    content: "" !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background-image: var(--shared-bg-img) !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    z-index: 0 !important;
-    pointer-events: none !important;
-    will-change: transform !important;
 }
 
     /* Adjust font sizes for mobile */

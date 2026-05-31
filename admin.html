@@ -1736,6 +1736,10 @@
                                 class="atur-tab-btn flex-1 lg:flex-none lg:px-6" data-tab="kehadiran">
                                 <i class="fas fa-clipboard-list"></i> <span>Kehadiran & Ucapan</span>
                             </button>
+                            <button onclick="switchAturTab('footer')"
+                                class="atur-tab-btn flex-1 lg:flex-none lg:px-6" data-tab="footer">
+                                <i class="fas fa-window-minimize"></i> <span>Footer</span>
+                            </button>
                         </div>
                     </div>
 
@@ -3023,6 +3027,78 @@
                         </div>
                     </div>
 
+                    <!-- Footer Section -->
+                    <div id="section_footer" class="atur-section hidden card-premium overflow-hidden border border-slate-100 dark:border-slate-700 mb-5 animate-in fade-in slide-in-from-top-4 duration-1000">
+                        <div class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Footer</h3>
+                                <p class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">Atur tampilan footer undangan digital</p>
+                            </div>
+                            <button onclick="saveSettings()" class="btn-premium btn-primary !h-9 !px-6">
+                                SIMPAN
+                            </button>
+                        </div>
+                        <div class="p-6 bg-slate-50/20">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+                                <!-- Kolom 1: Teks -->
+                                <div class="space-y-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul Footer</label>
+                                        <input id="settingFooterTitle" type="text" class="input-premium" placeholder="Cth: Riandino & Aurora">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Sub-judul Footer</label>
+                                        <input id="settingFooterSubtitle" type="text" class="input-premium" placeholder="Cth: RIANDANAURORA.MY.ID">
+                                    </div>
+                                </div>
+
+                                <!-- Kolom 2: Background -->
+                                <div class="space-y-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan Background</label>
+                                        <div class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
+                                            <input type="checkbox" id="settingFooterBgMode" class="hidden" onchange="window.setFooterBgMode(this.checked ? 'image' : 'color');">
+                                            <div id="footerBgModeSlider" class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1"></div>
+                                            <button type="button" onclick="document.getElementById('settingFooterBgMode').checked = false; window.setFooterBgMode('color');" class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 footer-mode-btn text-white" id="footerModeColorBtn">Warna</button>
+                                            <button type="button" onclick="document.getElementById('settingFooterBgMode').checked = true; window.setFooterBgMode('image');" class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 footer-mode-btn text-slate-400" id="footerModeImageBtn">Gambar</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between px-1">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Warna / Gradient</label>
+                                            <input type="color" id="footerColorPicker" oninput="window.syncFooterColor(this.value, 'picker')" class="w-8 h-8 rounded-lg border-none cursor-pointer bg-transparent">
+                                        </div>
+                                        <input type="text" id="settingFooterBgColor" class="input-premium font-mono text-[10px]" placeholder="Cth: #000000 atau linear-gradient(...)">
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background Gambar</label>
+                                        <button type="button" onclick="this.nextElementSibling.click()" class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
+                                        </button>
+                                        <input type="file" onchange="uploadSettingImg(this, 'footer_bg_img', 'footerBgPreview')" class="hidden">
+                                        <p class="text-[9px] text-slate-400 mt-2">(Maks. 10MB)</p>
+                                    </div>
+                                </div>
+
+                                <!-- Kolom 3: Preview -->
+                                <div class="space-y-4">
+                                    <label class="text-[11px] sm:text-xs font-semibold text-slate-600 px-1 block mb-2">Preview Background</label>
+                                    <div id="footerBgPreviewContainer" class="relative group aspect-[2/1] lg:h-auto w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-transparent">
+                                        <img id="footerBgPreview" class="preview-img absolute inset-0 w-full h-full object-cover z-10 hidden pointer-events-none">
+                                        <div id="footerBgPreviewPlaceholder" class="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+                                            <i class="fas fa-image text-5xl text-slate-400/60 dark:text-white/20"></i>
+                                        </div>
+                                        <button type="button" id="btnDeleteFooterBg" onclick="window.deleteSettingImg('footer_bg_img', 'footerBgPreview');" class="absolute top-2 right-2 w-9 h-9 bg-red-500 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-red-600 active:scale-90 z-30">
+                                            <i class="fas fa-trash-alt text-xs"></i>
+                                        </button>
+                                    </div>
+                                    <input type="hidden" id="settingFooterBgImg" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
 

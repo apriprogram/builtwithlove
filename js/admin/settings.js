@@ -83,6 +83,9 @@ window.renderSettings = function() {
     if (document.getElementById('settingGreetingBgImg')) document.getElementById('settingGreetingBgImg').value = settings.greeting_bg_img || '';
     if (document.getElementById('settingGiftTitle')) document.getElementById('settingGiftTitle').value = settings.gift_title || '';
     if (document.getElementById('giftPhysicalAddress')) document.getElementById('giftPhysicalAddress').value = settings.gift_physical_address || '';
+    if (document.getElementById('settingFooterTitle')) document.getElementById('settingFooterTitle').value = settings.footer_title || '';
+    if (document.getElementById('settingFooterSubtitle')) document.getElementById('settingFooterSubtitle').value = settings.footer_subtitle || '';
+    if (document.getElementById('settingFooterBgImg')) document.getElementById('settingFooterBgImg').value = settings.footer_bg_img || '';
     
     // Background Color Handlers
     if (document.getElementById('settingOpeningBgColor')) {
