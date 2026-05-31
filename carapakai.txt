@@ -17,3 +17,5 @@ Semua halaman sudah diupdate menggunakan template "Shalom" dengan animasi modern
 
 
 npm run migrate:mysql
+
+git ad server.js ; git commit -m "Fix Apps" ; git push
