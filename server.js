@@ -553,6 +553,37 @@ app.get('/api/public', async (req, res) => {
     const lovestory_settings = {};
     lsSettingsRows.forEach(r => { lovestory_settings[r.key] = r.value; });
     const gifts = await queryAll('SELECT * FROM gifts ORDER BY order_no ASC');
+
+    // Normalize same background image if identical contents (hashing)
+    try {
+      const crypto = require('crypto');
+      const getFileHash = (urlPath) => {
+        if (!urlPath) return null;
+        const cleanPath = urlPath.replace(/^\//, '');
+        const filePath = path.join(__dirname, cleanPath);
+        if (fs.existsSync(filePath)) {
+          const fileData = fs.readFileSync(filePath);
+          return crypto.createHash('md5').update(fileData).digest('hex');
+        }
+        return null;
+      };
+      const eMode = settings.event_bg_mode || 'color';
+      const eBgImg = settings.event_bg || '';
+      const lsBgMode = lovestory_settings.lovestory_bg_mode || 'color';
+      const lsBgImg = lovestory_settings.lovestory_bg_img || '';
+
+      if (eMode === 'image' && lsBgMode === 'image' && eBgImg && lsBgImg) {
+        const hash1 = getFileHash(eBgImg);
+        const hash2 = getFileHash(lsBgImg);
+        if (hash1 && hash2 && hash1 === hash2) {
+          // Force their URLs to be exactly the same string to be detected by client-side comparison
+          lovestory_settings.lovestory_bg_img = eBgImg;
+        }
+      }
+    } catch (hashErr) {
+      console.error('Error comparing background hashes:', hashErr);
+    }
+
     res.json({ settings, events, couple, gallery, wishes, guest, lovestory, lovestory_settings, gifts });
   } catch (error) {
     res.status(500).json({ error: 'Failed to load public data' });
