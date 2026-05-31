@@ -268,17 +268,16 @@ body {
     #greetingSection,
     #sectionWishes,
     #digitalEnvelope,
-    #lovestory,
     #sectionRsvp,
     #gallery,
-    section:not(#events) {
+    section:not(#events):not(#lovestory) {
         background-attachment: scroll !important;
         background-size: cover !important;
         background-position: center center !important;
     }
 
-    /* Premium iOS Parallax / Fixed background simulator for Events Section */
-    #events {
+    /* Premium iOS Parallax / Fixed background simulator for Events & Lovestory Sections */
+    #events, #lovestory {
         position: relative !important;
         clip-path: inset(0 0 0 0) !important;
         -webkit-clip-path: inset(0 0 0 0) !important;
@@ -286,7 +285,7 @@ body {
         background-attachment: scroll !important;
     }
     
-    #events::before {
+    #events::before, #lovestory::before {
         content: "" !important;
         display: block !important;
         position: fixed !important;
@@ -294,7 +293,6 @@ body {
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        background-image: var(--events-bg-img) !important;
         background-size: cover !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
@@ -303,11 +301,19 @@ body {
         will-change: transform !important;
     }
 
-    #events > .absolute {
+    #events::before {
+        background-image: var(--events-bg-img) !important;
+    }
+
+    #lovestory::before {
+        background-image: var(--lovestory-bg-img) !important;
+    }
+
+    #events > .absolute, #lovestory > .absolute {
         z-index: 1 !important;
     }
 
-    #events > .container {
+    #events > .container, #lovestory > .container {
         z-index: 2 !important;
     }
 }

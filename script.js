@@ -317,10 +317,15 @@ async function loadPublicData() {
         const lsSettings = data.lovestory_settings || {};
         
         // Section Background (Luar)
-        if (lsSettings.lovestory_bg_mode === 'image' && lsSettings.lovestory_bg_img) {
-            applyBg('lovestory', lsSettings.lovestory_bg_img, null);
-        } else {
-            applyBg('lovestory', null, lsSettings.lovestory_bg || '#000000');
+        const lovestoryEl = document.getElementById('lovestory');
+        if (lovestoryEl) {
+            if (lsSettings.lovestory_bg_mode === 'image' && lsSettings.lovestory_bg_img) {
+                applyBg('lovestory', lsSettings.lovestory_bg_img, null);
+                lovestoryEl.style.setProperty('--lovestory-bg-img', `url('${lsSettings.lovestory_bg_img}')`);
+            } else {
+                applyBg('lovestory', null, lsSettings.lovestory_bg || '#000000');
+                lovestoryEl.style.setProperty('--lovestory-bg-img', 'none');
+            }
         }
         
         // Card Background (Dalam Chat)
