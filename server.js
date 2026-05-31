@@ -714,13 +714,19 @@ app.post('/api/admin/guests/import', requireAdmin, handleUpload(excelUpload.sing
     
     if (data.length < 2) return res.status(400).json({ error: 'File Excel kosong atau tidak valid' });
 
-    // Find the 'NAMA TAMU' column index
+    // Find the 'NAMA TAMU' and 'JABATAN' column indexes
     const headers = data[0].map(h => (h || '').toString().toUpperCase().trim());
     let nameIdx = headers.indexOf('NAMA TAMU');
     if (nameIdx === -1) {
-      // Fallback: look for common names or just use first column
+      // Fallback: look for common names or just use first non-numeric column
       nameIdx = headers.findIndex(h => h.includes('NAMA') || h.includes('GUEST'));
       if (nameIdx === -1) nameIdx = 0;
+    }
+
+    // Find JABATAN column (optional)
+    let jabatanIdx = headers.indexOf('JABATAN');
+    if (jabatanIdx === -1) {
+      jabatanIdx = headers.findIndex(h => h.includes('JABATAN') || h.includes('POSISI') || h.includes('TITLE'));
     }
 
     let count = 0;
@@ -733,6 +739,7 @@ app.post('/api/admin/guests/import', requireAdmin, handleUpload(excelUpload.sing
         if (row && row[nameIdx]) {
           const name = row[nameIdx].toString().trim();
           if (name) {
+            const jabatan = (jabatanIdx !== -1 && row[jabatanIdx]) ? row[jabatanIdx].toString().trim() : null;
             const firstName = extractFirstName(name);
             let token = firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
             let tokenSuffix = 1;
@@ -746,7 +753,7 @@ app.post('/api/admin/guests/import', requireAdmin, handleUpload(excelUpload.sing
               tokenSuffix++;
             }
             
-            await conn.query('INSERT INTO guests (name, first_name, token, created_at) VALUES (?, ?, ?, ?)', [name, firstName, finalToken, new Date().toISOString()]);
+            await conn.query('INSERT INTO guests (name, jabatan, first_name, token, created_at) VALUES (?, ?, ?, ?, ?)', [name, jabatan, firstName, finalToken, new Date().toISOString()]);
             count++;
           }
         }

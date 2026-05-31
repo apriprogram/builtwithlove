@@ -254,7 +254,7 @@ window.showImportExcelModal = function() {
             </div>
             <div>
                 <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Import Tamu</h3>
-                <p class="text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-500 mt-0.5">Format: Excel</p>
+                <p class="text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-500 mt-0.5">Format: Excel (NAMA TAMU + JABATAN)</p>
             </div>
         </div>
         <button onclick="window.closeImportExcelModal(this.closest('.fixed'))" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-red-500 transition-colors flex items-center justify-center font-bold pb-0.5">&times;</button>
@@ -363,13 +363,13 @@ window.uploadExcel = async function() {
 };
 
 window.downloadExcelTemplate = function() {
-    const headers = [["NO", "NAMA TAMU"]];
+    const headers = [["NAMA TAMU", "JABATAN"]];
     const data = [
-        [1, "Bpk. Andi & Istri"],
-        [2, "Keluarga Besar Bpk. Budiman"],
-        [3, "Teman Kantor - Rian"],
-        [4, "Sahabat Aurora"],
-        [5, "Dr. Siti Aminah"]
+        ["Bpk. Andi & Istri", "Keluarga"],
+        ["Keluarga Besar Bpk. Budiman", "Keluarga Besar"],
+        ["Teman Kantor - Rian", "Rekan Kerja"],
+        ["Sahabat Aurora", "Sahabat"],
+        ["Dr. Siti Aminah", "Dokter"]
     ];
     
     const ws_data = headers.concat(data);
@@ -378,13 +378,13 @@ window.downloadExcelTemplate = function() {
     
     // Set column widths
     const wscols = [
-        { wch: 5 },  // NO
-        { wch: 40 }  // NAMA TAMU
+        { wch: 40 },  // NAMA TAMU
+        { wch: 25 }   // JABATAN
     ];
     ws['!cols'] = wscols;
     
     XLSX.utils.book_append_sheet(wb, ws, "Daftar Tamu");
     
     // Write and download
-    XLSX.writeFile(wb, "Template_Daftar_Tamu_Undangan.xlsx");
+    XLSX.writeFile(wb, "Template_Undangan_Tamu_Nikah.xlsx");
 };
