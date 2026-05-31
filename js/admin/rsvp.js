@@ -63,11 +63,11 @@ window.renderRsvpData = function() {
 
     window.renderPaginationControls('rsvp', rsvpList.length, window.tablePagination.rsvp.limit, window.tablePagination.rsvp.page);
 
-    if (document.getElementById('totalGuestsOverview')) document.getElementById('totalGuestsOverview').innerText = totalGuests;
+    if (document.getElementById('totalGuestsOverview')) document.getElementById('totalGuestsOverview').innerText = (window.state.dashboard.guests || []).length;
     if (document.getElementById('totalRsvp')) document.getElementById('totalRsvp').innerText = (window.state.dashboard.rsvps || []).length;
     if (document.getElementById('totalRsvpCount')) document.getElementById('totalRsvpCount').innerText = (window.state.dashboard.rsvps || []).length;
     if (document.getElementById('totalGuests')) document.getElementById('totalGuests').innerText = totalGuests;
-    if (document.getElementById('totalGuestsIndicator')) document.getElementById('totalGuestsIndicator').innerText = totalGuests;
+    if (document.getElementById('totalGuestsIndicator')) document.getElementById('totalGuestsIndicator').innerText = (window.state.dashboard.guests || []).length;
 };
 
 window.deleteRsvp = function(id) {

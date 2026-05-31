@@ -103,6 +103,10 @@ window.renderGuests = function() {
     }
 
     window.renderPaginationControls('guests', guestList.length, limit, window.tablePagination.guests.page);
+
+    if (document.getElementById('totalGuestsIndicator')) {
+        document.getElementById('totalGuestsIndicator').innerText = (window.state.dashboard.guests || []).length;
+    }
 };
 
 window.sortGuests = function(key) {
