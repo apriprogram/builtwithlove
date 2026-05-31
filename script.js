@@ -20,6 +20,10 @@ function applyBg(elId, img, color, isFixed = true) {
     
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     
+    if (isIOS) {
+        document.body.classList.add('is-ios');
+    }
+    
     if (img) {
         el.style.backgroundImage = `url('${img}')`;
         el.style.backgroundPosition = 'center';

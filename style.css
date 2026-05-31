@@ -264,58 +264,57 @@ body {
 }
 
 /* Specific fix for iOS (iPhone/iPad) background zoom bug */
-@supports (-webkit-touch-callout: none) {
-    #greetingSection,
-    #sectionWishes,
-    #digitalEnvelope,
-    #sectionRsvp,
-    #gallery,
-    section:not(#events):not(#lovestory) {
-        background-attachment: scroll !important;
-        background-size: cover !important;
-        background-position: center center !important;
-    }
+/* Specific fix for iOS (iPhone/iPad) background zoom bug */
+body.is-ios #greetingSection,
+body.is-ios #sectionWishes,
+body.is-ios #digitalEnvelope,
+body.is-ios #sectionRsvp,
+body.is-ios #gallery,
+body.is-ios section:not(#events):not(#lovestory) {
+    background-attachment: scroll !important;
+    background-size: cover !important;
+    background-position: center center !important;
+}
 
-    /* Premium iOS Parallax / Fixed background simulator for Events & Lovestory Sections */
-    #events, #lovestory {
-        position: relative !important;
-        clip-path: inset(0 0 0 0) !important;
-        -webkit-clip-path: inset(0 0 0 0) !important;
-        background-image: none !important;
-        background-attachment: scroll !important;
-    }
-    
-    #events::before, #lovestory::before {
-        content: "" !important;
-        display: block !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        background-size: cover !important;
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-        z-index: 0 !important;
-        pointer-events: none !important;
-        will-change: transform !important;
-    }
+/* Premium iOS Parallax / Fixed background simulator for Events & Lovestory Sections */
+body.is-ios #events, body.is-ios #lovestory {
+    position: relative !important;
+    clip-path: inset(0 0 0 0) !important;
+    -webkit-clip-path: inset(0 0 0 0) !important;
+    background-image: none !important;
+    background-attachment: scroll !important;
+}
 
-    #events::before {
-        background-image: var(--events-bg-img) !important;
-    }
+body.is-ios #events::before, body.is-ios #lovestory::before {
+    content: "" !important;
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+    will-change: transform !important;
+}
 
-    #lovestory::before {
-        background-image: var(--lovestory-bg-img) !important;
-    }
+body.is-ios #events::before {
+    background-image: var(--events-bg-img) !important;
+}
 
-    #events > .absolute, #lovestory > .absolute {
-        z-index: 1 !important;
-    }
+body.is-ios #lovestory::before {
+    background-image: var(--lovestory-bg-img) !important;
+}
 
-    #events > .container, #lovestory > .container {
-        z-index: 2 !important;
-    }
+body.is-ios #events > .absolute, body.is-ios #lovestory > .absolute {
+    z-index: 1 !important;
+}
+
+body.is-ios #events > .container, body.is-ios #lovestory > .container {
+    z-index: 2 !important;
 }
 
     /* Adjust font sizes for mobile */
