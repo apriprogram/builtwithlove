@@ -246,16 +246,14 @@ body {
 
 /* Fix for background zoom on mobile */
 @media (max-width: 768px) {
-    /* Allow sambutan, events, wishes, and digital envelope to stay fixed on mobile as requested, but fall back gracefully if needed */
     #greetingSection,
-    #events,
     #sectionWishes,
     #digitalEnvelope {
         background-attachment: fixed !important;
     }
 
-    #lovestory, 
-    #sectionRsvp, 
+    #lovestory,
+    #sectionRsvp,
     section[style*="background"] {
         background-attachment: scroll !important;
         background-size: cover !important;
@@ -263,8 +261,30 @@ body {
     }
 }
 
-/* Specific fix for iOS (iPhone/iPad) background zoom bug */
-/* Specific fix for iOS (iPhone/iPad) background zoom bug */
+/* ===== SHARED EVENT WRAPPER — unified 1 background for Events + Love Story ===== */
+#sharedEventWrapper {
+    position: relative;
+}
+
+/* When backgrounds are the SAME: wrapper holds the 1 fixed background */
+#sharedEventWrapper.shared-bg {
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* When same background: both child sections become transparent */
+#sharedEventWrapper.shared-bg #events,
+#sharedEventWrapper.shared-bg #lovestory {
+    background-image: none !important;
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+/* ===== iOS FIX — position:fixed doesn't work on iOS Safari ===== */
+
+/* General iOS sections: use scroll */
 body.is-ios #greetingSection,
 body.is-ios #sectionWishes,
 body.is-ios #digitalEnvelope,
@@ -276,16 +296,25 @@ body.is-ios section:not(#events):not(#lovestory) {
     background-position: center center !important;
 }
 
-/* Premium iOS Parallax / Fixed background simulator for Events & Lovestory Sections */
-body.is-ios #events, body.is-ios #lovestory {
+/* iOS: Events & Lovestory — use position:fixed pseudo-element trick for parallax */
+body.is-ios #events,
+body.is-ios #lovestory {
     position: relative !important;
     clip-path: inset(0 0 0 0) !important;
     -webkit-clip-path: inset(0 0 0 0) !important;
+    background-attachment: scroll !important;
+}
+
+/* iOS + SAME background: wrapper handles the single fixed bg via pseudo-element */
+body.is-ios #sharedEventWrapper.shared-bg {
+    position: relative;
+    clip-path: inset(0 0 0 0);
+    -webkit-clip-path: inset(0 0 0 0);
     background-image: none !important;
     background-attachment: scroll !important;
 }
 
-body.is-ios #events::before, body.is-ios #lovestory::before {
+body.is-ios #sharedEventWrapper.shared-bg::before {
     content: "" !important;
     display: block !important;
     position: fixed !important;
@@ -293,6 +322,7 @@ body.is-ios #events::before, body.is-ios #lovestory::before {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    background-image: var(--shared-bg-img) !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
@@ -301,20 +331,57 @@ body.is-ios #events::before, body.is-ios #lovestory::before {
     will-change: transform !important;
 }
 
-body.is-ios #events::before {
+/* iOS + DIFFERENT backgrounds: each section has its own fixed pseudo-element */
+body.is-ios #sharedEventWrapper:not(.shared-bg) #events {
+    background-image: none !important;
+}
+body.is-ios #sharedEventWrapper:not(.shared-bg) #lovestory {
+    background-image: none !important;
+}
+
+body.is-ios #sharedEventWrapper:not(.shared-bg) #events::before {
+    content: "" !important;
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
     background-image: var(--events-bg-img) !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
 }
 
-body.is-ios #lovestory::before {
+body.is-ios #sharedEventWrapper:not(.shared-bg) #lovestory::before {
+    content: "" !important;
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
     background-image: var(--lovestory-bg-img) !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
 }
 
-body.is-ios #events > .absolute, body.is-ios #lovestory > .absolute {
+/* Ensure content in events/lovestory appears above pseudo-element */
+body.is-ios #events > .absolute,
+body.is-ios #lovestory > .absolute {
     z-index: 1 !important;
 }
 
-body.is-ios #events > .container, body.is-ios #lovestory > .container {
+body.is-ios #events > .container,
+body.is-ios #lovestory > .container {
     z-index: 2 !important;
+}
+
+body.is-ios #sharedEventWrapper.shared-bg #events > *,
+body.is-ios #sharedEventWrapper.shared-bg #lovestory > * {
+    z-index: 1 !important;
+    position: relative;
 }
 
     /* Adjust font sizes for mobile */

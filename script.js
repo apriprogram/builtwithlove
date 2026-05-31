@@ -302,36 +302,72 @@ async function loadPublicData() {
 
         // Event Section Background Mode Handling
         const eventSection = document.getElementById('events');
-        if (eventSection) {
-            const eMode = settings.event_bg_mode || 'color';
-            const eBgImg = settings.event_bg || '';
-            const eBgColor = settings.event_bg_color || '#000000';
-
-            if (eMode === 'image' && eBgImg) {
-                applyBg('events', eBgImg, null);
-                eventSection.style.setProperty('--events-bg-img', `url('${eBgImg}')`);
-            } else {
-                applyBg('events', null, eBgColor);
-                eventSection.style.setProperty('--events-bg-img', 'none');
-            }
-        }
+        const lovestoryEl = document.getElementById('lovestory');
+        const sharedWrapper = document.getElementById('sharedEventWrapper');
         
-        applyBg('gallery', settings.gallery_bg_img, settings.gallery_bg_color);
+        const eMode = eventSection ? (settings.event_bg_mode || 'color') : 'color';
+        const eBgImg = eventSection ? (settings.event_bg || '') : '';
+        const eBgColor = eventSection ? (settings.event_bg_color || '#000000') : '#000000';
 
         const lsSettings = data.lovestory_settings || {};
-        
-        // Section Background (Luar)
-        const lovestoryEl = document.getElementById('lovestory');
-        if (lovestoryEl) {
-            if (lsSettings.lovestory_bg_mode === 'image' && lsSettings.lovestory_bg_img) {
-                applyBg('lovestory', lsSettings.lovestory_bg_img, null);
-                lovestoryEl.style.setProperty('--lovestory-bg-img', `url('${lsSettings.lovestory_bg_img}')`);
+        const lsBgImg = (lsSettings.lovestory_bg_mode === 'image') ? (lsSettings.lovestory_bg_img || '') : '';
+        const lsBgColor = lsSettings.lovestory_bg || '#000000';
+
+        // Check if both sections have the SAME image background
+        const bothUseImage = (eMode === 'image' && eBgImg && lsBgImg);
+        const sameImage = bothUseImage && (eBgImg.trim() === lsBgImg.trim());
+
+        if (sharedWrapper) {
+            if (sameImage) {
+                // === SAME BACKGROUND: Use wrapper as single unified fixed background ===
+                sharedWrapper.classList.add('shared-bg');
+                sharedWrapper.style.backgroundImage = `url('${eBgImg}')`;
+                sharedWrapper.style.setProperty('--shared-bg-img', `url('${eBgImg}')`);
+
+                // Make both child sections transparent (CSS handles this, but reinforce via JS)
+                if (eventSection) {
+                    eventSection.style.backgroundImage = 'none';
+                    eventSection.style.backgroundColor = 'transparent';
+                    eventSection.style.removeProperty('--events-bg-img');
+                }
+                if (lovestoryEl) {
+                    lovestoryEl.style.backgroundImage = 'none';
+                    lovestoryEl.style.backgroundColor = 'transparent';
+                    lovestoryEl.style.removeProperty('--lovestory-bg-img');
+                }
             } else {
-                applyBg('lovestory', null, lsSettings.lovestory_bg || '#000000');
-                lovestoryEl.style.setProperty('--lovestory-bg-img', 'none');
+                // === DIFFERENT BACKGROUNDS: Each section has its own fixed background ===
+                sharedWrapper.classList.remove('shared-bg');
+                sharedWrapper.style.backgroundImage = 'none';
+                sharedWrapper.style.removeProperty('--shared-bg-img');
+
+                // Apply events background
+                if (eventSection) {
+                    if (eMode === 'image' && eBgImg) {
+                        applyBg('events', eBgImg, null);
+                        eventSection.style.setProperty('--events-bg-img', `url('${eBgImg}')`);
+                    } else {
+                        applyBg('events', null, eBgColor);
+                        eventSection.style.setProperty('--events-bg-img', 'none');
+                    }
+                }
+
+                // Apply lovestory background
+                if (lovestoryEl) {
+                    if (lsSettings.lovestory_bg_mode === 'image' && lsBgImg) {
+                        applyBg('lovestory', lsBgImg, null);
+                        lovestoryEl.style.setProperty('--lovestory-bg-img', `url('${lsBgImg}')`);
+                    } else {
+                        applyBg('lovestory', null, lsBgColor);
+                        lovestoryEl.style.setProperty('--lovestory-bg-img', 'none');
+                    }
+                }
             }
         }
-        
+
+        applyBg('gallery', settings.gallery_bg_img, settings.gallery_bg_color);
+
+
         // Card Background (Dalam Chat)
         if (lsSettings.lovestory_card_bg_mode === 'image' && lsSettings.lovestory_card_bg_img) {
             applyBg('lovestoryChatArea', lsSettings.lovestory_card_bg_img, null, false); // Not fixed for inner area
