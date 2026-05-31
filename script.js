@@ -305,8 +305,10 @@ async function loadPublicData() {
 
             if (eMode === 'image' && eBgImg) {
                 applyBg('events', eBgImg, null);
+                eventSection.style.setProperty('--events-bg-img', `url('${eBgImg}')`);
             } else {
                 applyBg('events', null, eBgColor);
+                eventSection.style.setProperty('--events-bg-img', 'none');
             }
         }
         
