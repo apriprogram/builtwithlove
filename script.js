@@ -321,20 +321,27 @@ async function loadPublicData() {
             if (sameImage) {
                 // === SAME BACKGROUND: Use wrapper as single unified fixed background ===
                 sharedWrapper.classList.add('shared-bg');
-                sharedWrapper.style.backgroundImage = `url('${eBgImg}')`;
+                // Set the CSS custom property for the mobile pseudo-element ::before
                 sharedWrapper.style.setProperty('--shared-bg-img', `url('${eBgImg}')`);
+                // Also set directly for desktop (background-attachment: fixed)
+                sharedWrapper.style.backgroundImage = `url('${eBgImg}')`;
 
-                // Make both child sections transparent (CSS handles this, but reinforce via JS)
-                if (eventSection) {
-                    eventSection.style.backgroundImage = 'none';
-                    eventSection.style.backgroundColor = 'transparent';
-                    eventSection.style.removeProperty('--events-bg-img');
-                }
-                if (lovestoryEl) {
-                    lovestoryEl.style.backgroundImage = 'none';
-                    lovestoryEl.style.backgroundColor = 'transparent';
-                    lovestoryEl.style.removeProperty('--lovestory-bg-img');
-                }
+                // Fully wipe ALL inline background styles from child sections so CSS can take over
+                const clearBg = (el) => {
+                    if (!el) return;
+                    el.style.backgroundImage = 'none';
+                    el.style.backgroundColor = 'transparent';
+                    el.style.backgroundAttachment = '';
+                    el.style.backgroundSize = '';
+                    el.style.backgroundPosition = '';
+                    el.style.backgroundRepeat = '';
+                    el.style.background = 'transparent';
+                    el.style.removeProperty('--events-bg-img');
+                    el.style.removeProperty('--lovestory-bg-img');
+                };
+                clearBg(eventSection);
+                clearBg(lovestoryEl);
+
             } else {
                 // === DIFFERENT BACKGROUNDS: Each section has its own fixed background ===
                 sharedWrapper.classList.remove('shared-bg');
@@ -364,6 +371,7 @@ async function loadPublicData() {
                 }
             }
         }
+
 
         applyBg('gallery', settings.gallery_bg_img, settings.gallery_bg_color);
 
