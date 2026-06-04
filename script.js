@@ -885,7 +885,7 @@ function renderLoveStory(messages, settings) {
                     ${isFemale ? (isStacked ? '<div class="w-7 h-7 md:w-11 shrink-0 mr-2"></div>' : avatarHtml) : ''}
                     <div class="${bgClass} text-[#e9edef] px-2.5 py-1.5 md:px-4 md:py-3 shadow-sm relative max-w-[80%] md:max-w-[70%]" style="${radiusStyle}">
                         <div class="flex flex-col gap-1">
-                            <p class="text-[11px] md:text-[15px] leading-relaxed break-words">${msg.message}</p>
+                            <p class="text-[11px] md:text-[15px] leading-relaxed break-words">${msg.message.replace(/\n/g, '<br>')}</p>
                             <div class="flex items-center justify-end gap-1 opacity-80 mt-1">
                                 <span class="text-[#8696a0] text-[8px] md:text-[10px] font-sans font-medium uppercase">${msg.time}</span>
                                 ${doubleCheck}
