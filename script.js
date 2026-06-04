@@ -29,7 +29,7 @@ function applyBg(elId, img, color, isFixed = true) {
         el.style.backgroundPosition = 'center';
         el.style.backgroundSize = 'cover';
         el.style.backgroundRepeat = 'no-repeat';
-        el.style.backgroundAttachment = isFixed ? 'fixed' : 'scroll';
+        el.style.backgroundAttachment = (isFixed && !isIOS) ? 'fixed' : 'scroll';
         // Reset background color if it was set before
         if (!color) el.style.backgroundColor = 'transparent';
     } else if (color) {
@@ -306,6 +306,7 @@ async function loadPublicData() {
         const sharedWrapper = document.getElementById('sharedEventWrapper');
 
         const isMobile = window.innerWidth <= 768;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         const eMode = eventSection ? (settings.event_bg_mode || 'color') : 'color';
         const eBgImg = eventSection ? (settings.event_bg || '') : '';
         const eBgColor = eventSection ? (settings.event_bg_color || '#000000') : '#000000';
@@ -337,12 +338,12 @@ async function loadPublicData() {
             if (sameImage) {
                 // === SAME BACKGROUND: Wrapper shows one unified background ===
                 sharedWrapper.classList.add('shared-bg');
-                // Set background on wrapper — on desktop uses fixed, on mobile CSS overrides to scroll
+                // Set background on wrapper — fixed on desktop, scroll on mobile/iOS
                 sharedWrapper.style.backgroundImage = `url('${eBgImg}')`;
                 sharedWrapper.style.backgroundSize = 'cover';
                 sharedWrapper.style.backgroundPosition = 'center center';
                 sharedWrapper.style.backgroundRepeat = 'no-repeat';
-                sharedWrapper.style.backgroundAttachment = 'fixed';
+                sharedWrapper.style.backgroundAttachment = (isMobile || isIOS) ? 'scroll' : 'fixed';
 
                 // Clear children so the wrapper background shows through
                 clearElBg(eventSection);
@@ -369,7 +370,7 @@ async function loadPublicData() {
                         eventSection.style.backgroundSize = 'cover';
                         eventSection.style.backgroundPosition = 'center center';
                         eventSection.style.backgroundRepeat = 'no-repeat';
-                        eventSection.style.backgroundAttachment = 'fixed';
+                        eventSection.style.backgroundAttachment = (isMobile || isIOS) ? 'scroll' : 'fixed';
                     } else {
                         eventSection.style.backgroundImage = 'none';
                         eventSection.style.backgroundColor = eBgColor;
@@ -384,7 +385,7 @@ async function loadPublicData() {
                         lovestoryEl.style.backgroundSize = 'cover';
                         lovestoryEl.style.backgroundPosition = 'center center';
                         lovestoryEl.style.backgroundRepeat = 'no-repeat';
-                        lovestoryEl.style.backgroundAttachment = 'fixed';
+                        lovestoryEl.style.backgroundAttachment = (isMobile || isIOS) ? 'scroll' : 'fixed';
                     } else {
                         lovestoryEl.style.backgroundImage = 'none';
                         lovestoryEl.style.backgroundColor = lsBgColor;
@@ -419,7 +420,8 @@ async function loadPublicData() {
         if (wishesSection) {
             const mode = settings.wishes_bg_mode || 'color';
             if (mode === 'image' && settings.wishes_bg_img) {
-                wishesSection.style.background = `url('${settings.wishes_bg_img}') center/cover no-repeat fixed`;
+                const bgAtt = (isMobile || isIOS) ? 'scroll' : 'fixed';
+                wishesSection.style.background = `url('${settings.wishes_bg_img}') center/cover no-repeat ${bgAtt}`;
             } else {
                 wishesSection.style.background = settings.wishes_bg_color || '#000000';
             }
@@ -429,7 +431,8 @@ async function loadPublicData() {
         if (rsvpSection) {
             const rMode = settings.rsvp_bg_mode || 'color';
             if (rMode === 'image' && settings.rsvp_bg_img) {
-                rsvpSection.style.background = `url('${settings.rsvp_bg_img}') center/cover no-repeat fixed`;
+                const bgAtt = (isMobile || isIOS) ? 'scroll' : 'fixed';
+                rsvpSection.style.background = `url('${settings.rsvp_bg_img}') center/cover no-repeat ${bgAtt}`;
             } else {
                 const rBgColor = settings.rsvp_bg_color || '#000000';
                 if (rBgColor.includes('gradient')) {

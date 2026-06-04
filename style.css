@@ -312,8 +312,9 @@ body.is-ios #sectionWishes,
 body.is-ios #digitalEnvelope,
 body.is-ios #sectionRsvp,
 body.is-ios #gallery,
+body.is-ios #sharedEventWrapper,
 body.is-ios section:not(#events):not(#lovestory) {
-    background-attachment: fixed !important;
+    background-attachment: scroll !important;
     background-size: cover !important;
     background-position: center center !important;
 }
