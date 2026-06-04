@@ -29,7 +29,7 @@ function applyBg(elId, img, color, isFixed = true) {
         el.style.backgroundPosition = 'center';
         el.style.backgroundSize = 'cover';
         el.style.backgroundRepeat = 'no-repeat';
-        el.style.backgroundAttachment = (isFixed && !isIOS) ? 'fixed' : 'scroll';
+        el.style.backgroundAttachment = isFixed ? 'fixed' : 'scroll';
         // Reset background color if it was set before
         if (!color) el.style.backgroundColor = 'transparent';
     } else if (color) {
@@ -342,7 +342,7 @@ async function loadPublicData() {
                 sharedWrapper.style.backgroundSize = 'cover';
                 sharedWrapper.style.backgroundPosition = 'center center';
                 sharedWrapper.style.backgroundRepeat = 'no-repeat';
-                sharedWrapper.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
+                sharedWrapper.style.backgroundAttachment = 'fixed';
 
                 // Clear children so the wrapper background shows through
                 clearElBg(eventSection);
@@ -369,7 +369,7 @@ async function loadPublicData() {
                         eventSection.style.backgroundSize = 'cover';
                         eventSection.style.backgroundPosition = 'center center';
                         eventSection.style.backgroundRepeat = 'no-repeat';
-                        eventSection.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
+                        eventSection.style.backgroundAttachment = 'fixed';
                     } else {
                         eventSection.style.backgroundImage = 'none';
                         eventSection.style.backgroundColor = eBgColor;
@@ -384,7 +384,7 @@ async function loadPublicData() {
                         lovestoryEl.style.backgroundSize = 'cover';
                         lovestoryEl.style.backgroundPosition = 'center center';
                         lovestoryEl.style.backgroundRepeat = 'no-repeat';
-                        lovestoryEl.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
+                        lovestoryEl.style.backgroundAttachment = 'fixed';
                     } else {
                         lovestoryEl.style.backgroundImage = 'none';
                         lovestoryEl.style.backgroundColor = lsBgColor;
@@ -419,8 +419,7 @@ async function loadPublicData() {
         if (wishesSection) {
             const mode = settings.wishes_bg_mode || 'color';
             if (mode === 'image' && settings.wishes_bg_img) {
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-                wishesSection.style.background = `url('${settings.wishes_bg_img}') center/cover no-repeat ${isIOS ? 'scroll' : 'fixed'}`;
+                wishesSection.style.background = `url('${settings.wishes_bg_img}') center/cover no-repeat fixed`;
             } else {
                 wishesSection.style.background = settings.wishes_bg_color || '#000000';
             }
@@ -430,8 +429,7 @@ async function loadPublicData() {
         if (rsvpSection) {
             const rMode = settings.rsvp_bg_mode || 'color';
             if (rMode === 'image' && settings.rsvp_bg_img) {
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-                rsvpSection.style.background = `url('${settings.rsvp_bg_img}') center/cover no-repeat ${isIOS ? 'scroll' : 'fixed'}`;
+                rsvpSection.style.background = `url('${settings.rsvp_bg_img}') center/cover no-repeat fixed`;
             } else {
                 const rBgColor = settings.rsvp_bg_color || '#000000';
                 if (rBgColor.includes('gradient')) {
@@ -552,6 +550,7 @@ async function loadPublicData() {
         try { renderWishes(wishes); } catch(e) { console.error('Wishes failed:', e); }
         try { renderLoveStory(data.lovestory || [], data.lovestory_settings || {}); } catch(e) { console.error('LoveStory failed:', e); }
         try { renderGifts(data.gifts || [], settings.gift_physical_address, settings); } catch(e) { console.error('Gifts failed:', e); }
+        try { renderFooter(data.footer_settings || {}); } catch(e) { console.error('Footer failed:', e); }
 
         // Update Background Music only if changed to prevent audio interruption
         if (settings.bg_music) {
@@ -1404,3 +1403,90 @@ window.saveToCalendar = () => {
     const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
     window.open(googleUrl, '_blank');
 };
+
+// ===== FOOTER RENDERER =====
+function renderFooter(footerSettings) {
+    const nameEl = document.getElementById('footerName');
+    const domainEl = document.getElementById('footerDomain');
+    const footerEl = document.getElementById('footerEl');
+    const footerTop = document.getElementById('footerTop');
+
+    if (nameEl && footerSettings.footer_name) {
+        nameEl.textContent = footerSettings.footer_name;
+    }
+    if (domainEl && footerSettings.footer_domain) {
+        domainEl.textContent = footerSettings.footer_domain;
+    }
+
+    if (footerEl) {
+        const bgMode = footerSettings.footer_bg_mode || 'color';
+        const bgColor = footerSettings.footer_bg_color || '#000000';
+        const bgImg = footerSettings.footer_bg_img || '';
+        const overlayEl = document.getElementById('footerOverlay');
+
+        if (bgMode === 'image' && bgImg) {
+            footerEl.style.background = '';
+            footerEl.style.backgroundImage = 'none';
+            footerEl.style.backgroundColor = '#000000';
+
+            if (footerTop) {
+                footerTop.style.background = '';
+                footerTop.style.backgroundImage = `url('${bgImg}')`;
+                footerTop.style.backgroundSize = 'cover';
+                footerTop.style.backgroundPosition = 'center center';
+                footerTop.style.backgroundRepeat = 'no-repeat';
+
+                // Load image to get dynamic aspect ratio on mobile
+                const img = new Image();
+                const updateAspect = () => {
+                    if (window.innerWidth < 768) {
+                        footerTop.style.aspectRatio = `${img.width} / ${img.height}`;
+                        footerTop.style.paddingTop = '0px';
+                        footerTop.style.paddingBottom = '0px';
+                    } else {
+                        footerTop.style.aspectRatio = '';
+                        footerTop.style.paddingTop = '';
+                        footerTop.style.paddingBottom = '';
+                    }
+                };
+                img.onload = () => {
+                    updateAspect();
+                    if (footerTop._aspectResizeHandler) {
+                        window.removeEventListener('resize', footerTop._aspectResizeHandler);
+                    }
+                    footerTop._aspectResizeHandler = updateAspect;
+                    window.addEventListener('resize', updateAspect);
+                };
+                img.src = bgImg;
+            }
+
+            if (overlayEl) {
+                overlayEl.style.background = 'rgba(0,0,0,0.55)';
+            }
+        } else {
+            footerEl.style.backgroundImage = 'none';
+            if (bgColor.includes('gradient')) {
+                footerEl.style.background = bgColor;
+            } else {
+                footerEl.style.background = '';
+                footerEl.style.backgroundColor = bgColor;
+            }
+
+            if (footerTop) {
+                if (footerTop._aspectResizeHandler) {
+                    window.removeEventListener('resize', footerTop._aspectResizeHandler);
+                    footerTop._aspectResizeHandler = null;
+                }
+                footerTop.style.backgroundImage = 'none';
+                footerTop.style.background = '';
+                footerTop.style.aspectRatio = '';
+                footerTop.style.paddingTop = '';
+                footerTop.style.paddingBottom = '';
+            }
+
+            if (overlayEl) {
+                overlayEl.style.background = 'rgba(0,0,0,0)';
+            }
+        }
+    }
+}

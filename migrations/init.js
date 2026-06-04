@@ -83,6 +83,11 @@ db.serialize(() => {
     created_at TEXT
   )`);
 
+  db.run(`CREATE TABLE IF NOT EXISTS footer_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+  )`);
+
   db.run(`INSERT OR IGNORE INTO admin_users (username, password) VALUES (?, ?)`, ['admin', 'admin123']);
 
   const defaults = [
@@ -99,6 +104,17 @@ db.serialize(() => {
   const stmt = db.prepare(`INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)`);
   defaults.forEach(([key, value]) => stmt.run(key, value));
   stmt.finalize();
+
+  const footerDefaults = [
+    ['footer_name', 'Riandino & Aurora'],
+    ['footer_domain', 'riandanaurora.my.id'],
+    ['footer_bg_img', ''],
+    ['footer_bg_mode', 'color'],
+    ['footer_bg_color', '#000000']
+  ];
+  const footerStmt = db.prepare(`INSERT OR IGNORE INTO footer_settings (key, value) VALUES (?, ?)`);
+  footerDefaults.forEach(([key, value]) => footerStmt.run(key, value));
+  footerStmt.finalize();
 
   db.run(`INSERT OR IGNORE INTO events (id, name, heading, time, date, location_name, address, map_src, map_link, icon_src, order_no) VALUES
     (1, 'Pemberkatan', 'Pemberkatan', '14.00 WIB - Selesai', 'Jumat, 26 Juni 2026', 'GBKP Rg. Km. 7 Pd. Bulan Medan', 'Jl. Jamin Ginting Km.7 No.47, Kwala Bekala, Kec. Medan Johor, Kota Medan, Sumatera Utara 20142', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.206084629991!2d98.6537243!3d3.5398614000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031255611ea18e3%3A0x343e62a412350a87!2sGBKP%20Km%207%20Padang%20Bulan%20Medan!5e0!3m2!1sid!2sid!4v1775397763145!5m2!1sid!2sid', 'https://maps.app.goo.gl/vzLpascwksoDEuVm7?g_st=iw', 'img/icon/Gereja.png', 1),

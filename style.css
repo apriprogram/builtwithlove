@@ -251,7 +251,7 @@ body {
     #digitalEnvelope,
     #sectionRsvp,
     section[style*="background"] {
-        background-attachment: scroll !important;
+        background-attachment: fixed !important;
         background-size: cover !important;
         background-position: center center !important;
     }
@@ -271,11 +271,11 @@ body {
     background-repeat: no-repeat;
 }
 
-/* === MOBILE: scroll (no parallax, but seamless unified background) === */
+/* === MOBILE: fixed background === */
 @media (max-width: 768px) {
-    /* Same background: wrapper shows one unified image that scrolls naturally */
+    /* Same background: wrapper shows one unified image that is fixed */
     #sharedEventWrapper.shared-bg {
-        background-attachment: scroll !important;
+        background-attachment: fixed !important;
         background-size: cover !important;
         background-position: center top !important;
         background-repeat: no-repeat !important;
@@ -284,7 +284,7 @@ body {
     /* Different backgrounds: each section shows its own image */
     #sharedEventWrapper:not(.shared-bg) #events,
     #sharedEventWrapper:not(.shared-bg) #lovestory {
-        background-attachment: scroll !important;
+        background-attachment: fixed !important;
         background-size: cover !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
@@ -313,7 +313,7 @@ body.is-ios #digitalEnvelope,
 body.is-ios #sectionRsvp,
 body.is-ios #gallery,
 body.is-ios section:not(#events):not(#lovestory) {
-    background-attachment: scroll !important;
+    background-attachment: fixed !important;
     background-size: cover !important;
     background-position: center center !important;
 }

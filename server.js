@@ -261,6 +261,16 @@ async function initDb() {
       value TEXT
     )`);
 
+    await db.query(`CREATE TABLE IF NOT EXISTS footer_settings (
+      \`key\` VARCHAR(100) PRIMARY KEY,
+      value TEXT
+    )`);
+    await db.query("INSERT IGNORE INTO footer_settings (`key`, value) VALUES ('footer_name', 'Riandino & Aurora')");
+    await db.query("INSERT IGNORE INTO footer_settings (`key`, value) VALUES ('footer_domain', 'riandanaurora.my.id')");
+    await db.query("INSERT IGNORE INTO footer_settings (`key`, value) VALUES ('footer_bg_img', '')");
+    await db.query("INSERT IGNORE INTO footer_settings (`key`, value) VALUES ('footer_bg_mode', 'color')");
+    await db.query("INSERT IGNORE INTO footer_settings (`key`, value) VALUES ('footer_bg_color', '#000000')");
+
     await db.query(`CREATE TABLE IF NOT EXISTS page_views (
       id INT PRIMARY KEY AUTO_INCREMENT,
       guest_token VARCHAR(100),
@@ -554,6 +564,10 @@ app.get('/api/public', async (req, res) => {
     lsSettingsRows.forEach(r => { lovestory_settings[r.key] = r.value; });
     const gifts = await queryAll('SELECT * FROM gifts ORDER BY order_no ASC');
 
+    const footerSettingsRows = await queryAll('SELECT `key`, value FROM footer_settings');
+    const footer_settings = {};
+    footerSettingsRows.forEach(r => { footer_settings[r.key] = r.value; });
+
     // Normalize same background image if identical contents (hashing)
     try {
       const crypto = require('crypto');
@@ -584,7 +598,7 @@ app.get('/api/public', async (req, res) => {
       console.error('Error comparing background hashes:', hashErr);
     }
 
-    res.json({ settings, events, couple, gallery, wishes, guest, lovestory, lovestory_settings, gifts });
+    res.json({ settings, events, couple, gallery, wishes, guest, lovestory, lovestory_settings, gifts, footer_settings });
   } catch (error) {
     res.status(500).json({ error: 'Failed to load public data' });
   }
@@ -660,7 +674,11 @@ app.get('/api/admin/dashboard', requireAdmin, async (req, res) => {
     const lovestory_settings = {};
     lsSettingsRows.forEach(r => { lovestory_settings[r.key] = r.value; });
 
-    res.json({ events, couple, guests, rsvps, wishes, settings, gifts, gallery, lovestory, lovestory_settings });
+    const footerSettingsRows = await queryAll('SELECT `key`, value FROM footer_settings');
+    const footer_settings = {};
+    footerSettingsRows.forEach(r => { footer_settings[r.key] = r.value; });
+
+    res.json({ events, couple, guests, rsvps, wishes, settings, gifts, gallery, lovestory, lovestory_settings, footer_settings });
   } catch (error) {
     console.error('Dashboard error:', error);
     res.status(500).json({ error: 'Failed to load dashboard.' });
@@ -673,7 +691,10 @@ app.put('/api/admin/settings', requireAdmin, async (req, res) => {
   try {
     await conn.beginTransaction();
     for (const [key, value] of entries) {
-      await conn.query('INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?', [key, value, value]);
+      const tableName = key.startsWith('lovestory_') ? 'lovestory_settings'
+                       : key.startsWith('footer_')    ? 'footer_settings'
+                       : 'settings';
+      await conn.query(`INSERT INTO ${tableName} (\`key\`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?`, [key, value, value]);
     }
     await conn.commit();
     res.json({ success: true });
@@ -691,7 +712,9 @@ app.post('/api/admin/settings/upload', requireAdmin, handleUpload(upload.single(
   const { setting_key } = req.body;
   try {
     if (setting_key) {
-      const tableName = setting_key.startsWith('lovestory_') ? 'lovestory_settings' : 'settings';
+      const tableName = setting_key.startsWith('lovestory_') ? 'lovestory_settings'
+                       : setting_key.startsWith('footer_')    ? 'footer_settings'
+                       : 'settings';
       await runSql(`INSERT INTO ${tableName} (\`key\`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?`, [setting_key, src, src]);
     }
     res.json({ success: true, src });

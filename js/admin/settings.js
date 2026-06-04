@@ -83,9 +83,42 @@ window.renderSettings = function() {
     if (document.getElementById('settingGreetingBgImg')) document.getElementById('settingGreetingBgImg').value = settings.greeting_bg_img || '';
     if (document.getElementById('settingGiftTitle')) document.getElementById('settingGiftTitle').value = settings.gift_title || '';
     if (document.getElementById('giftPhysicalAddress')) document.getElementById('giftPhysicalAddress').value = settings.gift_physical_address || '';
-    if (document.getElementById('settingFooterTitle')) document.getElementById('settingFooterTitle').value = settings.footer_title || '';
-    if (document.getElementById('settingFooterSubtitle')) document.getElementById('settingFooterSubtitle').value = settings.footer_subtitle || '';
-    if (document.getElementById('settingFooterBgImg')) document.getElementById('settingFooterBgImg').value = settings.footer_bg_img || '';
+    // Note: footer fields are handled below via footer_settings table (not settings table)
+
+    // Handle Footer Settings (Mapped from footer_settings table)
+    const footerSettings = window.state.dashboard?.footer_settings || {};
+    if (document.getElementById('settingFooterName')) document.getElementById('settingFooterName').value = footerSettings.footer_name || '';
+    if (document.getElementById('settingFooterDomain')) document.getElementById('settingFooterDomain').value = footerSettings.footer_domain || '';
+    if (document.getElementById('settingFooterBgImg')) document.getElementById('settingFooterBgImg').value = footerSettings.footer_bg_img || '';
+
+    if (document.getElementById('settingFooterBgMode')) {
+        const fMode = footerSettings.footer_bg_mode || 'color';
+        window.setFooterBgMode(fMode, true);
+    }
+    if (document.getElementById('settingFooterBgColor')) {
+        const fColor = footerSettings.footer_bg_color || '#000000';
+        document.getElementById('settingFooterBgColor').value = fColor;
+        if (window.syncFooterColor) window.syncFooterColor(fColor, 'picker');
+    }
+
+    const footerImg = footerSettings.footer_bg_img || '';
+    const footerBgPreview = document.getElementById('footerBgPreview');
+    const footerBgPlaceholder = document.getElementById('footerBgPreviewPlaceholder');
+    if (footerBgPreview && footerBgPlaceholder) {
+        if (footerImg && footerImg !== 'null' && footerImg !== 'undefined') {
+            footerBgPreview.src = footerImg;
+            footerBgPreview.classList.remove('hidden');
+            footerBgPlaceholder.classList.add('hidden');
+        } else {
+            footerBgPreview.src = '';
+            footerBgPreview.classList.add('hidden');
+            footerBgPlaceholder.classList.remove('hidden');
+        }
+        footerBgPreview.onerror = () => {
+            footerBgPreview.classList.add('hidden');
+            footerBgPlaceholder.classList.remove('hidden');
+        };
+    }
     
     // Background Color Handlers
     if (document.getElementById('settingOpeningBgColor')) {
@@ -323,7 +356,8 @@ window.renderSettings = function() {
         'lovestory_bg_img': 'btnDeleteLovestoryBg',
         'lovestory_card_bg_img': 'btnDeleteLovestoryCardBg',
         'gift_bg_img': 'btnDeleteGiftBg',
-        'rsvp_bg_img': 'btnDeleteRsvpBg'
+        'rsvp_bg_img': 'btnDeleteRsvpBg',
+        'footer_bg_img': 'btnDeleteFooterBg'
     };
 
     Object.entries(deleteBtnMap).forEach(([key, btnId]) => {
@@ -333,6 +367,9 @@ window.renderSettings = function() {
             if (key.startsWith('lovestory_')) {
                 const lsSet = window.state.dashboard?.lovestory_settings || {};
                 hasImage = lsSet[key];
+            } else if (key.startsWith('footer_')) {
+                const ftSet = window.state.dashboard?.footer_settings || {};
+                hasImage = ftSet[key];
             }
             if (hasImage) btn.classList.remove('hidden');
             else btn.classList.add('hidden');
@@ -444,7 +481,11 @@ window.saveSettings = async function(quiet = false, customMsg = null, skipReload
         bg_music: 'settingBgMusic',
         music_start_time: 'settingMusicStart',
         gift_physical_address: 'giftPhysicalAddress',
-        gift_title: 'settingGiftTitle'
+        gift_title: 'settingGiftTitle',
+        footer_name: 'settingFooterName',
+        footer_domain: 'settingFooterDomain',
+        footer_bg_img: 'settingFooterBgImg',
+        footer_bg_color: 'settingFooterBgColor'
     };
 
     for (const [key, id] of Object.entries(fields)) {
@@ -475,6 +516,9 @@ window.saveSettings = async function(quiet = false, customMsg = null, skipReload
     }
     if (document.getElementById('settingEventBgMode')) {
         payload.event_bg_mode = document.getElementById('settingEventBgMode').checked ? 'image' : 'color';
+    }
+    if (document.getElementById('settingFooterBgMode')) {
+        payload.footer_bg_mode = document.getElementById('settingFooterBgMode').checked ? 'image' : 'color';
     }
 
     if (Object.keys(payload).length === 0) return;
@@ -602,7 +646,12 @@ window.uploadSettingImg = async function(input, key, previewId) {
                 if (hiddenInput) {
                     hiddenInput.value = result.src;
                 }
-                window.state.dashboard.settings[key] = result.src;
+                if (key.startsWith('footer_')) {
+                    if (!window.state.dashboard.footer_settings) window.state.dashboard.footer_settings = {};
+                    window.state.dashboard.footer_settings[key] = result.src;
+                } else {
+                    window.state.dashboard.settings[key] = result.src;
+                }
                 showToast('Gambar berhasil diunggah', 'success');
                 window.saveSettings(true);
             } else {
@@ -632,7 +681,12 @@ window.deleteSettingImg = function(key, previewId) {
     const placeholder = document.getElementById(previewId + 'Placeholder');
     if (placeholder) placeholder.classList.remove('hidden');
 
-    window.state.dashboard.settings[key] = '';
+    if (key.startsWith('footer_')) {
+        if (!window.state.dashboard.footer_settings) window.state.dashboard.footer_settings = {};
+        window.state.dashboard.footer_settings[key] = '';
+    } else {
+        window.state.dashboard.settings[key] = '';
+    }
     window.saveSettings(true);
     showToast('Gambar berhasil dihapus', 'delete');
 };
@@ -654,6 +708,18 @@ window.syncGiftColor = function(val, target) {
     const input = document.getElementById('settingGiftBgColor');
     const picker = document.getElementById('giftColorPicker');
     const previewContainer = document.getElementById('giftBgPreviewContainer');
+    if (target === 'input') { if (input) input.value = val.toUpperCase(); }
+    else { if (picker) picker.value = val; }
+    if (previewContainer) {
+        if (val.includes('gradient')) previewContainer.style.background = val;
+        else { previewContainer.style.background = ''; previewContainer.style.backgroundColor = val; }
+    }
+};
+
+window.syncFooterColor = function(val, target) {
+    const input = document.getElementById('settingFooterBgColor');
+    const picker = document.getElementById('footerColorPicker');
+    const previewContainer = document.getElementById('footerBgPreviewContainer');
     if (target === 'input') { if (input) input.value = val.toUpperCase(); }
     else { if (picker) picker.value = val; }
     if (previewContainer) {
@@ -856,6 +922,55 @@ window.syncRsvpColor = function(val, target) {
         else { previewContainer.style.background = ''; previewContainer.style.backgroundColor = val; }
     }
 };
+
+window.setFooterBgMode = function(mode, skipSave = false) {
+    const slider = document.getElementById('footerBgModeSlider');
+    const colorBtn = document.getElementById('footerModeColorBtn');
+    const imageBtn = document.getElementById('footerModeImageBtn');
+    const checkbox = document.getElementById('settingFooterBgMode');
+    if (!slider || !colorBtn || !imageBtn || !checkbox) return;
+
+    const isImage = mode === 'image';
+    checkbox.checked = isImage;
+    if (isImage) {
+        slider.style.left = 'calc(50% - 1px)'; slider.style.width = 'calc(50% - 3px)';
+        colorBtn.classList.remove('text-white', 'active'); colorBtn.classList.add('text-slate-400');
+        imageBtn.classList.remove('text-slate-400'); imageBtn.classList.add('text-white', 'active');
+    } else {
+        slider.style.left = '4px'; slider.style.width = 'calc(50% - 3px)';
+        colorBtn.classList.remove('text-slate-400'); colorBtn.classList.add('text-white', 'active');
+        imageBtn.classList.remove('text-white', 'active'); imageBtn.classList.add('text-slate-400');
+    }
+
+    if (!skipSave) {
+        // Update local state immediately so loadDashboard re-render won't revert the value
+        if (window.state && window.state.dashboard) {
+            if (!window.state.dashboard.footer_settings) window.state.dashboard.footer_settings = {};
+            window.state.dashboard.footer_settings.footer_bg_mode = mode;
+        }
+        // Save with skipReload=true to prevent full dashboard reload that would revert the switch
+        window.saveSettings(true, null, true);
+    }
+};
+
+// Bind Footer bg mode switch buttons via event delegation
+(function bindFooterBgModeButtons() {
+    document.addEventListener('click', function(e) {
+        const target = e.target;
+        if (!target) return;
+        if (target.id === 'footerModeColorBtn') {
+            e.stopPropagation();
+            const cb = document.getElementById('settingFooterBgMode');
+            if (cb) cb.checked = false;
+            window.setFooterBgMode('color');
+        } else if (target.id === 'footerModeImageBtn') {
+            e.stopPropagation();
+            const cb = document.getElementById('settingFooterBgMode');
+            if (cb) cb.checked = true;
+            window.setFooterBgMode('image');
+        }
+    });
+})();
 
 window.renderOpeningSlider = function() {
     const list = document.getElementById('openingBgList');

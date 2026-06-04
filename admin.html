@@ -1738,7 +1738,7 @@
                             </button>
                             <button onclick="switchAturTab('footer')"
                                 class="atur-tab-btn flex-1 lg:flex-none lg:px-6" data-tab="footer">
-                                <i class="fas fa-window-minimize"></i> <span>Footer</span>
+                                <i class="fas fa-flag-checkered"></i> <span>Footer</span>
                             </button>
                         </div>
                     </div>
@@ -3032,7 +3032,7 @@
                         <div class="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                             <div>
                                 <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Footer</h3>
-                                <p class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">Atur tampilan footer undangan digital</p>
+                                <p class="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs font-semibold mt-0.5">Atur tampilan nama, domain, dan background footer undangan</p>
                             </div>
                             <button onclick="saveSettings()" class="btn-premium btn-primary !h-9 !px-6">
                                 SIMPAN
@@ -3040,27 +3040,27 @@
                         </div>
                         <div class="p-6 bg-slate-50/20">
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-                                <!-- Kolom 1: Teks -->
+                                <!-- Kolom 1: Teks (2 Input) -->
                                 <div class="space-y-6">
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul Footer</label>
-                                        <input id="settingFooterTitle" type="text" class="input-premium" placeholder="Cth: Riandino & Aurora">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Judul Footer (Nama)</label>
+                                        <input id="settingFooterName" type="text" class="input-premium" placeholder="Cth: Riandino & Aurora">
                                     </div>
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Sub-judul Footer</label>
-                                        <input id="settingFooterSubtitle" type="text" class="input-premium" placeholder="Cth: RIANDANAURORA.MY.ID">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Sub-judul Footer (Domain)</label>
+                                        <input id="settingFooterDomain" type="text" class="input-premium" placeholder="Cth: riandanaurora.my.id">
                                     </div>
                                 </div>
 
-                                <!-- Kolom 2: Background -->
+                                <!-- Kolom 2: Background (Mode warna & gambar) -->
                                 <div class="space-y-6">
                                     <div class="space-y-2">
                                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Aktifkan Background</label>
                                         <div class="bg-slate-100 dark:bg-slate-900/50 p-1 rounded-full flex items-center relative overflow-hidden border border-slate-200 dark:border-slate-800 h-11">
-                                            <input type="checkbox" id="settingFooterBgMode" class="hidden" onchange="window.setFooterBgMode(this.checked ? 'image' : 'color');">
+                                            <input type="checkbox" id="settingFooterBgMode" class="hidden">
                                             <div id="footerBgModeSlider" class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#1e293b] rounded-full transition-all duration-300 shadow-lg z-0 left-1"></div>
-                                            <button type="button" onclick="document.getElementById('settingFooterBgMode').checked = false; window.setFooterBgMode('color');" class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 footer-mode-btn text-white" id="footerModeColorBtn">Warna</button>
-                                            <button type="button" onclick="document.getElementById('settingFooterBgMode').checked = true; window.setFooterBgMode('image');" class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 footer-mode-btn text-slate-400" id="footerModeImageBtn">Gambar</button>
+                                            <button type="button" class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 footer-mode-btn text-white" id="footerModeColorBtn">Warna</button>
+                                            <button type="button" class="flex-1 text-center py-1.5 text-[9px] font-bold uppercase tracking-wider z-10 transition-colors duration-300 footer-mode-btn text-slate-400" id="footerModeImageBtn">Gambar</button>
                                         </div>
                                     </div>
 
@@ -3075,7 +3075,7 @@
                                     <div class="space-y-2">
                                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tight px-1">Background Gambar</label>
                                         <button type="button" onclick="this.nextElementSibling.click()" class="w-full !bg-[#1e293b] !text-white !h-11 !px-6 !text-xs font-bold hover:!bg-slate-700 transition-all shadow-xl rounded-xl flex items-center justify-center">
-                                            <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Foto
+                                            <i class="fas fa-camera mr-2 text-[14px]"></i> Upload Background
                                         </button>
                                         <input type="file" onchange="uploadSettingImg(this, 'footer_bg_img', 'footerBgPreview')" class="hidden">
                                         <p class="text-[9px] text-slate-400 mt-2">(Maks. 10MB)</p>
