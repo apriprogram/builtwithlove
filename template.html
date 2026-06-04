@@ -496,22 +496,25 @@
         </section>
 
 
-        <footer id="footerEl" class="text-center overflow-hidden relative" style="background-color:#000;">
+        <footer id="footerEl" class="text-center overflow-hidden relative flex flex-col justify-center items-center" style="background-color:#000; min-height:280px;">
 
             <!-- Full footer dark overlay (covers everything) -->
             <div id="footerOverlay" class="absolute inset-0 bg-black/60 pointer-events-none z-0"></div>
 
-            <!-- Wedding Name (top section) -->
-            <div id="footerTop" class="px-6 pt-20 md:pt-28 pb-4 md:pb-10 relative z-10 flex flex-col justify-center items-center">
-                <div class="relative z-10 text-center">
-                    <h4 id="footerName" class="font-script text-3xl md:text-5xl text-white">Riandino &amp; Aurora</h4>
-                    <p id="footerDomain" class="font-sans text-[9px] md:text-[11px] text-white/30 tracking-[0.3em] uppercase mt-2 md:mt-3">riandanaurora.my.id</p>
-                </div>
-            </div>
+            <!-- All footer content — centered in one unified block -->
+            <div id="footerTop" class="relative z-10 w-full flex flex-col items-center py-14 md:py-24 gap-5 md:gap-8 px-6">
 
-            <!-- CTA Section (same background — no black override) -->
-            <div class="relative z-10">
-                <div class="px-6 py-6 md:py-10 max-w-sm mx-auto flex flex-col items-center gap-2 md:gap-3">
+                <!-- Wedding Name -->
+                <div class="flex flex-col items-center gap-1 md:gap-2">
+                    <h4 id="footerName" class="font-script text-3xl md:text-5xl text-white">Riandino &amp; Aurora</h4>
+                    <p id="footerDomain" class="font-sans text-[9px] md:text-[11px] text-white/30 tracking-[0.3em] uppercase mt-1 md:mt-2">riandanaurora.my.id</p>
+                </div>
+
+                <!-- Divider line -->
+                <div class="w-20 md:w-32 h-px bg-white/30"></div>
+
+                <!-- CTA Section -->
+                <div class="flex flex-col items-center gap-2 md:gap-3 max-w-sm w-full mx-auto">
 
                     <!-- Logo -->
                     <img src="img/logo/apriprogram.png" alt="Apriprogram" class="h-7 md:h-11 w-auto object-contain opacity-70 mb-1 md:mb-2">
@@ -528,6 +531,7 @@
 
                     <p class="font-sans text-white/35 text-[9px] md:text-[11px] tracking-widest uppercase">Built with Love by Apriprogram &copy; 2026</p>
                 </div>
+
             </div>
 
         </footer>
