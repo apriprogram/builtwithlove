@@ -1327,6 +1327,7 @@ function setupPage() {
             window.scrollTo(0, 0);
             setTimeout(() => {
                 AOS.init({ duration: 1000, easing: 'ease-in-out', once: true, mirror: false });
+                window.dispatchEvent(new Event('resize'));
             }, 100);
         });
     }
@@ -1477,10 +1478,22 @@ function renderFooter(footerSettings) {
 
             // On mobile: match footer height to image aspect ratio
             const img = new Image();
+            const footerTop = document.getElementById('footerTop');
             const updateAspect = () => {
                 if (window.innerWidth < 768) {
-                    footerEl.style.aspectRatio = `${img.width} / ${img.height}`;
+                    const width = footerEl.clientWidth || window.innerWidth;
+                    let finalHeight = 280;
+                    if (img.width && img.height) {
+                        const calculatedHeight = (img.height / img.width) * width;
+                        const contentHeight = footerTop ? footerTop.offsetHeight : 280;
+                        finalHeight = Math.max(calculatedHeight, contentHeight);
+                    }
+                    footerEl.style.height = `${finalHeight}px`;
+                    footerEl.style.minHeight = '0px';
+                    footerEl.style.aspectRatio = '';
                 } else {
+                    footerEl.style.height = '';
+                    footerEl.style.minHeight = '280px';
                     footerEl.style.aspectRatio = '';
                 }
             };
@@ -1500,6 +1513,8 @@ function renderFooter(footerSettings) {
                 window.removeEventListener('resize', footerEl._aspectResizeHandler);
                 footerEl._aspectResizeHandler = null;
             }
+            footerEl.style.height = '';
+            footerEl.style.minHeight = '280px';
             footerEl.style.aspectRatio = '';
             footerEl.style.backgroundImage = 'none';
             if (bgColor.includes('gradient')) {
