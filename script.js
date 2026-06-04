@@ -25,17 +25,30 @@ function applyBg(elId, img, color, isFixed = true) {
     }
     
     if (img) {
-        el.style.backgroundImage = `url('${img}')`;
-        el.style.backgroundPosition = 'center';
-        el.style.backgroundSize = 'cover';
-        el.style.backgroundRepeat = 'no-repeat';
-        el.style.backgroundAttachment = (isFixed && !isIOS) ? 'fixed' : 'scroll';
+        if (isFixed) {
+            el.classList.add('fixed-bg');
+            el.style.setProperty('--bg-image', `url('${img}')`);
+            el.style.backgroundImage = 'none';
+            el.style.backgroundAttachment = '';
+        } else {
+            el.classList.remove('fixed-bg');
+            el.style.removeProperty('--bg-image');
+            el.style.backgroundImage = `url('${img}')`;
+            el.style.backgroundPosition = 'center';
+            el.style.backgroundSize = 'cover';
+            el.style.backgroundRepeat = 'no-repeat';
+            el.style.backgroundAttachment = 'scroll';
+        }
         // Reset background color if it was set before
         if (!color) el.style.backgroundColor = 'transparent';
     } else if (color) {
+        el.classList.remove('fixed-bg');
+        el.style.removeProperty('--bg-image');
         el.style.backgroundImage = 'none';
         el.style.background = color; // Keep shorthand for color/gradient
     } else {
+        el.classList.remove('fixed-bg');
+        el.style.removeProperty('--bg-image');
         el.style.backgroundImage = 'none';
         el.style.backgroundColor = '#000000';
     }
@@ -218,13 +231,18 @@ async function loadPublicData() {
             if (greetingMode === 'image' && greetingBgImg) {
                 const greetingImgs = greetingBgImg.split(',').filter(u => u.trim() !== '');
                 if (greetingImgs.length > 0) {
-                    // Use first image (or cycle if multiple)
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-                    greetingEl.style.background = `url('${greetingImgs[0]}') center/cover no-repeat ${isIOS ? 'scroll' : 'fixed'}`;
+                    greetingEl.classList.add('fixed-bg');
+                    greetingEl.style.setProperty('--bg-image', `url('${greetingImgs[0]}')`);
+                    greetingEl.style.backgroundImage = 'none';
+                    greetingEl.style.backgroundColor = 'transparent';
                 } else {
+                    greetingEl.classList.remove('fixed-bg');
+                    greetingEl.style.removeProperty('--bg-image');
                     greetingEl.style.background = settings.greeting_bg_color || '#000000';
                 }
             } else {
+                greetingEl.classList.remove('fixed-bg');
+                greetingEl.style.removeProperty('--bg-image');
                 greetingEl.style.background = settings.greeting_bg_color || '#000000';
             }
         }
@@ -332,27 +350,31 @@ async function loadPublicData() {
             el.style.removeProperty('background');
             el.style.removeProperty('--events-bg-img');
             el.style.removeProperty('--lovestory-bg-img');
+            el.classList.remove('fixed-bg');
+            el.style.removeProperty('--bg-image');
         };
 
         if (sharedWrapper) {
             if (sameImage) {
                 // === SAME BACKGROUND: Wrapper shows one unified background ===
                 sharedWrapper.classList.add('shared-bg');
-                // Set background on wrapper — fixed on desktop, scroll on mobile/iOS
-                sharedWrapper.style.backgroundImage = `url('${eBgImg}')`;
-                sharedWrapper.style.backgroundSize = 'cover';
-                sharedWrapper.style.backgroundPosition = 'center center';
-                sharedWrapper.style.backgroundRepeat = 'no-repeat';
-                sharedWrapper.style.backgroundAttachment = (isMobile || isIOS) ? 'scroll' : 'fixed';
+                sharedWrapper.classList.add('fixed-bg');
+                sharedWrapper.style.setProperty('--bg-image', `url('${eBgImg}')`);
+                sharedWrapper.style.backgroundImage = 'none';
+                sharedWrapper.style.backgroundColor = 'transparent';
 
                 // Clear children so the wrapper background shows through
                 clearElBg(eventSection);
                 clearElBg(lovestoryEl);
                 if (eventSection) {
+                    eventSection.classList.remove('fixed-bg');
+                    eventSection.style.removeProperty('--bg-image');
                     eventSection.style.backgroundImage = 'none';
                     eventSection.style.background = 'transparent';
                 }
                 if (lovestoryEl) {
+                    lovestoryEl.classList.remove('fixed-bg');
+                    lovestoryEl.style.removeProperty('--bg-image');
                     lovestoryEl.style.backgroundImage = 'none';
                     lovestoryEl.style.background = 'transparent';
                 }
@@ -360,18 +382,21 @@ async function loadPublicData() {
             } else {
                 // === DIFFERENT BACKGROUNDS: Each section has its own background ===
                 sharedWrapper.classList.remove('shared-bg');
+                sharedWrapper.classList.remove('fixed-bg');
+                sharedWrapper.style.removeProperty('--bg-image');
                 clearElBg(sharedWrapper);
                 sharedWrapper.style.backgroundImage = 'none';
 
                 // Apply events background
                 if (eventSection) {
                     if (eMode === 'image' && eBgImg) {
-                        eventSection.style.backgroundImage = `url('${eBgImg}')`;
-                        eventSection.style.backgroundSize = 'cover';
-                        eventSection.style.backgroundPosition = 'center center';
-                        eventSection.style.backgroundRepeat = 'no-repeat';
-                        eventSection.style.backgroundAttachment = (isMobile || isIOS) ? 'scroll' : 'fixed';
+                        eventSection.classList.add('fixed-bg');
+                        eventSection.style.setProperty('--bg-image', `url('${eBgImg}')`);
+                        eventSection.style.backgroundImage = 'none';
+                        eventSection.style.backgroundColor = 'transparent';
                     } else {
+                        eventSection.classList.remove('fixed-bg');
+                        eventSection.style.removeProperty('--bg-image');
                         eventSection.style.backgroundImage = 'none';
                         eventSection.style.backgroundColor = eBgColor;
                         eventSection.style.backgroundAttachment = '';
@@ -381,12 +406,13 @@ async function loadPublicData() {
                 // Apply lovestory background
                 if (lovestoryEl) {
                     if (lsSettings.lovestory_bg_mode === 'image' && lsBgImg) {
-                        lovestoryEl.style.backgroundImage = `url('${lsBgImg}')`;
-                        lovestoryEl.style.backgroundSize = 'cover';
-                        lovestoryEl.style.backgroundPosition = 'center center';
-                        lovestoryEl.style.backgroundRepeat = 'no-repeat';
-                        lovestoryEl.style.backgroundAttachment = (isMobile || isIOS) ? 'scroll' : 'fixed';
+                        lovestoryEl.classList.add('fixed-bg');
+                        lovestoryEl.style.setProperty('--bg-image', `url('${lsBgImg}')`);
+                        lovestoryEl.style.backgroundImage = 'none';
+                        lovestoryEl.style.backgroundColor = 'transparent';
                     } else {
+                        lovestoryEl.classList.remove('fixed-bg');
+                        lovestoryEl.style.removeProperty('--bg-image');
                         lovestoryEl.style.backgroundImage = 'none';
                         lovestoryEl.style.backgroundColor = lsBgColor;
                         lovestoryEl.style.backgroundAttachment = '';
@@ -420,9 +446,14 @@ async function loadPublicData() {
         if (wishesSection) {
             const mode = settings.wishes_bg_mode || 'color';
             if (mode === 'image' && settings.wishes_bg_img) {
-                const bgAtt = (isMobile || isIOS) ? 'scroll' : 'fixed';
-                wishesSection.style.background = `url('${settings.wishes_bg_img}') center/cover no-repeat ${bgAtt}`;
+                wishesSection.classList.add('fixed-bg');
+                wishesSection.style.setProperty('--bg-image', `url('${settings.wishes_bg_img}')`);
+                wishesSection.style.backgroundImage = 'none';
+                wishesSection.style.backgroundColor = 'transparent';
             } else {
+                wishesSection.classList.remove('fixed-bg');
+                wishesSection.style.removeProperty('--bg-image');
+                wishesSection.style.backgroundImage = 'none';
                 wishesSection.style.background = settings.wishes_bg_color || '#000000';
             }
         }
@@ -431,9 +462,14 @@ async function loadPublicData() {
         if (rsvpSection) {
             const rMode = settings.rsvp_bg_mode || 'color';
             if (rMode === 'image' && settings.rsvp_bg_img) {
-                const bgAtt = (isMobile || isIOS) ? 'scroll' : 'fixed';
-                rsvpSection.style.background = `url('${settings.rsvp_bg_img}') center/cover no-repeat ${bgAtt}`;
+                rsvpSection.classList.add('fixed-bg');
+                rsvpSection.style.setProperty('--bg-image', `url('${settings.rsvp_bg_img}')`);
+                rsvpSection.style.backgroundImage = 'none';
+                rsvpSection.style.backgroundColor = 'transparent';
             } else {
+                rsvpSection.classList.remove('fixed-bg');
+                rsvpSection.style.removeProperty('--bg-image');
+                rsvpSection.style.backgroundImage = 'none';
                 const rBgColor = settings.rsvp_bg_color || '#000000';
                 if (rBgColor.includes('gradient')) {
                     rsvpSection.style.background = rBgColor;

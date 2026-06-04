@@ -242,18 +242,39 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* --- RESPONSIVE FIXES --- */
+/* --- RESPONSIVE FIXES & FIXED BACKGROUNDS --- */
 
-/* Fix for background zoom on mobile */
+/* ===== FIXED BACKGROUNDS (STAY EFFECT) FOR ALL DEVICES AND iOS ===== */
+.fixed-bg {
+    position: relative !important;
+    -webkit-clip-path: inset(0) !important;
+    clip-path: inset(0) !important;
+    background-image: none !important;
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.fixed-bg::before {
+    content: "" !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-image: var(--bg-image) !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    z-index: -2 !important;
+    pointer-events: none !important;
+    will-change: transform !important;
+    transform: translate3d(0, 0, 0) !important; /* Force hardware acceleration */
+}
+
+/* Mobile adjustments for specific section backgrounds if needed */
 @media (max-width: 768px) {
-    #greetingSection,
-    #sectionWishes,
-    #digitalEnvelope,
-    #sectionRsvp,
-    section[style*="background"] {
-        background-attachment: fixed !important;
-        background-size: cover !important;
-        background-position: center center !important;
+    #sharedEventWrapper.shared-bg::before {
+        background-position: center top !important;
     }
 }
 
@@ -262,40 +283,17 @@ body {
     position: relative;
 }
 
-/* === DESKTOP: parallax fixed background on wrapper === */
 #sharedEventWrapper.shared-bg {
     position: relative;
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
 }
 
-/* === MOBILE: fixed background === */
-@media (max-width: 768px) {
-    /* Same background: wrapper shows one unified image that is fixed */
-    #sharedEventWrapper.shared-bg {
-        background-attachment: fixed !important;
-        background-size: cover !important;
-        background-position: center top !important;
-        background-repeat: no-repeat !important;
-    }
-
-    /* Different backgrounds: each section shows its own image */
-    #sharedEventWrapper:not(.shared-bg) #events,
-    #sharedEventWrapper:not(.shared-bg) #lovestory {
-        background-attachment: fixed !important;
-        background-size: cover !important;
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-    }
-
-    /* Ensure content is above overlay */
-    #sharedEventWrapper #events > *,
-    #sharedEventWrapper #lovestory > * {
-        position: relative;
-        z-index: 1;
-    }
+/* Ensure child content is above overlay */
+#events, #lovestory {
+    position: relative;
+}
+#events > *, #lovestory > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* When same background: both child sections MUST be fully transparent */
@@ -306,18 +304,6 @@ body {
     background: transparent !important;
 }
 
-/* ===== iOS EXTRA FIX — scroll for all sections ===== */
-body.is-ios #greetingSection,
-body.is-ios #sectionWishes,
-body.is-ios #digitalEnvelope,
-body.is-ios #sectionRsvp,
-body.is-ios #gallery,
-body.is-ios #sharedEventWrapper,
-body.is-ios section:not(#events):not(#lovestory) {
-    background-attachment: scroll !important;
-    background-size: cover !important;
-    background-position: center center !important;
-}
 
     /* Adjust font sizes for mobile */
     #greetingHeading {
