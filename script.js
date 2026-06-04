@@ -1412,7 +1412,7 @@ function renderFooter(footerSettings) {
     const nameEl = document.getElementById('footerName');
     const domainEl = document.getElementById('footerDomain');
     const footerEl = document.getElementById('footerEl');
-    const footerTop = document.getElementById('footerTop');
+    const overlayEl = document.getElementById('footerOverlay');
 
     if (nameEl && footerSettings.footer_name) {
         nameEl.textContent = footerSettings.footer_name;
@@ -1425,48 +1425,46 @@ function renderFooter(footerSettings) {
         const bgMode = footerSettings.footer_bg_mode || 'color';
         const bgColor = footerSettings.footer_bg_color || '#000000';
         const bgImg = footerSettings.footer_bg_img || '';
-        const overlayEl = document.getElementById('footerOverlay');
 
         if (bgMode === 'image' && bgImg) {
+            // Apply background image to the ENTIRE footer
             footerEl.style.background = '';
-            footerEl.style.backgroundImage = 'none';
-            footerEl.style.backgroundColor = '#000000';
+            footerEl.style.backgroundImage = `url('${bgImg}')`;
+            footerEl.style.backgroundSize = 'cover';
+            footerEl.style.backgroundPosition = 'center center';
+            footerEl.style.backgroundRepeat = 'no-repeat';
 
-            if (footerTop) {
-                footerTop.style.background = '';
-                footerTop.style.backgroundImage = `url('${bgImg}')`;
-                footerTop.style.backgroundSize = 'cover';
-                footerTop.style.backgroundPosition = 'center center';
-                footerTop.style.backgroundRepeat = 'no-repeat';
-
-                // Load image to get dynamic aspect ratio on mobile
-                const img = new Image();
-                const updateAspect = () => {
-                    if (window.innerWidth < 768) {
-                        footerTop.style.aspectRatio = `${img.width} / ${img.height}`;
-                        footerTop.style.paddingTop = '0px';
-                        footerTop.style.paddingBottom = '0px';
-                    } else {
-                        footerTop.style.aspectRatio = '';
-                        footerTop.style.paddingTop = '';
-                        footerTop.style.paddingBottom = '';
-                    }
-                };
-                img.onload = () => {
-                    updateAspect();
-                    if (footerTop._aspectResizeHandler) {
-                        window.removeEventListener('resize', footerTop._aspectResizeHandler);
-                    }
-                    footerTop._aspectResizeHandler = updateAspect;
-                    window.addEventListener('resize', updateAspect);
-                };
-                img.src = bgImg;
-            }
-
+            // Show dark overlay over entire footer
             if (overlayEl) {
                 overlayEl.style.background = 'rgba(0,0,0,0.55)';
             }
+
+            // On mobile: match footer height to image aspect ratio
+            const img = new Image();
+            const updateAspect = () => {
+                if (window.innerWidth < 768) {
+                    footerEl.style.aspectRatio = `${img.width} / ${img.height}`;
+                } else {
+                    footerEl.style.aspectRatio = '';
+                }
+            };
+            img.onload = () => {
+                updateAspect();
+                if (footerEl._aspectResizeHandler) {
+                    window.removeEventListener('resize', footerEl._aspectResizeHandler);
+                }
+                footerEl._aspectResizeHandler = updateAspect;
+                window.addEventListener('resize', updateAspect);
+            };
+            img.src = bgImg;
+
         } else {
+            // Color / gradient mode
+            if (footerEl._aspectResizeHandler) {
+                window.removeEventListener('resize', footerEl._aspectResizeHandler);
+                footerEl._aspectResizeHandler = null;
+            }
+            footerEl.style.aspectRatio = '';
             footerEl.style.backgroundImage = 'none';
             if (bgColor.includes('gradient')) {
                 footerEl.style.background = bgColor;
@@ -1475,18 +1473,7 @@ function renderFooter(footerSettings) {
                 footerEl.style.backgroundColor = bgColor;
             }
 
-            if (footerTop) {
-                if (footerTop._aspectResizeHandler) {
-                    window.removeEventListener('resize', footerTop._aspectResizeHandler);
-                    footerTop._aspectResizeHandler = null;
-                }
-                footerTop.style.backgroundImage = 'none';
-                footerTop.style.background = '';
-                footerTop.style.aspectRatio = '';
-                footerTop.style.paddingTop = '';
-                footerTop.style.paddingBottom = '';
-            }
-
+            // Hide overlay in color mode
             if (overlayEl) {
                 overlayEl.style.background = 'rgba(0,0,0,0)';
             }

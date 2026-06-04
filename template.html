@@ -498,18 +498,19 @@
 
         <footer id="footerEl" class="text-center overflow-hidden relative" style="background-color:#000;">
 
-            <!-- Wedding Name (top section — shows background image with dark overlay) -->
-            <div id="footerTop" class="px-6 pt-20 md:pt-28 pb-16 md:pb-24 relative flex flex-col justify-center items-center">
-                <!-- Dark transparent overlay over background image -->
-                <div id="footerOverlay" class="absolute inset-0 bg-black/60 pointer-events-none"></div>
+            <!-- Full footer dark overlay (covers everything) -->
+            <div id="footerOverlay" class="absolute inset-0 bg-black/60 pointer-events-none z-0"></div>
+
+            <!-- Wedding Name (top section) -->
+            <div id="footerTop" class="px-6 pt-20 md:pt-28 pb-4 md:pb-10 relative z-10 flex flex-col justify-center items-center">
                 <div class="relative z-10 text-center">
                     <h4 id="footerName" class="font-script text-3xl md:text-5xl text-white">Riandino &amp; Aurora</h4>
                     <p id="footerDomain" class="font-sans text-[9px] md:text-[11px] text-white/30 tracking-[0.3em] uppercase mt-2 md:mt-3">riandanaurora.my.id</p>
                 </div>
             </div>
 
-            <!-- CTA Section (bottom — solid black background always) -->
-            <div class="relative z-10" style="background-color:#000;">
+            <!-- CTA Section (same background — no black override) -->
+            <div class="relative z-10">
                 <div class="px-6 py-6 md:py-10 max-w-sm mx-auto flex flex-col items-center gap-2 md:gap-3">
 
                     <!-- Logo -->
