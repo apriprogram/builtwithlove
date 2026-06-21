@@ -5,7 +5,7 @@
 deployment:
   tasks:
     - export DEPLOY_DIR="/home/tanjunak/public/builtwithlove.my.id"
-    - /usr/bin/rsync -a --delete --exclude='.git' ./ "$DEPLOY_DIR"
+    - /usr/bin/rsync -a --delete --exclude='.git' --exclude='.htaccess' --exclude='node_modules' --exclude='database.sqlite' --exclude='.env' ./ "$DEPLOY_DIR"
 
 # Notes:
 # - Ensure in cPanel Git™ Version Control the repository has a checked-out branch (e.g. 'main').
