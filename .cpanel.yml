@@ -1,3 +1,10 @@
+# .cpanel.yml - cPanel deployment configuration
+# Adjust DEPLOY_DIR if your hosting uses a different path (e.g. /home/username/public_html
+# or /home/username/public/builtwithlove.my.id).
+deployment:
+  tasks:
+    - export DEPLOY_DIR="$HOME/public_html"
+    - /usr/bin/rsync -a --delete --exclude='.git' ./ "$DEPLOY_DIR"
 ---
 deployment:
   tasks:
