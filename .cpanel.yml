@@ -4,7 +4,7 @@
 
 deployment:
   tasks:
-    - export DEPLOY_DIR="/home/tanjunak/public_html/builtwithlove.my.id"
+    - export DEPLOY_DIR="/home/tanjunak/public/builtwithlove.my.id"
     - /usr/bin/rsync -a --delete --exclude='.git' ./ "$DEPLOY_DIR"
 
 # Notes:
